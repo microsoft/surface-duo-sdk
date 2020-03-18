@@ -9,6 +9,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/displaysample" />
+            <option value="$PROJECT_DIR$/surfaceduo-display" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
