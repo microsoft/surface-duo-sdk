@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
@@ -9,8 +10,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/displaysample" />
-            <option value="$PROJECT_DIR$/surfaceduo-display" />
+            <option value="$PROJECT_DIR$/dualscreen-layout" />
+            <option value="$PROJECT_DIR$/sample-dualscreen-layout" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

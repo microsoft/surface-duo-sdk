@@ -1,3 +1,3 @@
-rootProject.name='SurfaceDuoDisplay'
-include 'surfaceduo-display'
-include ':displaysample'
+rootProject.name='DuoSDK'
+include 'dualscreen-layout'
+include ':sample-dualscreen-layout'
