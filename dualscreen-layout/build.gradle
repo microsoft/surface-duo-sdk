@@ -61,10 +61,10 @@ publishing {
     publications {
         mylibrary(MavenPublication) {
             groupId 'com.microsoft.device'
-            artifactId 'display'
-            version '1.0.1'
+            artifactId 'dualscreen-layout'
+            version '0.9.0'
             artifact(sourceJar)
-            artifact("$buildDir/outputs/aar/display-release.aar")
+            artifact("$buildDir/outputs/aar/dualscreen-layout-release.aar")
         }
     }
     repositories {
@@ -80,7 +80,6 @@ publishing {
 
 dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'androidx.appcompat:appcompat:1.1.0'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
