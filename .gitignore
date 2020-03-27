@@ -12,7 +12,6 @@
 /captures
 .externalNativeBuild
 .cxx
-gradle.properties
 ### Android template
 # Built application files
 *.apk
