@@ -8,11 +8,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: 'publish.gradle'
 apply plugin: 'maven-publish'
-
-group = "publish"
-version = "1.0"
 
 android {
     compileSdkVersion 29
