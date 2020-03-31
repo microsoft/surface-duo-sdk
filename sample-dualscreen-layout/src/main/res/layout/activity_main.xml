@@ -2,8 +2,10 @@
 <com.microsoft.device.dualscreen.layout.SurfaceDuoLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:single_screen_layout_id="@layout/single_screen"
     app:dual_screen_start_layout_id="@layout/dual_screen_start2"
-    app:dual_screen_end_layout_id="@layout/dual_screen_end2"/>
+    app:dual_screen_end_layout_id="@layout/dual_screen_end2"
+    app:tools_screen_mode="single_screen"/>
