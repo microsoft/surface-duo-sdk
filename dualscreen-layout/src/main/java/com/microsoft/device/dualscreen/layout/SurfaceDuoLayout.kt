@@ -9,6 +9,7 @@ package com.microsoft.device.dualscreen.layout
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -104,31 +105,46 @@ class SurfaceDuoLayout @JvmOverloads constructor(
 
             when (screenMode) {
                 ScreenMode.SINGLE_SCREEN.ordinal -> {
-                    val singleScreenView = LayoutInflater.from(context).inflate(singleScreenLayoutId, null)
+                    val singleScreenView = LayoutInflater
+                        .from(context)
+                        .inflate(singleScreenLayoutId, null)
                     rootView.addView(singleScreenView)
                 }
                 ScreenMode.DUAL_SCREEN.ordinal -> {
                     val linearLayout = LinearLayout(context)
-                    linearLayout.orientation = LinearLayout.HORIZONTAL
                     linearLayout.weightSum = 2F
 
-                    val view = LayoutInflater.from(context).inflate(dualScreenStartLayoutId, null)
-                    val view2 = LayoutInflater.from(context).inflate(dualScreenEndLayoutId, null)
+                    if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        linearLayout.orientation = LinearLayout.HORIZONTAL
+                    } else if (
+                        resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+                    ) {
+                        linearLayout.orientation = LinearLayout.VERTICAL
+                    }
+
+                    val dualScreenStartView = LayoutInflater
+                        .from(context)
+                        .inflate(dualScreenStartLayoutId, null)
+                    val dualScreenEndView = LayoutInflater
+                        .from(context)
+                        .inflate(dualScreenEndLayoutId, null)
 
                     val param = LinearLayout.LayoutParams(
                         LayoutParams.MATCH_PARENT,
                         LayoutParams.MATCH_PARENT,
-                        1.0f
+                        1F
                     )
-                    view.layoutParams = param
-                    view2.layoutParams = param
+                    dualScreenStartView.layoutParams = param
+                    dualScreenEndView.layoutParams = param
 
-                    linearLayout.addView(view)
-                    linearLayout.addView(view2)
+                    linearLayout.addView(dualScreenStartView)
+                    linearLayout.addView(dualScreenEndView)
                     rootView.addView(linearLayout)
                 }
                 else -> {
-                    throw java.lang.IllegalStateException("No ScreenMode added to preview the layout. Use app:tools_screen_mode=\"single_screen\" or app:tools_screen_mode=\"dual_screen\".")
+                    throw java.lang.IllegalStateException("No ScreenMode added to preview the layout. " +
+                            "Use app:tools_screen_mode=\"single_screen\" or " +
+                            "app:tools_screen_mode=\"dual_screen\".")
                 }
             }
 
