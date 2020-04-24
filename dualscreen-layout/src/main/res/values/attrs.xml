@@ -11,5 +11,9 @@
         <attr name="single_screen_layout_id" format="integer"/>
         <attr name="dual_screen_start_layout_id" format="integer"/>
         <attr name="dual_screen_end_layout_id" format="integer"/>
+        <attr name="tools_screen_mode" format="enum">
+            <enum name="single_screen" value="0"/>
+            <enum name="dual_screen" value="1"/>
+        </attr>
     </declare-styleable>
 </resources>
