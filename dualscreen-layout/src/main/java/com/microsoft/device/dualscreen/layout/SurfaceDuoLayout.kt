@@ -10,11 +10,12 @@ package com.microsoft.device.dualscreen.layout
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.microsoft.device.surfaceduo.display.R
 
 
@@ -24,13 +25,13 @@ import com.microsoft.device.surfaceduo.display.R
  * containers and then creates a SurfaceDuoLayoutStatusHandler to handle the logic for each screen
  * state.
  */
-class SurfaceDuoLayout @JvmOverloads constructor(
+open class SurfaceDuoLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private var screenManager: SurfaceDuoScreenManager? = SurfaceDuoScreenManager.instance
+    private lateinit var surfaceDuoLayoutStatusHandler : SurfaceDuoLayoutStatusHandler
 
     init {
         val styledAttributes =
@@ -39,7 +40,11 @@ class SurfaceDuoLayout @JvmOverloads constructor(
         val dualScreenEndLayoutId: Int
         val dualScreenStartLayoutId: Int
         val singleScreenLayoutId: Int
+        val showInDualScreenEnd: Int
+        val showInDualScreenStart: Int
+        val showInSingleScreen: Int
         val screenMode: Int
+        val hingeColor: Int
         try {
             singleScreenLayoutId = styledAttributes.getResourceId(
                 R.styleable.SurfaceDuoLayout_single_screen_layout_id,
@@ -53,73 +58,126 @@ class SurfaceDuoLayout @JvmOverloads constructor(
                 R.styleable.SurfaceDuoLayout_dual_screen_end_layout_id,
                 View.NO_ID
             )
+            showInSingleScreen = styledAttributes.getResourceId(
+                R.styleable.SurfaceDuoLayout_show_in_single_screen,
+                View.NO_ID
+            )
+            showInDualScreenStart = styledAttributes.getResourceId(
+                R.styleable.SurfaceDuoLayout_show_in_dual_screen_start,
+                View.NO_ID
+            )
+            showInDualScreenEnd = styledAttributes.getResourceId(
+                R.styleable.SurfaceDuoLayout_show_in_dual_screen_end,
+                View.NO_ID
+            )
             screenMode = styledAttributes.getResourceId(
                 R.styleable.SurfaceDuoLayout_tools_screen_mode,
-                View.NO_ID
+                ScreenMode.SINGLE_SCREEN.ordinal
+            )
+            hingeColor = styledAttributes.getResourceId(
+                R.styleable.SurfaceDuoLayout_tools_hinge_color,
+                HingeColor.BLACK.ordinal
             )
         } finally {
             styledAttributes.recycle()
         }
 
         if (this.isInEditMode) {
-            PreviewRenderer(
-                this,
-                singleScreenLayoutId,
-                dualScreenStartLayoutId,
-                dualScreenEndLayoutId,
-                screenMode
-            )
-        } else {
-            screenManager?.let{
-                if (it.isScreenManagerInitialized) {
-                    SurfaceDuoLayoutStatusHandler(
-                        this.context as Activity,
-                        this,
-                        it,
-                        singleScreenLayoutId,
-                        dualScreenStartLayoutId,
-                        dualScreenEndLayoutId
-                    )
+            val singleScreenId: Int =
+                if (showInSingleScreen != View.NO_ID) {
+                    showInSingleScreen
                 } else {
-                    throw IllegalStateException("SurfaceDuoScreenManager is not initialized in Application class.")
+                    singleScreenLayoutId
                 }
 
-            }
+            val dualScreenStartId: Int =
+                if (showInDualScreenStart != View.NO_ID) {
+                    showInDualScreenStart
+                } else {
+                    dualScreenStartLayoutId
+                }
+
+            val dualScreenEndId: Int =
+                if (showInDualScreenEnd != View.NO_ID) {
+                    showInDualScreenEnd
+                } else {
+                    dualScreenEndLayoutId
+                }
+
+            PreviewRenderer(
+                singleScreenId,
+                dualScreenStartId,
+                dualScreenEndId,
+                screenMode,
+                hingeColor
+            )
+        } else {
+            createView(singleScreenLayoutId, dualScreenStartLayoutId, dualScreenEndLayoutId)
         }
     }
 
-    enum class ScreenMode {
-        SINGLE_SCREEN,
-        DUAL_SCREEN
+    private fun createView(
+        singleScreenLayoutId: Int,
+        dualScreenStartLayoutId: Int,
+        dualScreenEndLayoutId: Int
+    ) {
+        surfaceDuoLayoutStatusHandler = SurfaceDuoLayoutStatusHandler(
+            this.context as Activity,
+            this,
+            singleScreenLayoutId,
+            dualScreenStartLayoutId,
+            dualScreenEndLayoutId
+        )
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        surfaceDuoLayoutStatusHandler.onConfigurationChanged(this, newConfig)
     }
 
     inner class PreviewRenderer(
-        rootView: FrameLayout,
         singleScreenLayoutId: Int,
         dualScreenStartLayoutId: Int,
         dualScreenEndLayoutId: Int,
-        screenMode: Int
+        screenMode: Int,
+        hingeColor: Int
     ) {
 
         init {
-
             when (screenMode) {
                 ScreenMode.SINGLE_SCREEN.ordinal -> {
                     val singleScreenView = LayoutInflater
                         .from(context)
                         .inflate(singleScreenLayoutId, null)
-                    rootView.addView(singleScreenView)
+                    singleScreenView.layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    this@SurfaceDuoLayout.orientation = VERTICAL
+                    this@SurfaceDuoLayout.addView(singleScreenView)
                 }
                 ScreenMode.DUAL_SCREEN.ordinal -> {
-                    val linearLayout = LinearLayout(context)
-                    linearLayout.weightSum = 2F
+                    this@SurfaceDuoLayout.weightSum = 2F
+                    this@SurfaceDuoLayout.layoutParams = LayoutParams(
+                        LayoutParams.MATCH_PARENT,
+                        LayoutParams.MATCH_PARENT
+                    )
+                    val hinge = FrameLayout(context)
 
-                    if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-                        linearLayout.orientation = LinearLayout.HORIZONTAL
-                    } else if (
-                        resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-                    ) {
-                        linearLayout.orientation = LinearLayout.VERTICAL
+                    when (hingeColor) {
+                        HingeColor.BLACK.ordinal -> {
+                            hinge.background = ColorDrawable(
+                                ContextCompat.getColor(context, R.color.black)
+                            )
+                        }
+                        HingeColor.WHITE.ordinal -> {
+                            hinge.background = ColorDrawable(
+                                ContextCompat.getColor(context, R.color.white)
+                            )
+                        }
+                        else -> {
+                            hinge.background = ColorDrawable(
+                                ContextCompat.getColor(context, R.color.black)
+                            )
+                        }
                     }
 
                     val dualScreenStartView = LayoutInflater
@@ -129,26 +187,46 @@ class SurfaceDuoLayout @JvmOverloads constructor(
                         .from(context)
                         .inflate(dualScreenEndLayoutId, null)
 
-                    val param = LinearLayout.LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT,
-                        1F
-                    )
-                    dualScreenStartView.layoutParams = param
-                    dualScreenEndView.layoutParams = param
+                    if (
+                        resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+                    ) {
+                        this@SurfaceDuoLayout.orientation = HORIZONTAL
 
-                    linearLayout.addView(dualScreenStartView)
-                    linearLayout.addView(dualScreenEndView)
-                    rootView.addView(linearLayout)
-                }
-                else -> {
-                    throw java.lang.IllegalStateException("No ScreenMode added to preview the layout. " +
-                            "Use app:tools_screen_mode=\"single_screen\" or " +
-                            "app:tools_screen_mode=\"dual_screen\".")
+                        hinge.layoutParams = LayoutParams(
+                            84,
+                            LayoutParams.MATCH_PARENT
+                        )
+                        val param = LayoutParams(
+                            0,
+                            LayoutParams.MATCH_PARENT,
+                            1F
+                        )
+                        dualScreenStartView.layoutParams = param
+                        dualScreenEndView.layoutParams = param
+
+                    } else if (
+                        resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+                    ) {
+                        this@SurfaceDuoLayout.orientation = VERTICAL
+
+                        hinge.layoutParams = LayoutParams(
+                            LayoutParams.MATCH_PARENT,
+                            84
+                        )
+                        val param = LinearLayout.LayoutParams(
+                            LayoutParams.MATCH_PARENT,
+                            0,
+                            1F
+                        )
+                        dualScreenStartView.layoutParams = param
+                        dualScreenEndView.layoutParams = param
+                    }
+
+                    this@SurfaceDuoLayout.addView(dualScreenStartView)
+                    this@SurfaceDuoLayout.addView(hinge)
+                    this@SurfaceDuoLayout.addView(dualScreenEndView)
                 }
             }
-
-
         }
     }
 }

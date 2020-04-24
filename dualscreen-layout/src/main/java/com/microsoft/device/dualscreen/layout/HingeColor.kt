@@ -3,6 +3,9 @@
  *  Licensed under the MIT License.
  */
 
-rootProject.name='DuoSDK'
-include 'dualscreen-layout'
-include ':sample-dualscreen-layout'
+package com.microsoft.device.dualscreen.layout
+
+internal enum class HingeColor {
+    BLACK,
+    WHITE
+}
