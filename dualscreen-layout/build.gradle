@@ -53,25 +53,25 @@ android {
 }
 
 // PUBLISHING SCRIPT
-publishing {
-    publications {
-        mylibrary(MavenPublication) {
-            groupId 'com.microsoft.device'
-            artifactId 'dualscreen-layout'
-            version '1.0.0-alpha01'
-            artifact("$buildDir/outputs/aar/dualscreen-layout-release.aar")
-        }
-    }
-    repositories {
-        maven {
-            url REPO_URL
-            credentials {
-                username USERNAME
-                password PASSWORD
-            }
-        }
-    }
-}
+//publishing {
+//    publications {
+//        mylibrary(MavenPublication) {
+//            groupId 'com.microsoft.device'
+//            artifactId 'dualscreen-layout'
+//            version '1.0.0-alpha01'
+//            artifact("$buildDir/outputs/aar/dualscreen-layout-release.aar")
+//        }
+//    }
+//    repositories {
+//        maven {
+//            url REPO_URL
+//            credentials {
+//                username USERNAME
+//                password PASSWORD
+//            }
+//        }
+//    }
+//}
 
 dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
