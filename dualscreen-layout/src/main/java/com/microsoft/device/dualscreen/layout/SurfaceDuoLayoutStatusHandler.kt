@@ -79,13 +79,13 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
 
     private val navigationBarHeight: Int
         get() {
-            val resourceId: Int =  activity.resources.getIdentifier(
+            val resourceId: Int = activity.resources.getIdentifier(
                 NAV_BAR_BOTTOM_GESTURE_SIZE,
                 SIZE_RESOURCE_TYPE,
                 DEFAULT_RESOURCE_PACKAGE
                 )
             return if (resourceId > 0) {
-                 activity.resources.getDimensionPixelSize(resourceId) / 2
+                activity.resources.getDimensionPixelSize(resourceId) / 2
             } else { 0 }
         }
 
@@ -110,7 +110,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
     }
 
     private fun addViewsDependingOnScreenMode() {
-        screenMode = if(ScreenHelper.isDualMode(activity)) {
+        screenMode = if (ScreenHelper.isDualMode(activity)) {
             addViewsForDualScreenMode()
             ScreenMode.DUAL_SCREEN
         } else {
@@ -123,7 +123,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
      * Called when the activity handles a configuration change.
      *
      * The function will take the containers inside SurfaceDuoLayout
-     * and change the width and height of the accordingly.
+     * and change the width and height of them accordingly.
      */
     internal fun onConfigurationChanged(
         surfaceDuoLayout: SurfaceDuoLayout,
@@ -193,7 +193,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
             )
         }
 
-        if ( orientation == LinearLayout.VERTICAL ) {
+        if (orientation == LinearLayout.VERTICAL) {
             // DOUBLE_LANDSCAPE
 
             // Find StartLayoutContainer and add new width and height
@@ -210,7 +210,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
                 screenRectangleEnd.width() - navigationBarHeight,
                 screenRectangleEnd.height()
             )
-        } else if ( orientation == LinearLayout.HORIZONTAL) {
+        } else if (orientation == LinearLayout.HORIZONTAL) {
             // DOUBLE_PORTRAIT
 
             // Find StartLayoutContainer and add new width and height
@@ -241,7 +241,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
 
         val singleScreenContainer = FrameLayout(rootView.context)
         singleScreenContainer.id = R.id.single_screen_container_id
-        singleScreenContainer.layoutParams = FrameLayout.LayoutParams (
+        singleScreenContainer.layoutParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT
         )
@@ -299,7 +299,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
                 screenRect1.height() - statusBarHeight - actionbarHeight - navigationBarHeight
             )
         }
-        dualScreenStartView?.let{
+        dualScreenStartView?.let {
             dualScreenStartContainer.addView(it)
         }
 

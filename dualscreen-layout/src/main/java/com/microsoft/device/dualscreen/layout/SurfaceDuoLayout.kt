@@ -12,12 +12,12 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
-import android.view.*
+import android.view.View
+import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.microsoft.device.surfaceduo.display.R
-
 
 /**
  * Class that is the root view of the layout containers for different screen modes.
@@ -31,7 +31,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private lateinit var surfaceDuoLayoutStatusHandler : SurfaceDuoLayoutStatusHandler
+    private lateinit var surfaceDuoLayoutStatusHandler: SurfaceDuoLayoutStatusHandler
 
     init {
         val styledAttributes =
@@ -203,7 +203,6 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                         )
                         dualScreenStartView.layoutParams = param
                         dualScreenEndView.layoutParams = param
-
                     } else if (
                         resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
                     ) {

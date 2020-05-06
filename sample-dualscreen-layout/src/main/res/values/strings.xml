@@ -5,4 +5,7 @@
 
 <resources>
     <string name="app_name">Sample DualScreen-Layout</string>
+    <string name="dual_screen_mode_end">Dual Screen Mode - END</string>
+    <string name="dual_screen_mode_start">Dual Screen Mode - START</string>
+    <string name="single_screen_mode">Single Screen Mode</string>
 </resources>
