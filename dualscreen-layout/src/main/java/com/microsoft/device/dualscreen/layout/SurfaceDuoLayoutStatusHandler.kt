@@ -41,7 +41,7 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
         private const val DEFAULT_RESOURCE_PACKAGE = "android"
     }
 
-    private var screenMode = ScreenMode.NOT_DEFINED
+    private var screenMode = ScreenMode.SINGLE_SCREEN
 
     private var singleScreenView: View? = null
     private var dualScreenStartView: View? = null
