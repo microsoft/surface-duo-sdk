@@ -27,7 +27,7 @@ import com.microsoft.device.surfaceduo.display.R
  * The class automatically handles the resize of the layout containers if the device rotates and
  * also the position of the hinge.
  */
-class SurfaceDuoLayoutStatusHandler internal constructor(
+internal class SurfaceDuoLayoutStatusHandler internal constructor(
     private val activity: Activity,
     private val rootView: SurfaceDuoLayout,
     singleScreenLayout: Int,

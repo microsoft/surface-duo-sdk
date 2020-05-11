@@ -5,4 +5,5 @@
 
 rootProject.name='DuoSDK'
 include 'dualscreen-layout'
-include ':sample-dualscreen-layout'
+include ':dualscreen-layout:sample-surfaceduo-manager'
+include ':dualscreen-layout:sample-surfaceduo-layout'

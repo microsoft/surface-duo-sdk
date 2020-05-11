@@ -116,7 +116,7 @@ class ScreenHelper {
 
         /**
          * Returns a constant int for the rotation of the screen
-         * According to the rotation the function will return:
+         * according to the rotation the function will return:
          * {Surface.ROTATION_0, Surface.ROTATION_90, Surface.ROTATION_180, Surface.ROTATION_270}
          */
         @JvmStatic fun getCurrentRotation(activity: Activity): Int {
