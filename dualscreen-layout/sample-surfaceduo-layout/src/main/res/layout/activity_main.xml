@@ -3,7 +3,8 @@
   ~  Licensed under the MIT License.
   -->
 
-<com.microsoft.device.dualscreen.layout.SurfaceDuoLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.microsoft.device.dualscreen.layout.SurfaceDuoLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/surface_duo_layout"
     android:layout_width="match_parent"

@@ -5,5 +5,5 @@
   -->
 
 <resources>
-    <dimen name="display_description_text_size">24sp</dimen>
+    <dimen name="display_description_text_size">124sp</dimen>
 </resources>
