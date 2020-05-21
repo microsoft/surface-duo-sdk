@@ -13,6 +13,7 @@ import android.content.res.Configuration
 import android.content.res.TypedArray
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,9 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
     private lateinit var surfaceDuoLayoutStatusHandler: SurfaceDuoLayoutStatusHandler
 
     init {
+        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        gravity = Gravity.BOTTOM
+
         if (attrs != null) {
             val styledAttributes =
                 context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoLayout, 0, 0)
@@ -120,16 +124,10 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         styledAttributes: TypedArray,
         config: Config
     ) {
-        val showInSingleScreen: Int = 0
-
-        styledAttributes.getResourceId(
+        val showInSingleScreen: Int = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_single_screen,
             View.NO_ID
-        ).let {
-            if (it != View.NO_ID) {
-                config.singleScreenLayoutId = showInSingleScreen
-            }
-        }
+        )
         val showInDualScreenStart: Int = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_dual_screen_start,
             View.NO_ID
@@ -146,7 +144,6 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             R.styleable.SurfaceDuoLayout_show_in_dual_landscape_single_container,
             View.NO_ID
         )
-
         val screenMode: Int = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_tools_screen_mode,
             ScreenMode.SINGLE_SCREEN.ordinal
@@ -156,7 +153,9 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             HingeColor.BLACK.ordinal
         )
 
-
+        if (showInSingleScreen != View.NO_ID) {
+            config.singleScreenLayoutId = showInSingleScreen
+        }
         if (showInDualScreenStart != View.NO_ID) {
             config.dualScreenStartLayoutId = showInDualScreenStart
         }

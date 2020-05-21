@@ -32,13 +32,6 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     private val rootView: SurfaceDuoLayout,
     private val surfaceDuoLayoutConfig: SurfaceDuoLayout.Config
 ) {
-    companion object {
-        private const val STAT_BAR_SIZE = "status_bar_height"
-        private const val NAV_BAR_BOTTOM_GESTURE_SIZE = "application_bar_height"
-        private const val SIZE_RESOURCE_TYPE = "dimen"
-        private const val DEFAULT_RESOURCE_PACKAGE = "android"
-    }
-
     private var screenMode = ScreenMode.NOT_DEFINED
 
     private var singleScreenView: View? = null
@@ -46,48 +39,6 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     private var dualScreenEndView: View? = null
     private var dualPortraitSingleLayoutView: View? = null
     private var dualLandscapeSingleLayoutView: View? = null
-
-    private val actionbarHeight: Int
-        get() {
-            if (activity is AppCompatActivity) {
-                activity.supportActionBar?.let {
-                    return if (it.isShowing) {
-                        val styledAttributes = activity.getTheme()
-                            .obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-                        styledAttributes.getDimension(0, 0f).toInt()
-                    } else { 0 }
-                } ?: kotlin.run { return 0 }
-            } else if (activity.actionBar != null && activity.actionBar!!.isShowing) {
-                val styledAttributes =
-                    activity.theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-                return styledAttributes.getDimension(0, 0f).toInt()
-            } else { return 0 }
-        }
-
-    private val statusBarHeight: Int
-        get() {
-            val resourceId = activity.resources
-                .getIdentifier(
-                    STAT_BAR_SIZE,
-                    SIZE_RESOURCE_TYPE,
-                    DEFAULT_RESOURCE_PACKAGE
-                )
-            return if (resourceId > 0) {
-                activity.resources.getDimensionPixelSize(resourceId)
-            } else { 0 }
-        }
-
-    private val navigationBarHeight: Int
-        get() {
-            val resourceId: Int = activity.resources.getIdentifier(
-                NAV_BAR_BOTTOM_GESTURE_SIZE,
-                SIZE_RESOURCE_TYPE,
-                DEFAULT_RESOURCE_PACKAGE
-                )
-            return if (resourceId > 0) {
-                activity.resources.getDimensionPixelSize(resourceId) / 2
-            } else { 0 }
-        }
 
     /**
      * On initializing the class object the code will inflate the layout resources
@@ -115,6 +66,7 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
                 .inflate(surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId, this.rootView, false)
         }
         addViewsDependingOnScreenMode()
+
     }
 
     private fun addViewsDependingOnScreenMode() {
@@ -219,7 +171,7 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
                     .findViewById<FrameLayout>(R.id.dual_screen_start_container_id)
                 start.layoutParams = LinearLayout.LayoutParams(
                     screenRectangleStart.width(),
-                    screenRectangleStart.height() - statusBarHeight - actionbarHeight - navigationBarHeight
+                    LinearLayout.LayoutParams.MATCH_PARENT
                 )
 
                 // Find EndLayoutContainer and add new width and height
@@ -227,7 +179,7 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
                     .findViewById<FrameLayout>(R.id.dual_screen_end_container_id)
                 end.layoutParams = LinearLayout.LayoutParams(
                     screenRectangleEnd.width(),
-                    screenRectangleEnd.height() - statusBarHeight - actionbarHeight - navigationBarHeight
+                    LinearLayout.LayoutParams.MATCH_PARENT
                 )
             }
 
@@ -239,15 +191,17 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
                 val start = surfaceDuoLayout
                     .findViewById<FrameLayout>(R.id.dual_screen_start_container_id)
                 start.layoutParams = LinearLayout.LayoutParams(
-                    screenRectangleStart.width() - navigationBarHeight,
-                    screenRectangleStart.height() - actionbarHeight - statusBarHeight
-                )
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0
+                ).apply {
+                    weight = 1F
+                }
 
                 // Find EndLayoutContainer and add new width and height
                 val end = surfaceDuoLayout
                     .findViewById<FrameLayout>(R.id.dual_screen_end_container_id)
                 end.layoutParams = LinearLayout.LayoutParams(
-                    screenRectangleEnd.width() - navigationBarHeight,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
                     screenRectangleEnd.height()
                 )
             }
@@ -377,22 +331,26 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         dualScreenEndContainer.id = R.id.dual_screen_end_container_id
 
         if (linearLayoutOrientation == LinearLayout.VERTICAL) {
-            dualScreenStartContainer.layoutParams = FrameLayout.LayoutParams(
-                screenRect1.width() - navigationBarHeight,
-                screenRect1.height() - actionbarHeight - statusBarHeight
-            )
-            dualScreenEndContainer.layoutParams = FrameLayout.LayoutParams(
-                screenRect2.width() - navigationBarHeight,
+            // DOUBLE_LANDSCAPE
+            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0
+            ).apply {
+                weight = 1F
+            }
+            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 screenRect2.height()
             )
         } else {
-            dualScreenStartContainer.layoutParams = FrameLayout.LayoutParams(
+            // DOUBLE_PORTRAIT
+            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(
                 screenRect1.width(),
-                screenRect1.height() - statusBarHeight - actionbarHeight - navigationBarHeight
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
-            dualScreenEndContainer.layoutParams = FrameLayout.LayoutParams(
+            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(
                 screenRect2.width(),
-                screenRect2.height() - statusBarHeight - actionbarHeight - navigationBarHeight
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
         }
 

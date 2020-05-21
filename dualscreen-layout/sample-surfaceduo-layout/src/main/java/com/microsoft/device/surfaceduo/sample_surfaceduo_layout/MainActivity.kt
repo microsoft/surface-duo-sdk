@@ -7,6 +7,7 @@ package com.microsoft.device.surfaceduo.sample_surfaceduo_layout
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.microsoft.device.dualscreen.layout.SurfaceDuoLayout
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +26,12 @@ class MainActivity : AppCompatActivity() {
 //        )
 
         setContentView(R.layout.activity_main)
-//         Replace configuration
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        // Remember that you should never show the action bar if the
+        // status bar is hidden, so hide that too if necessary.
+        actionBar?.hide()
+
+        // Replace configuration
 //        findViewById<SurfaceDuoLayout>(R.id.surface_duo_layout)
 //            .newConfigCreator()
 //            .dualScreenStartLayoutId(R.layout.dual_screen_start)
@@ -38,5 +44,11 @@ class MainActivity : AppCompatActivity() {
 //            .dualScreenStartLayoutId(R.layout.dual_screen_start)
 //            .dualScreenEndLayoutId(R.layout.dual_screen_end)
 //            .reInflate()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+
     }
 }
