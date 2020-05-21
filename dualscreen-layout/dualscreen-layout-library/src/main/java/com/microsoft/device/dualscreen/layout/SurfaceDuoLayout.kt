@@ -33,7 +33,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    var config: Config = Config()
+    val config: Config = Config()
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     constructor(context: Context, config: Config) : this(context, null, 0, config)
@@ -45,35 +45,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             val styledAttributes =
                 context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoLayout, 0, 0)
             try {
-                config.singleScreenLayoutId = styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoLayout_single_screen_layout_id,
-                    View.NO_ID
-                )
-                config.dualScreenStartLayoutId = styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoLayout_dual_screen_start_layout_id,
-                    View.NO_ID
-                )
-                config.dualScreenEndLayoutId = styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoLayout_dual_screen_end_layout_id,
-                    View.NO_ID
-                )
-                // Single container in Dual Screen mode
-                config.dualPortraitSingleLayoutId = styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoLayout_dual_portrait_single_layout_id,
-                    View.NO_ID
-                )
-                config.isDualPortraitSingleContainer = styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoLayout_is_dual_portrait_single_container,
-                    false
-                )
-                config.dualLandscapeSingleLayoutId = styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoLayout_dual_landscape_single_layout_id,
-                    View.NO_ID
-                )
-                config.isDualLandscapeSingleContainer = styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoLayout_is_dual_landscape_single_container,
-                    false
-                )
+                getLayoutAttributes(styledAttributes)
             } finally {
                 styledAttributes.recycle()
             }
@@ -88,6 +60,38 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         } else {
             createView(config)
         }
+    }
+
+    private fun getLayoutAttributes(styledAttributes: TypedArray) {
+        config.singleScreenLayoutId = styledAttributes.getResourceId(
+            R.styleable.SurfaceDuoLayout_single_screen_layout_id,
+            View.NO_ID
+        )
+        config.dualScreenStartLayoutId = styledAttributes.getResourceId(
+            R.styleable.SurfaceDuoLayout_dual_screen_start_layout_id,
+            View.NO_ID
+        )
+        config.dualScreenEndLayoutId = styledAttributes.getResourceId(
+            R.styleable.SurfaceDuoLayout_dual_screen_end_layout_id,
+            View.NO_ID
+        )
+        // Single container in Dual Screen mode
+        config.dualPortraitSingleLayoutId = styledAttributes.getResourceId(
+            R.styleable.SurfaceDuoLayout_dual_portrait_single_layout_id,
+            View.NO_ID
+        )
+        config.isDualPortraitSingleContainer = styledAttributes.getBoolean(
+            R.styleable.SurfaceDuoLayout_is_dual_portrait_single_container,
+            false
+        )
+        config.dualLandscapeSingleLayoutId = styledAttributes.getResourceId(
+            R.styleable.SurfaceDuoLayout_dual_landscape_single_layout_id,
+            View.NO_ID
+        )
+        config.isDualLandscapeSingleContainer = styledAttributes.getBoolean(
+            R.styleable.SurfaceDuoLayout_is_dual_landscape_single_container,
+            false
+        )
     }
 
     /**
@@ -116,10 +120,16 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         styledAttributes: TypedArray,
         config: Config
     ) {
-        val showInSingleScreen: Int = styledAttributes.getResourceId(
+        val showInSingleScreen: Int = 0
+
+        styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_single_screen,
             View.NO_ID
-        )
+        ).let {
+            if (it != View.NO_ID) {
+                config.singleScreenLayoutId = showInSingleScreen
+            }
+        }
         val showInDualScreenStart: Int = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_dual_screen_start,
             View.NO_ID
@@ -136,6 +146,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             R.styleable.SurfaceDuoLayout_show_in_dual_landscape_single_container,
             View.NO_ID
         )
+
         val screenMode: Int = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_tools_screen_mode,
             ScreenMode.SINGLE_SCREEN.ordinal
@@ -145,9 +156,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             HingeColor.BLACK.ordinal
         )
 
-        if (showInSingleScreen != View.NO_ID) {
-            config.singleScreenLayoutId = showInSingleScreen
-        }
+
         if (showInDualScreenStart != View.NO_ID) {
             config.dualScreenStartLayoutId = showInDualScreenStart
         }
@@ -168,6 +177,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         screenMode: Int,
         private val hingeColor: Int
     ) {
+        private val hingeDimension = 84
 
         init {
             when (screenMode) {
@@ -193,14 +203,14 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     hinge.layoutParams = LayoutParams(
-                        84,
+                        hingeDimension,
                         LayoutParams.MATCH_PARENT
                     )
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
                     hinge.layoutParams = LayoutParams(
                         LayoutParams.MATCH_PARENT,
-                        84
+                        hingeDimension
                     )
                 }
             }
@@ -247,6 +257,66 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             }
         }
 
+        private fun applyParentConstraintsToView(view: View, root: ConstraintLayout) {
+            root.addView(view)
+
+            val hingeConstraintSet = ConstraintSet()
+            hingeConstraintSet.clone(root)
+            hingeConstraintSet.connect(
+                view.id,
+                ConstraintSet.TOP,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.TOP,
+                0
+            )
+            hingeConstraintSet.connect(
+                view.id,
+                ConstraintSet.LEFT,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.LEFT,
+                0
+            )
+            hingeConstraintSet.connect(
+                view.id,
+                ConstraintSet.RIGHT,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.RIGHT,
+                0
+            )
+            hingeConstraintSet.connect(
+                view.id,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+                0
+            )
+            hingeConstraintSet.applyTo(root)
+        }
+
+        private fun getSingleContainerLayout(): View {
+            return when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    LayoutInflater.from(context).inflate(
+                        config.dualPortraitSingleLayoutId,
+                        null
+                    ).apply {
+                        id = View.generateViewId()
+                        layoutParams = LayoutParams(0, 0)
+                    }
+                }
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    LayoutInflater.from(context).inflate(
+                        config.dualLandscapeSingleLayoutId,
+                        null
+                    ).apply {
+                        id = View.generateViewId()
+                        layoutParams = LayoutParams(0, 0)
+                    }
+                }
+                else -> { FrameLayout(context) }
+            }
+        }
+
         private fun addDualScreenSingleContainerPreview() {
             val rootContainer = ConstraintLayout(context)
             rootContainer.id = View.generateViewId()
@@ -256,90 +326,10 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             )
 
             val hinge = createHingePreview(hingeColor)
-            rootContainer.addView(hinge)
+            applyParentConstraintsToView(hinge, rootContainer)
 
-            val hingeConstraintSet = ConstraintSet()
-            hingeConstraintSet.clone(rootContainer)
-            hingeConstraintSet.connect(
-                hinge.id,
-                ConstraintSet.TOP,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                0
-            )
-            hingeConstraintSet.connect(
-                hinge.id,
-                ConstraintSet.LEFT,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.LEFT,
-                0
-            )
-            hingeConstraintSet.connect(
-                hinge.id,
-                ConstraintSet.RIGHT,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.RIGHT,
-                0
-            )
-            hingeConstraintSet.connect(
-                hinge.id,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
-            hingeConstraintSet.applyTo(rootContainer)
-
-            val layout = when (resources.configuration.orientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> {
-                    LayoutInflater.from(context).inflate(
-                        config.dualPortraitSingleLayoutId,
-                        null
-                    )
-                }
-                Configuration.ORIENTATION_PORTRAIT -> {
-                    LayoutInflater.from(context).inflate(
-                        config.dualLandscapeSingleLayoutId,
-                        null
-                    )
-                }
-                else -> { FrameLayout(context) }
-            }
-            layout.id = View.generateViewId()
-            layout.layoutParams = LayoutParams(0, 0)
-            rootContainer.addView(layout)
-
-            val layoutConstraintSet = ConstraintSet()
-            layoutConstraintSet.clone(rootContainer)
-            layoutConstraintSet.connect(
-                layout.id,
-                ConstraintSet.TOP,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                0
-            )
-            layoutConstraintSet.connect(
-                layout.id,
-                ConstraintSet.LEFT,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.LEFT,
-                0
-            )
-            layoutConstraintSet.connect(
-                layout.id,
-                ConstraintSet.RIGHT,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.RIGHT,
-                0
-            )
-            layoutConstraintSet.connect(
-                layout.id,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
-            layoutConstraintSet.applyTo(rootContainer)
+            val layout = getSingleContainerLayout()
+            applyParentConstraintsToView(layout, rootContainer)
 
             this@SurfaceDuoLayout.addView(rootContainer)
         }
@@ -399,7 +389,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
      * dual landscape single container (dual screen portrait container).
      * The container can be found using R.id.dual_landscape_single_container_id
      */
-    class Config(
+    data class Config(
         var singleScreenLayoutId: Int = View.NO_ID,
         var dualScreenStartLayoutId: Int = View.NO_ID,
         var dualScreenEndLayoutId: Int = View.NO_ID,
@@ -407,44 +397,10 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         var isDualPortraitSingleContainer: Boolean = false,
         var dualLandscapeSingleLayoutId: Int = View.NO_ID,
         var isDualLandscapeSingleContainer: Boolean = false
-    ) {
-        fun copy() = Config().apply {
-            this.singleScreenLayoutId = this@Config.singleScreenLayoutId
-            this.dualScreenStartLayoutId = this@Config.dualScreenStartLayoutId
-            this.dualScreenEndLayoutId = this@Config.dualScreenEndLayoutId
-            this.dualPortraitSingleLayoutId = this@Config.dualPortraitSingleLayoutId
-            this.isDualPortraitSingleContainer = this@Config.isDualPortraitSingleContainer
-            this.dualLandscapeSingleLayoutId = this@Config.dualLandscapeSingleLayoutId
-            this.isDualLandscapeSingleContainer = this@Config.isDualLandscapeSingleContainer
-        }
-    }
+    )
 
-    fun newConfigCreator() = NewConfigCreator(this)
-    fun updateConfigCreator() = UpdateConfigCreator(this)
-
-    /**
-     * Class to update the config in SurfaceDuoLayout
-     * and recreate the view
-     */
-    class UpdateConfigCreator(
-        private val surfaceDuoLayout: SurfaceDuoLayout
-    ) : BaseConfig<UpdateConfigCreator>(surfaceDuoLayout.config.copy()) {
-        fun reInflate() {
-            surfaceDuoLayout.createView(config)
-        }
-    }
-
-    /**
-     * Class to add a new config in SurfaceDuoLayout
-     * and recreate the view
-     */
-    class NewConfigCreator(
-        private val surfaceDuoLayout: SurfaceDuoLayout
-    ) : BaseConfig<NewConfigCreator>(Config()) {
-        fun reInflate() {
-            surfaceDuoLayout.createView(config)
-        }
-    }
+    fun newConfigCreator() = BaseConfig.NewConfigCreator(this)
+    fun updateConfigCreator() = BaseConfig.UpdateConfigCreator(this)
 
     /**
      * Base class to keep the configuration of the SurfaceDuoLayout
@@ -452,7 +408,31 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
      * @param <T> An object that extends BaseConfig
      */
     @Suppress("UNCHECKED_CAST")
-    open class BaseConfig<T : BaseConfig<T>> (protected val config: Config) {
+    sealed class BaseConfig<T : BaseConfig<T>> (protected val config: Config) {
+
+        /**
+         * Class to add a new config in SurfaceDuoLayout
+         * and recreate the view
+         */
+        class NewConfigCreator(
+            private val surfaceDuoLayout: SurfaceDuoLayout
+        ) : BaseConfig<NewConfigCreator>(Config()) {
+            fun reInflate() {
+                surfaceDuoLayout.createView(config)
+            }
+        }
+
+        /**
+         * Class to update the config in SurfaceDuoLayout
+         * and recreate the view
+         */
+        class UpdateConfigCreator(
+            private val surfaceDuoLayout: SurfaceDuoLayout
+        ) : BaseConfig<UpdateConfigCreator>(surfaceDuoLayout.config.copy()) {
+            fun reInflate() {
+                surfaceDuoLayout.createView(config)
+            }
+        }
 
         fun singleScreenLayoutId(singleScreenLayoutId: Int): T =
             apply { config.singleScreenLayoutId = singleScreenLayoutId } as T
