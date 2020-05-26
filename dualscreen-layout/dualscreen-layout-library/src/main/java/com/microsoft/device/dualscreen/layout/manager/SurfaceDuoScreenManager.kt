@@ -98,47 +98,34 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
 
         @JvmStatic
         fun getHinge(activity: Activity): Rect? {
-            return ScreenHelper.getHinge(
-                activity
-            )
+            return ScreenHelper.getHinge(activity)
         }
 
         @JvmStatic
         fun isDeviceSurfaceDuo(activity: Activity): Boolean {
-            return ScreenHelper.isDeviceSurfaceDuo(
-                activity
-            )
+            return ScreenHelper.isDeviceSurfaceDuo(activity)
         }
 
         @JvmStatic
         internal fun getWindowRect(activity: Activity): Rect {
-           return ScreenHelper.getWindowRect(
-               activity
-           )
+           return ScreenHelper.getWindowRect(activity)
         }
 
         @JvmStatic
         fun getScreenRectangles(activity: Activity): List<Rect> {
-            return ScreenHelper.getScreenRectangles(
-                activity
-            )
+            return ScreenHelper.getScreenRectangles(activity)
         }
 
         @JvmStatic
         fun isDualMode(activity: Activity): Boolean {
-            return ScreenHelper.isDualMode(
-                activity
-            )
+            return ScreenHelper.isDualMode(activity)
         }
 
         @JvmStatic
         fun getCurrentRotation(activity: Activity): Int {
-            return getCurrentRotation(
-                activity
-            )
+            return getCurrentRotation(activity)
         }
     }
-
 }
 
 private fun LifecycleOwner.getMapKey(): String =
