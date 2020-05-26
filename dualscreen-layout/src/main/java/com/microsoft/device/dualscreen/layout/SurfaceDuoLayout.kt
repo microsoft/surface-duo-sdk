@@ -43,8 +43,8 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         val showInDualScreenEnd: Int
         val showInDualScreenStart: Int
         val showInSingleScreen: Int
-        val screenMode: Int
-        val hingeColor: Int
+        val screenMode: ScreenMode
+        val hingeColor: HingeColor
         try {
             singleScreenLayoutId = styledAttributes.getResourceId(
                 R.styleable.SurfaceDuoLayout_single_screen_layout_id,
@@ -70,13 +70,17 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                 R.styleable.SurfaceDuoLayout_show_in_dual_screen_end,
                 View.NO_ID
             )
-            screenMode = styledAttributes.getResourceId(
-                R.styleable.SurfaceDuoLayout_tools_screen_mode,
-                ScreenMode.SINGLE_SCREEN.ordinal
+            screenMode = ScreenMode.fromId(
+                styledAttributes.getResourceId(
+                    R.styleable.SurfaceDuoLayout_tools_screen_mode,
+                    ScreenMode.SINGLE_SCREEN.id
+                )
             )
-            hingeColor = styledAttributes.getResourceId(
-                R.styleable.SurfaceDuoLayout_tools_hinge_color,
-                HingeColor.BLACK.ordinal
+            hingeColor = HingeColor.fromId(
+                styledAttributes.getResourceId(
+                    R.styleable.SurfaceDuoLayout_tools_hinge_color,
+                    HingeColor.BLACK.id
+                )
             )
         } finally {
             styledAttributes.recycle()
@@ -103,7 +107,6 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                 } else {
                     dualScreenEndLayoutId
                 }
-
             PreviewRenderer(
                 singleScreenId,
                 dualScreenStartId,
@@ -135,17 +138,17 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         surfaceDuoLayoutStatusHandler.onConfigurationChanged(this, newConfig)
     }
 
-    inner class PreviewRenderer(
+    private inner class PreviewRenderer(
         singleScreenLayoutId: Int,
         dualScreenStartLayoutId: Int,
         dualScreenEndLayoutId: Int,
-        screenMode: Int,
-        hingeColor: Int
+        screenMode: ScreenMode,
+        hingeColor: HingeColor
     ) {
 
         init {
             when (screenMode) {
-                ScreenMode.SINGLE_SCREEN.ordinal -> {
+                ScreenMode.SINGLE_SCREEN -> {
                     val singleScreenView = LayoutInflater
                         .from(context)
                         .inflate(singleScreenLayoutId, null)
@@ -154,7 +157,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                     this@SurfaceDuoLayout.orientation = VERTICAL
                     this@SurfaceDuoLayout.addView(singleScreenView)
                 }
-                ScreenMode.DUAL_SCREEN.ordinal -> {
+                ScreenMode.DUAL_SCREEN -> {
                     this@SurfaceDuoLayout.weightSum = 2F
                     this@SurfaceDuoLayout.layoutParams = LayoutParams(
                         LayoutParams.MATCH_PARENT,
@@ -163,21 +166,12 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                     val hinge = FrameLayout(context)
 
                     when (hingeColor) {
-                        HingeColor.BLACK.ordinal -> {
-                            hinge.background = ColorDrawable(
-                                ContextCompat.getColor(context, R.color.black)
-                            )
-                        }
-                        HingeColor.WHITE.ordinal -> {
-                            hinge.background = ColorDrawable(
-                                ContextCompat.getColor(context, R.color.white)
-                            )
-                        }
-                        else -> {
-                            hinge.background = ColorDrawable(
-                                ContextCompat.getColor(context, R.color.black)
-                            )
-                        }
+                        HingeColor.BLACK -> hinge.background = ColorDrawable(
+                            ContextCompat.getColor(context, R.color.black)
+                        )
+                        HingeColor.WHITE -> hinge.background = ColorDrawable(
+                            ContextCompat.getColor(context, R.color.white)
+                        )
                     }
 
                     val dualScreenStartView = LayoutInflater
