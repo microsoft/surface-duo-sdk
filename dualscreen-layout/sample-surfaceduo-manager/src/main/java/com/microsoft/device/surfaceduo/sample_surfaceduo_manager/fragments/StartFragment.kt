@@ -14,7 +14,7 @@ import com.microsoft.device.dualscreen.layout.manager.ScreenModeListener
 import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.R
 import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.SampleApp
 
-class SecondFragment : Fragment() {
+class StartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -23,7 +23,7 @@ class SecondFragment : Fragment() {
             object : ScreenModeListener {
 
                 override fun onSwitchToSingleScreen() {
-                    val a = 1
+                   val a = 1
                 }
 
                 override fun onSwitchToDualScreen() {
@@ -32,10 +32,14 @@ class SecondFragment : Fragment() {
             })
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_second, container, false)
+        return inflater.inflate(R.layout.fragment_start, container, false)
     }
 }

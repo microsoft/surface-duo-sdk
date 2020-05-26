@@ -10,8 +10,8 @@ import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.microsoft.device.dualscreen.layout.ScreenMode
 import com.microsoft.device.dualscreen.layout.manager.ScreenModeListener
-import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.FirstFragment
-import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.SecondFragment
+import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.StartFragment
+import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.EndFragment
 
 class MainActivity : FragmentActivity() {
     private val singleScreenFragmentTag = "single_screen_fragment"
@@ -37,7 +37,7 @@ class MainActivity : FragmentActivity() {
 
                 supportFragmentManager.beginTransaction()
                     .replace(
-                        R.id.single_screen_container_id, FirstFragment(),
+                        R.id.single_screen_container_id, StartFragment(),
                         singleScreenFragmentTag
                     )
                     .commit()
@@ -52,13 +52,13 @@ class MainActivity : FragmentActivity() {
 
                 supportFragmentManager.beginTransaction()
                     .replace(
-                        R.id.dual_screen_start_container_id, FirstFragment(),
+                        R.id.dual_screen_start_container_id, StartFragment(),
                         dualStartFragmentTag
                     )
                     .commit()
                 supportFragmentManager.beginTransaction()
                     .replace(
-                        R.id.dual_screen_end_container_id, SecondFragment(),
+                        R.id.dual_screen_end_container_id, EndFragment(),
                         dualEndFragmentTag
                     )
                     .commit()
