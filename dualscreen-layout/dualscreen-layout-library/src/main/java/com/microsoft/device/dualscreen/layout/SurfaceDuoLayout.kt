@@ -46,18 +46,10 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         gravity = Gravity.BOTTOM
 
         if (attrs != null) {
-            val styledAttributes =
-                context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoLayout, 0, 0)
-            try {
-                getLayoutAttributes(styledAttributes)
-            } finally {
-                styledAttributes.recycle()
-            }
+            val styledAttributes = readAttributes(context, attrs)
+
             if (this.isInEditMode) {
-                createPreview(
-                    styledAttributes,
-                    config
-                )
+                createAndroidStudioPreview(styledAttributes, config)
             } else {
                 createView(config)
             }
@@ -66,7 +58,18 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         }
     }
 
-    private fun getLayoutAttributes(styledAttributes: TypedArray) {
+    private fun readAttributes(context: Context, attrs: AttributeSet?): TypedArray {
+        val styledAttributes =
+            context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoLayout, 0, 0)
+        try {
+            createConfiguration(styledAttributes)
+        } finally {
+            styledAttributes.recycle()
+        }
+        return styledAttributes
+    }
+
+    private fun createConfiguration(styledAttributes: TypedArray) {
         config.singleScreenLayoutId = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_single_screen_layout_id,
             View.NO_ID
@@ -120,30 +123,40 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
     /**
      * Creates the preview that is visible in Android Studio
      */
-    private fun createPreview(
+    private fun createAndroidStudioPreview(
         styledAttributes: TypedArray,
         config: Config
     ) {
-        val showInSingleScreen: Int = styledAttributes.getResourceId(
+        styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_single_screen,
             View.NO_ID
-        )
-        val showInDualScreenStart: Int = styledAttributes.getResourceId(
+        ).takeIf { it != View.NO_ID }
+            ?.let { config.singleScreenLayoutId = it }
+
+        styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_dual_screen_start,
             View.NO_ID
-        )
-        val showInDualScreenEnd: Int = styledAttributes.getResourceId(
+        ).takeIf { it != View.NO_ID }
+            ?.let { config.dualScreenStartLayoutId = it }
+
+        styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_show_in_dual_screen_end,
             View.NO_ID
-        )
-        val showInDualPortraitSingleContainer = styledAttributes.getInteger(
+        ).takeIf { it != View.NO_ID }
+            ?.let { config.dualScreenEndLayoutId = it }
+
+        styledAttributes.getInteger(
             R.styleable.SurfaceDuoLayout_show_in_dual_portrait_single_container,
             View.NO_ID
-        )
-        val showInDualLandscapeSingleContainer = styledAttributes.getInteger(
+        ).takeIf { it != View.NO_ID }
+            ?.let { config.dualPortraitSingleLayoutId = it }
+
+        styledAttributes.getInteger(
             R.styleable.SurfaceDuoLayout_show_in_dual_landscape_single_container,
             View.NO_ID
-        )
+        ).takeIf { it != View.NO_ID }
+            ?.let { config.dualLandscapeSingleLayoutId = it }
+
         val screenMode: Int = styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_tools_screen_mode,
             ScreenMode.SINGLE_SCREEN.ordinal
@@ -153,21 +166,6 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             HingeColor.BLACK.ordinal
         )
 
-        if (showInSingleScreen != View.NO_ID) {
-            config.singleScreenLayoutId = showInSingleScreen
-        }
-        if (showInDualScreenStart != View.NO_ID) {
-            config.dualScreenStartLayoutId = showInDualScreenStart
-        }
-        if (showInDualScreenEnd != View.NO_ID) {
-            config.dualScreenEndLayoutId = showInDualScreenEnd
-        }
-        if (showInDualPortraitSingleContainer != View.NO_ID) {
-            config.dualPortraitSingleLayoutId = showInDualPortraitSingleContainer
-        }
-        if (showInDualLandscapeSingleContainer != View.NO_ID) {
-            config.dualLandscapeSingleLayoutId = showInDualLandscapeSingleContainer
-        }
         PreviewRenderer(config, screenMode, hingeColor)
     }
 
@@ -176,7 +174,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         screenMode: Int,
         private val hingeColor: Int
     ) {
-        private val hingeDimension = 84
+        private val HINGE_DIMENSION = 84
 
         init {
             when (screenMode) {
@@ -202,14 +200,14 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     hinge.layoutParams = LayoutParams(
-                        hingeDimension,
+                        HINGE_DIMENSION,
                         LayoutParams.MATCH_PARENT
                     )
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
                     hinge.layoutParams = LayoutParams(
                         LayoutParams.MATCH_PARENT,
-                        hingeDimension
+                        HINGE_DIMENSION
                     )
                 }
             }
