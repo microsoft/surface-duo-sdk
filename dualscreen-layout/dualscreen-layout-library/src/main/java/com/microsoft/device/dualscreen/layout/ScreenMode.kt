@@ -5,9 +5,16 @@
 
 package com.microsoft.device.dualscreen.layout
 
+internal enum class ScreenMode(val id: Int) {
+    SINGLE_SCREEN(0),
+    DUAL_SCREEN(1);
 
-enum class ScreenMode {
-    SINGLE_SCREEN,
-    DUAL_SCREEN,
-    NOT_DEFINED
+    companion object {
+        fun fromId(id: Int): ScreenMode {
+            return values().firstOrNull { it.id == id } ?: throw IllegalArgumentException(
+                "The ScreenMode id doesn't exit"
+            )
+        }
+    }
+
 }

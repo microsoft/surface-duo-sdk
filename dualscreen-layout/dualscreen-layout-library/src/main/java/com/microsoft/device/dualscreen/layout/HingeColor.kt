@@ -5,7 +5,16 @@
 
 package com.microsoft.device.dualscreen.layout
 
-internal enum class HingeColor {
-    BLACK,
-    WHITE
+internal enum class HingeColor(val id: Int) {
+    BLACK(0),
+    WHITE(1);
+
+    companion object {
+        fun fromId(id: Int): HingeColor {
+            return values().firstOrNull { it.id == id } ?: throw IllegalArgumentException(
+                "The HingeColor id doesn't exit"
+            )
+        }
+    }
+
 }
