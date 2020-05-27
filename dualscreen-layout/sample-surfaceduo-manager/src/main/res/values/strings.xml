@@ -1,0 +1,10 @@
+<!--
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  -->
+
+<resources>
+    <string name="app_name">Sample DualScreen-Layout</string>
+    <string name="second_fragment">Second Fragment</string>
+    <string name="first_fragment">First Fragment</string>
+</resources>
