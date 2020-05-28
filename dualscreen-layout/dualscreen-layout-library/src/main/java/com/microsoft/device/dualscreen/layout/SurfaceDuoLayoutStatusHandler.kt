@@ -31,7 +31,7 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     private val rootView: SurfaceDuoLayout,
     private val surfaceDuoLayoutConfig: SurfaceDuoLayout.Config
 ) {
-    private var screenMode = ScreenMode.NOT_DEFINED
+    private var screenMode = ScreenMode.SINGLE_SCREEN
 
     private var singleScreenView: View? = null
     private var dualScreenStartView: View? = null

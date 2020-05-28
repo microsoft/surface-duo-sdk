@@ -5,7 +5,7 @@
 
 package com.microsoft.device.dualscreen.layout
 
-internal enum class ScreenMode(val id: Int) {
+enum class ScreenMode(val id: Int) {
     SINGLE_SCREEN(0),
     DUAL_SCREEN(1);
 

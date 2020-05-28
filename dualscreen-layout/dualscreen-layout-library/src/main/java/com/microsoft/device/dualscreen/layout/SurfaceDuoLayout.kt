@@ -157,28 +157,28 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         ).takeIf { it != View.NO_ID }
             ?.let { config.dualLandscapeSingleLayoutId = it }
 
-        val screenMode: Int = styledAttributes.getResourceId(
+        val screenMode: ScreenMode = ScreenMode.fromId(styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_tools_screen_mode,
             ScreenMode.SINGLE_SCREEN.ordinal
-        )
-        val hingeColor: Int = styledAttributes.getResourceId(
+        ))
+        val hingeColor: HingeColor = HingeColor.fromId(styledAttributes.getResourceId(
             R.styleable.SurfaceDuoLayout_tools_hinge_color,
             HingeColor.BLACK.ordinal
-        )
+        ))
 
         PreviewRenderer(config, screenMode, hingeColor)
     }
 
     internal inner class PreviewRenderer(
         private val config: Config,
-        screenMode: Int,
-        private val hingeColor: Int
+        screenMode: ScreenMode,
+        private val hingeColor: HingeColor
     ) {
         private val HINGE_DIMENSION = 84
 
         init {
             when (screenMode) {
-                ScreenMode.SINGLE_SCREEN.ordinal -> {
+                ScreenMode.SINGLE_SCREEN -> {
                     val singleScreenView = LayoutInflater
                         .from(context)
                         .inflate(config.singleScreenLayoutId, null)
@@ -187,13 +187,13 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                     this@SurfaceDuoLayout.orientation = VERTICAL
                     this@SurfaceDuoLayout.addView(singleScreenView)
                 }
-                ScreenMode.DUAL_SCREEN.ordinal -> {
+                ScreenMode.DUAL_SCREEN -> {
                     addDualScreenPreview()
                 }
             }
         }
 
-        private fun createHingePreview(hingeColor: Int): FrameLayout {
+        private fun createHingePreview(hingeColor: HingeColor): FrameLayout {
             val hinge = FrameLayout(context)
             hinge.id = View.generateViewId()
 
@@ -213,19 +213,14 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             }
 
             when (hingeColor) {
-                HingeColor.BLACK.ordinal -> {
+                HingeColor.BLACK -> {
                     hinge.background = ColorDrawable(
                         ContextCompat.getColor(context, R.color.black)
                     )
                 }
-                HingeColor.WHITE.ordinal -> {
+                HingeColor.WHITE -> {
                     hinge.background = ColorDrawable(
                         ContextCompat.getColor(context, R.color.white)
-                    )
-                }
-                else -> {
-                    hinge.background = ColorDrawable(
-                        ContextCompat.getColor(context, R.color.black)
                     )
                 }
             }

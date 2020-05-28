@@ -67,7 +67,7 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
         app.registerActivityLifecycleCallbacks(this)
     }
 
-    var screenMode = ScreenMode.NOT_DEFINED
+    var screenMode = ScreenMode.SINGLE_SCREEN
     private val screenModeWrappersMap = mutableMapOf<String, ScreenModeListenerWrapper>()
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -111,7 +111,6 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
                         .forEach { when (screenMode) {
                             ScreenMode.SINGLE_SCREEN -> it?.onSwitchToSingleScreen()
                             ScreenMode.DUAL_SCREEN -> it?.onSwitchToDualScreen()
-                            ScreenMode.NOT_DEFINED -> Unit
                         }}
                 }
                 Lifecycle.Event.ON_PAUSE -> isActive = false

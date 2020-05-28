@@ -63,7 +63,6 @@ class MainActivity : FragmentActivity() {
                     )
                     .commit()
             }
-            ScreenMode.NOT_DEFINED -> { }
         }
 
         (application as SampleApp).surfaceDuoScreenManager.addScreenModeListener( this,
@@ -75,6 +74,5 @@ class MainActivity : FragmentActivity() {
         })
 
     }
-
 
 }
