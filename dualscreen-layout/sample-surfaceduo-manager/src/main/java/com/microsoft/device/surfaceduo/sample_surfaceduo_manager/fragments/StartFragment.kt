@@ -22,18 +22,10 @@ class StartFragment : Fragment() {
             this,
             object : ScreenModeListener {
 
-                override fun onSwitchToSingleScreen() {
-                   val a = 1
-                }
+                override fun onSwitchToSingleScreen() {}
 
-                override fun onSwitchToDualScreen() {
-                    val a = 1
-                }
+                override fun onSwitchToDualScreen() {}
             })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onCreateView(

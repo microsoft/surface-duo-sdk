@@ -22,13 +22,9 @@ class EndFragment : Fragment() {
             this,
             object : ScreenModeListener {
 
-                override fun onSwitchToSingleScreen() {
-                    val a = 1
-                }
+                override fun onSwitchToSingleScreen() {}
 
-                override fun onSwitchToDualScreen() {
-                    val a = 1
-                }
+                override fun onSwitchToDualScreen() {}
             })
     }
 

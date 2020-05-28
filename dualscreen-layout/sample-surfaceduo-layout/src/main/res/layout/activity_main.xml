@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:single_screen_layout_id="@layout/single_screen"
-    app:dual_screen_start_layout_id="@layout/dual_screen_start"
-    app:dual_screen_end_layout_id="@layout/dual_screen_end"
+    app:dual_screen_start_layout_id="@layout/single_screen"
+    app:dual_screen_end_layout_id="@layout/single_screen"
     app:tools_hinge_color="black"
     app:tools_screen_mode="dual_screen"/>

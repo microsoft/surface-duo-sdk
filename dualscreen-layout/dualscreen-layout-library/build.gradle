@@ -79,6 +79,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.71"
+    implementation "androidx.constraintlayout:constraintlayout:1.1.3"
     // Display Mask
     implementation "com.microsoft.device.display:display-mask:0.3.0"
 }
