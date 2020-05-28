@@ -63,52 +63,16 @@ class MainActivity : FragmentActivity() {
                     )
                     .commit()
             }
-            ScreenMode.NOT_DEFINED -> { }
         }
 
         (application as SampleApp).surfaceDuoScreenManager.addScreenModeListener( this,
             object :
                 ScreenModeListener {
-                override fun onSwitchToSingleScreen() {
-                    // "Not the val we deserve... But the val we need..." to put a breakpoint on it :D
-                    val a = 1
-                }
+                override fun onSwitchToSingleScreen() {}
 
-                override fun onSwitchToDualScreen() {
-                    val a = 1
-                }
+                override fun onSwitchToDualScreen() {}
         })
 
-        Log.d("Check", "FIRST: onCreate")
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d("Check", "FIRST: onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("Check", "FIRST: onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("Check", "FIRST: onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("Check", "FIRST: onStop")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        Log.d("Check", "FIRST: onRestart")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("Check", "FIRST: onDestroy")
-    }
 }

@@ -7,6 +7,7 @@ package com.microsoft.device.dualscreen.layout.manager
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
@@ -18,11 +19,55 @@ import java.lang.ref.WeakReference
 
 class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLifecycle() {
 
+    companion object {
+        private var instance: SurfaceDuoScreenManager? = null
+
+        @JvmStatic
+        fun init(app: Application): SurfaceDuoScreenManager {
+            return instance
+                ?: SurfaceDuoScreenManager(
+                    app
+                ).also {
+                    instance = it
+                }
+        }
+
+        @JvmStatic
+        fun getHinge(context: Context): Rect? {
+            return ScreenHelper.getHinge(context)
+        }
+
+        @JvmStatic
+        fun isDeviceSurfaceDuo(context: Context): Boolean {
+            return ScreenHelper.isDeviceSurfaceDuo(context)
+        }
+
+        @JvmStatic
+        internal fun getWindowRect(context: Context): Rect {
+            return ScreenHelper.getWindowRect(context)
+        }
+
+        @JvmStatic
+        fun getScreenRectangles(context: Context): List<Rect>? {
+            return ScreenHelper.getScreenRectangles(context)
+        }
+
+        @JvmStatic
+        fun isDualMode(context: Context): Boolean {
+            return ScreenHelper.isDualMode(context)
+        }
+
+        @JvmStatic
+        fun getCurrentRotation(context: Context): Int {
+            return getCurrentRotation(context)
+        }
+    }
+
     init {
         app.registerActivityLifecycleCallbacks(this)
     }
 
-    var screenMode = ScreenMode.NOT_DEFINED
+    var screenMode = ScreenMode.SINGLE_SCREEN
     private val screenModeWrappersMap = mutableMapOf<String, ScreenModeListenerWrapper>()
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -66,7 +111,6 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
                         .forEach { when (screenMode) {
                             ScreenMode.SINGLE_SCREEN -> it?.onSwitchToSingleScreen()
                             ScreenMode.DUAL_SCREEN -> it?.onSwitchToDualScreen()
-                            ScreenMode.NOT_DEFINED -> Unit
                         }}
                 }
                 Lifecycle.Event.ON_PAUSE -> isActive = false
@@ -80,50 +124,6 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
 
         internal fun add(listener: ScreenModeListener) {
             this.screenModeListeners.add(WeakReference(listener))
-        }
-    }
-
-    companion object {
-        private var instance: SurfaceDuoScreenManager? = null
-
-        @JvmStatic
-        fun init(app: Application): SurfaceDuoScreenManager {
-            return instance
-                ?: SurfaceDuoScreenManager(
-                    app
-                ).also {
-                instance = it
-            }
-        }
-
-        @JvmStatic
-        fun getHinge(activity: Activity): Rect? {
-            return ScreenHelper.getHinge(activity)
-        }
-
-        @JvmStatic
-        fun isDeviceSurfaceDuo(activity: Activity): Boolean {
-            return ScreenHelper.isDeviceSurfaceDuo(activity)
-        }
-
-        @JvmStatic
-        internal fun getWindowRect(activity: Activity): Rect {
-           return ScreenHelper.getWindowRect(activity)
-        }
-
-        @JvmStatic
-        fun getScreenRectangles(activity: Activity): List<Rect> {
-            return ScreenHelper.getScreenRectangles(activity)
-        }
-
-        @JvmStatic
-        fun isDualMode(activity: Activity): Boolean {
-            return ScreenHelper.isDualMode(activity)
-        }
-
-        @JvmStatic
-        fun getCurrentRotation(activity: Activity): Int {
-            return getCurrentRotation(activity)
         }
     }
 }

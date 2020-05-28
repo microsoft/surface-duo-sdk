@@ -7,7 +7,7 @@
 
 package com.microsoft.device.dualscreen.layout
 
-import android.app.Activity
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
@@ -18,7 +18,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.microsoft.device.surfaceduo.display.R
 
@@ -28,93 +27,52 @@ import com.microsoft.device.surfaceduo.display.R
  * also the position of the hinge.
  */
 internal class SurfaceDuoLayoutStatusHandler internal constructor(
-    private val activity: Activity,
+    private val context: Context,
     private val rootView: SurfaceDuoLayout,
-    singleScreenLayout: Int,
-    dualScreenLayoutStart: Int,
-    dualScreenLayoutEnd: Int
+    private val surfaceDuoLayoutConfig: SurfaceDuoLayout.Config
 ) {
-    companion object {
-        private const val STAT_BAR_SIZE = "status_bar_height"
-        private const val NAV_BAR_BOTTOM_GESTURE_SIZE = "application_bar_height"
-        private const val SIZE_RESOURCE_TYPE = "dimen"
-        private const val DEFAULT_RESOURCE_PACKAGE = "android"
-    }
-
-    private var screenMode = ScreenMode.NOT_DEFINED
+    private var screenMode = ScreenMode.SINGLE_SCREEN
 
     private var singleScreenView: View? = null
     private var dualScreenStartView: View? = null
     private var dualScreenEndView: View? = null
-
-    private val actionbarHeight: Int
-        get() {
-            if (activity is AppCompatActivity) {
-                activity.supportActionBar?.let {
-                    return if (it.isShowing) {
-                        val styledAttributes = activity.getTheme()
-                            .obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-                        styledAttributes.getDimension(0, 0f).toInt()
-                    } else { 0 }
-                } ?: kotlin.run { return 0 }
-            } else if (activity.actionBar != null && activity.actionBar!!.isShowing) {
-                val styledAttributes =
-                    activity.theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
-                return styledAttributes.getDimension(0, 0f).toInt()
-            } else { return 0 }
-        }
-
-    private val statusBarHeight: Int
-        get() {
-            val resourceId = activity.resources
-                .getIdentifier(
-                    STAT_BAR_SIZE,
-                    SIZE_RESOURCE_TYPE,
-                    DEFAULT_RESOURCE_PACKAGE
-                )
-            return if (resourceId > 0) {
-                activity.resources.getDimensionPixelSize(resourceId)
-            } else { 0 }
-        }
-
-    private val navigationBarHeight: Int
-        get() {
-            val resourceId: Int = activity.resources.getIdentifier(
-                NAV_BAR_BOTTOM_GESTURE_SIZE,
-                SIZE_RESOURCE_TYPE,
-                DEFAULT_RESOURCE_PACKAGE
-                )
-            return if (resourceId > 0) {
-                activity.resources.getDimensionPixelSize(resourceId) / 2
-            } else { 0 }
-        }
+    private var dualPortraitSingleLayoutView: View? = null
+    private var dualLandscapeSingleLayoutView: View? = null
 
     /**
      * On initializing the class object the code will inflate the layout resources
-     * and add a ScreenModeListener to the SurfaceDuoScreenManager class.
+     * and start to create the behaviour of SurfaceDuoLayout.
      */
     init {
-        if (singleScreenLayout != -1) {
-            singleScreenView = LayoutInflater.from(activity)
-                .inflate(singleScreenLayout, this.rootView, false)
+        if (surfaceDuoLayoutConfig.singleScreenLayoutId != View.NO_ID) {
+            singleScreenView = LayoutInflater.from(context)
+                .inflate(surfaceDuoLayoutConfig.singleScreenLayoutId, this.rootView, false)
         }
-        if (dualScreenLayoutStart != -1) {
-            dualScreenStartView = LayoutInflater.from(activity)
-                .inflate(dualScreenLayoutStart, this.rootView, false)
+        if (surfaceDuoLayoutConfig.dualScreenStartLayoutId != View.NO_ID) {
+            dualScreenStartView = LayoutInflater.from(context)
+                .inflate(surfaceDuoLayoutConfig.dualScreenStartLayoutId, this.rootView, false)
         }
-        if (dualScreenLayoutEnd != -1) {
-            dualScreenEndView = LayoutInflater.from(activity)
-                .inflate(dualScreenLayoutEnd, this.rootView, false)
+        if (surfaceDuoLayoutConfig.dualScreenEndLayoutId != View.NO_ID) {
+            dualScreenEndView = LayoutInflater.from(context)
+                .inflate(surfaceDuoLayoutConfig.dualScreenEndLayoutId, this.rootView, false)
+        }
+        if (surfaceDuoLayoutConfig.dualPortraitSingleLayoutId != View.NO_ID) {
+            dualPortraitSingleLayoutView = LayoutInflater.from(context)
+                .inflate(surfaceDuoLayoutConfig.dualPortraitSingleLayoutId, this.rootView, false)
+        }
+        if (surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId != View.NO_ID) {
+            dualLandscapeSingleLayoutView = LayoutInflater.from(context)
+                .inflate(surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId, this.rootView, false)
         }
         addViewsDependingOnScreenMode()
     }
 
     private fun addViewsDependingOnScreenMode() {
-        screenMode = if (ScreenHelper.isDualMode(activity)) {
-            addViewsForDualScreenMode()
+        screenMode = if (ScreenHelper.isDualMode(context)) {
+            addDualScreenBehaviour()
             ScreenMode.DUAL_SCREEN
         } else {
-            addViewsForSingleScreenMode()
+            addSingleScreenBehaviour()
             ScreenMode.SINGLE_SCREEN
         }
     }
@@ -131,14 +89,19 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     ) {
         newConfig?.let {
             if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                // DOUBLE_LANDSCAPE
-                if (ScreenHelper.isDualMode(surfaceDuoLayout.context as Activity) &&
-                    screenMode == ScreenMode.DUAL_SCREEN) {
-                    refreshDualScreenContainersState(
-                        surfaceDuoLayout,
-                        LinearLayout.VERTICAL,
-                        R.id.dual_screen_start_container_id
-                    )
+                if (ScreenHelper.isDualMode(surfaceDuoLayout.context) &&
+                screenMode == ScreenMode.DUAL_SCREEN) {
+                    // DUAL_LANDSCAPE
+                    if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
+                        dualLandscapeSingleLayoutView != null) {
+                        surfaceDuoLayout.updateConfigCreator().reInflate()
+                    } else {
+                        if (surfaceDuoLayoutConfig.isDualPortraitSingleContainer) {
+                            surfaceDuoLayout.updateConfigCreator().reInflate()
+                        } else {
+                            refreshDualScreenContainersState(surfaceDuoLayout)
+                        }
+                    }
                 } else if (screenMode == ScreenMode.SINGLE_SCREEN) {
                     surfaceDuoLayout.findViewById<FrameLayout>(R.id.single_screen_container_id)
                         .requestLayout()
@@ -149,14 +112,19 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
                     )
                 }
             } else if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                // DOUBLE_PORTRAIT
-                if (ScreenHelper.isDualMode(surfaceDuoLayout.context as Activity) &&
+                if (ScreenHelper.isDualMode(surfaceDuoLayout.context) &&
                     screenMode == ScreenMode.DUAL_SCREEN) {
-                    refreshDualScreenContainersState(
-                        surfaceDuoLayout,
-                        LinearLayout.HORIZONTAL,
-                        R.id.dual_screen_end_container_id
-                    )
+                    // DUAL_PORTRAIT
+                    if (surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
+                        dualPortraitSingleLayoutView != null) {
+                        surfaceDuoLayout.updateConfigCreator().reInflate()
+                    } else {
+                        if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer) {
+                            surfaceDuoLayout.updateConfigCreator().reInflate()
+                        } else {
+                            refreshDualScreenContainersState(surfaceDuoLayout)
+                        }
+                    }
                 } else if (screenMode == ScreenMode.SINGLE_SCREEN) {
                     surfaceDuoLayout.findViewById<FrameLayout>(R.id.single_screen_container_id)
                         .requestLayout()
@@ -175,77 +143,78 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         }
     }
 
-    private fun refreshDualScreenContainersState(surfaceDuoLayout: SurfaceDuoLayout, orientation: Int, containerId: Int) {
-        // Set new Orientation
-        surfaceDuoLayout.orientation = orientation
-
-        // Get new containers dimensions
-        val screenRectangles = ScreenHelper.getScreenRectangles(activity)
-        val screenRectangleStart = screenRectangles[0]
-        val screenRectangleEnd = screenRectangles[1]
-
+    private fun refreshDualScreenContainersState(surfaceDuoLayout: SurfaceDuoLayout) {
         // Find Hinge and add new width and height
         val hinge = surfaceDuoLayout.findViewById<View>(R.id.hinge_id)
-        ScreenHelper.getHinge(activity)?.let { hingeRectangle ->
+        ScreenHelper.getHinge(context)?.let { hingeRectangle ->
             hinge.layoutParams = LinearLayout.LayoutParams(
                 hingeRectangle.width(),
                 hingeRectangle.height()
             )
         }
 
-        if (orientation == LinearLayout.VERTICAL) {
-            // DOUBLE_LANDSCAPE
+        // Set new Orientation
+        when (surfaceDuoLayout.resources.configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                // DUAL_PORTRAIT
+                surfaceDuoLayout.orientation = LinearLayout.HORIZONTAL
 
-            // Find StartLayoutContainer and add new width and height
-            val start = surfaceDuoLayout.findViewById<FrameLayout>(containerId)
-            start.layoutParams = LinearLayout.LayoutParams(
-                screenRectangleStart.width() - navigationBarHeight,
-                screenRectangleStart.height() - actionbarHeight - statusBarHeight
-            )
+                ScreenHelper.getScreenRectangles(context)?.let { screenRectList ->
+                    // Find StartLayoutContainer and add new width and height
+                    val start = surfaceDuoLayout
+                        .findViewById<FrameLayout>(R.id.dual_screen_start_container_id)
+                    start.layoutParams = LinearLayout.LayoutParams(
+                        screenRectList[0].width(),
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
 
-            // Find EndLayoutContainer and add new width and height
-            val end = surfaceDuoLayout
-                .findViewById<FrameLayout>(R.id.dual_screen_end_container_id)
-            end.layoutParams = LinearLayout.LayoutParams(
-                screenRectangleEnd.width() - navigationBarHeight,
-                screenRectangleEnd.height()
-            )
-        } else if (orientation == LinearLayout.HORIZONTAL) {
-            // DOUBLE_PORTRAIT
+                    // Find EndLayoutContainer and add new width and height
+                    val end = surfaceDuoLayout
+                        .findViewById<FrameLayout>(R.id.dual_screen_end_container_id)
+                    end.layoutParams = LinearLayout.LayoutParams(
+                        screenRectList[1].width(),
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
+                }
+            }
 
-            // Find StartLayoutContainer and add new width and height
-            val start = surfaceDuoLayout
-                .findViewById<FrameLayout>(R.id.dual_screen_start_container_id)
-            start.layoutParams = LinearLayout.LayoutParams(
-                screenRectangleStart.width(),
-                screenRectangleStart.height() - statusBarHeight - actionbarHeight - navigationBarHeight
-            )
+            Configuration.ORIENTATION_PORTRAIT -> {
+                // DUAL_LANDSCAPE
+                surfaceDuoLayout.orientation = LinearLayout.VERTICAL
 
-            // Find EndLayoutContainer and add new width and height
-            val end = surfaceDuoLayout
-                .findViewById<FrameLayout>(R.id.dual_screen_end_container_id)
-            end.layoutParams = LinearLayout.LayoutParams(
-                screenRectangleEnd.width(),
-                screenRectangleEnd.height() - statusBarHeight - actionbarHeight - navigationBarHeight
-            )
+                // Find StartLayoutContainer and add new width and height
+                val start = surfaceDuoLayout
+                    .findViewById<FrameLayout>(R.id.dual_screen_start_container_id)
+                start.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0
+                ).apply {
+                    weight = 1F
+                }
+
+                ScreenHelper.getScreenRectangles(context)?.let { screenRectList ->
+                    // Find EndLayoutContainer and add new width and height
+                    val end = surfaceDuoLayout
+                        .findViewById<FrameLayout>(R.id.dual_screen_end_container_id)
+                    end.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        screenRectList[1].height()
+                    )
+                }
+            }
         }
     }
 
     /**
-     * Function that is called by the SurfaceDuoScreenManager when the device is in SingleScreen mode.
+     * Single screen behaviour function.
+     *
      * It will create a layout container, add the inflated view to it
-     * and the add the container to the root view.
+     * and then add the container to the root view.
      */
-    private fun addViewsForSingleScreenMode() {
+    private fun addSingleScreenBehaviour() {
         rootView.removeAllViews()
 
-        val singleScreenContainer = FrameLayout(rootView.context)
-        singleScreenContainer.id = R.id.single_screen_container_id
-        singleScreenContainer.layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT
-        )
-
+        val singleScreenContainer = createSingleContainer(R.id.single_screen_container_id)
         if (singleScreenView != null) {
             singleScreenContainer.addView(singleScreenView)
         }
@@ -253,77 +222,144 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         rootView.addView(singleScreenContainer)
     }
 
+    private fun createSingleContainer(containerId: Int): FrameLayout {
+        val container = FrameLayout(rootView.context)
+        container.id = containerId
+        container.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+        return container
+    }
+
     /**
-     * Function that is called by the SurfaceDuoScreenManager when the device is in DualScreen mode.
-     * It will create a start screen container, hinge view and end screen container.
-     * After that the code will add the inflated views to the containers and add everything to
-     * the root view.
+     * Dual Screen behaviour function.
      */
-    private fun addViewsForDualScreenMode() {
-        val screenRectangles = ScreenHelper.getScreenRectangles(activity)
-        val screenRect1 = screenRectangles[0]
-        val screenRect2 = screenRectangles[1]
-
-        if (!screenRect1.isEmpty && !screenRect2.isEmpty) {
-            rootView.removeAllViews()
-
-            when (ScreenHelper.getCurrentRotation(activity)) {
-                Surface.ROTATION_0, Surface.ROTATION_180 -> {
-                    addDualScreens(LinearLayout.HORIZONTAL, screenRect1, screenRect2)
-                }
-                Surface.ROTATION_90, Surface.ROTATION_270 -> {
-                    addDualScreens(LinearLayout.VERTICAL, screenRect1, screenRect2)
-                }
-            }
-        } else {
-            Log.e("ScreenStatusHandler",
-                    "Could NOT retrieve dual screens dimensions"
-            )
+    private fun addDualScreenBehaviour() {
+        rootView.removeAllViews()
+        when (ScreenHelper.getCurrentRotation(context)) {
+            Surface.ROTATION_0, Surface.ROTATION_180 -> dualPortraitLogic()
+            Surface.ROTATION_90, Surface.ROTATION_270 -> dualLandscapeLogic()
         }
     }
 
-    private fun addDualScreens(linearLayoutOrientation: Int, screenRect1: Rect, screenRect2: Rect) {
-        rootView.orientation = linearLayoutOrientation
-
-        // Create Start Layout
-        val dualScreenStartContainer = FrameLayout(rootView.context)
-        dualScreenStartContainer.id = R.id.dual_screen_start_container_id
-        if (linearLayoutOrientation == LinearLayout.VERTICAL) {
-            dualScreenStartContainer.layoutParams = FrameLayout.LayoutParams(
-                screenRect1.width() - navigationBarHeight,
-                screenRect1.height() - actionbarHeight - statusBarHeight
+    /**
+     * Contains the logic for:
+     * 1) (dual screen landscape) dual portrait - single container
+     * 2) (dual screen landscape) dual portrait - dual container
+     *
+     * Depending on the configuration, the function will create
+     * a single or two containers for the entire screen.
+     *
+     * After that the code will add the inflated views to the containers and add everything to
+     * the root view.
+     */
+    private fun dualPortraitLogic() {
+        if (surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
+            dualPortraitSingleLayoutView != null) {
+            val singleContainer = createSingleContainer(
+                R.id.dual_portrait_single_container_id
             )
+            dualPortraitSingleLayoutView?.let {
+                if (!surfaceDuoLayoutConfig.isDualPortraitSingleContainer) {
+                    surfaceDuoLayoutConfig.isDualPortraitSingleContainer = true
+                }
+                singleContainer.addView(it)
+            }
+            rootView.addView(singleContainer)
         } else {
-            dualScreenStartContainer.layoutParams = FrameLayout.LayoutParams(
-                screenRect1.width(),
-                screenRect1.height() - statusBarHeight - actionbarHeight - navigationBarHeight
+            ScreenHelper.getScreenRectangles(context)?.let { screenRectList ->
+                addDualScreenContainersAndViews(
+                    LinearLayout.HORIZONTAL,
+                    screenRectList[0],
+                    screenRectList[1]
+                )
+            }
+        }
+    }
+
+    /**
+     * Contains the logic for:
+     * 3) (dual screen portrait) dual landscape - single container
+     * 4) (dual screen portrait) dual landscape - dual container
+     *
+     * Depending on the configuration, the function will create
+     * a single or two containers for the entire screen.
+     *
+     * After that the code will add the inflated views to the containers and add everything to
+     * the root view.
+     */
+    private fun dualLandscapeLogic() {
+        if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
+            dualLandscapeSingleLayoutView != null) {
+            val singleContainer = createSingleContainer(
+                R.id.dual_landscape_single_container_id
             )
+            dualLandscapeSingleLayoutView?.let {
+                if (!surfaceDuoLayoutConfig.isDualLandscapeSingleContainer) {
+                    surfaceDuoLayoutConfig.isDualLandscapeSingleContainer = true
+                }
+                singleContainer.addView(it)
+            }
+            rootView.addView(singleContainer)
+        } else {
+            ScreenHelper.getScreenRectangles(context)?.let { screenRectList ->
+                addDualScreenContainersAndViews(
+                    LinearLayout.VERTICAL,
+                    screenRectList[0],
+                    screenRectList[1]
+                )
+            }
         }
-        dualScreenStartView?.let {
-            dualScreenStartContainer.addView(it)
-        }
+    }
+
+    private fun addDualScreenContainersAndViews(
+        linearLayoutOrientation: Int,
+        screenRect1: Rect,
+        screenRect2: Rect
+    ) {
+        rootView.orientation = linearLayoutOrientation
 
         // Hinge
         val hinge = View(rootView.context)
         hinge.id = R.id.hinge_id
-        ScreenHelper.getHinge(activity)?.let {
+        ScreenHelper.getHinge(context)?.let {
             hinge.layoutParams = FrameLayout.LayoutParams(it.width(), it.height())
         }
-        hinge.background = ColorDrawable(ContextCompat.getColor(activity.baseContext, R.color.black))
+        hinge.background = ColorDrawable(ContextCompat.getColor(context, R.color.black))
 
-        // Create End Layout
+        // Start and End Layouts
+        val dualScreenStartContainer = FrameLayout(rootView.context)
+        dualScreenStartContainer.id = R.id.dual_screen_start_container_id
         val dualScreenEndContainer = FrameLayout(rootView.context)
         dualScreenEndContainer.id = R.id.dual_screen_end_container_id
+
         if (linearLayoutOrientation == LinearLayout.VERTICAL) {
-            dualScreenEndContainer.layoutParams = FrameLayout.LayoutParams(
-                    screenRect2.width() - navigationBarHeight,
-                    screenRect2.height()
+            // DUAL_LANDSCAPE
+            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0
+            ).apply {
+                weight = 1F
+            }
+            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                screenRect2.height()
             )
         } else {
-            dualScreenEndContainer.layoutParams = FrameLayout.LayoutParams(
-                    screenRect2.width(),
-                    screenRect2.height() - statusBarHeight - actionbarHeight - navigationBarHeight
+            // DUAL_PORTRAIT
+            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(
+                screenRect1.width(),
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
+            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(
+                screenRect2.width(),
+                LinearLayout.LayoutParams.MATCH_PARENT
+            )
+        }
+
+        dualScreenStartView?.let {
+            dualScreenStartContainer.addView(it)
         }
         dualScreenEndView?.let {
             dualScreenEndContainer.addView(it)

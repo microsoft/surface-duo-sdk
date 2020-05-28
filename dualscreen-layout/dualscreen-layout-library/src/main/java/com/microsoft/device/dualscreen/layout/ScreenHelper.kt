@@ -7,10 +7,10 @@
 
 package com.microsoft.device.dualscreen.layout
 
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.util.Log
 import android.view.Surface
 import android.view.WindowManager
 import com.microsoft.device.display.DisplayMask
@@ -27,15 +27,15 @@ class ScreenHelper {
          * Returns coordinates for hinge location
          * @return Rect object with coordinates or null if device is not SurfaceDuo
          */
-        @JvmStatic fun getHinge(activity: Activity): Rect? {
+        @JvmStatic fun getHinge(context: Context): Rect? {
             // Hinge's coordinates of its 4 edges in different mode
-            // Double Landscape Rect(0, 1350 - 1800, 1434)
-            // Double Portrait  Rect(1350, 0 - 1434, 1800)
-            return if (isDeviceSurfaceDuo(activity)) {
-                val displayMask = DisplayMask.fromResourcesRectApproximation(activity)
+            // Dual Landscape Rect(0, 1350 - 1800, 1434)
+            // Dual Portrait  Rect(1350, 0 - 1434, 1800)
+            return if (isDeviceSurfaceDuo(context)) {
+                val displayMask = DisplayMask.fromResourcesRectApproximation(context)
                 if (displayMask != null) {
                     val screensBounding = displayMask.getBoundingRectsForRotation(
-                        getCurrentRotation(activity)
+                        getCurrentRotation(context)
                     )
                     if (screensBounding.size == 0) {
                         Rect(0, 0, 0, 0)
@@ -47,19 +47,21 @@ class ScreenHelper {
         /**
          * Returns if device is SurfaceDuo
          */
-        @JvmStatic fun isDeviceSurfaceDuo(activity: Activity): Boolean {
+        @JvmStatic fun isDeviceSurfaceDuo(context: Context): Boolean {
             val feature = "com.microsoft.device.display.displaymask"
-            val pm: PackageManager = activity.packageManager
+            val pm: PackageManager = context.packageManager
             return pm.hasSystemFeature(feature)
         }
 
         /**
          * Returns coordinates of the entire device window
          * @return Rect object with coordinates
+         *
          */
-        @JvmStatic internal fun getWindowRect(activity: Activity): Rect {
+        @JvmStatic internal fun getWindowRect(context: Context): Rect {
             val windowRect = Rect()
-            activity.windowManager.defaultDisplay.getRectSize(windowRect)
+            (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+                .defaultDisplay.getRectSize(windowRect)
             return windowRect
         }
 
@@ -67,15 +69,15 @@ class ScreenHelper {
          * Returns the coordinates of the two screens of the SurfaceDuo
          * @return List of the Rect objects containing the coordinates
          */
-        @JvmStatic fun getScreenRectangles(activity: Activity): List<Rect> {
+        @JvmStatic fun getScreenRectangles(context: Context): List<Rect>? {
             val screenRect1 = Rect()
             val screenRect2 = Rect()
-            val hinge = getHinge(activity)
-            val windowRect = getWindowRect(activity)
+            val hinge = getHinge(context)
+            val windowRect = getWindowRect(context)
 
             // Hinge's coordinates of its 4 edges in different mode
-            // Double Landscape Rect(0, 1350 - 1800, 1434)
-            // Double Portrait  Rect(1350, 0 - 1434, 1800)
+            // Dual Landscape Rect(0, 1350 - 1800, 1434)
+            // Dual Portrait  Rect(1350, 0 - 1434, 1800)
             if (hinge != null) {
                 if (hinge.left > 0) {
                     screenRect1.left = 0
@@ -98,15 +100,23 @@ class ScreenHelper {
                 }
             }
 
-            return listOf(screenRect1, screenRect2)
+            return if (!screenRect1.isEmpty && !screenRect2.isEmpty) {
+                listOf(screenRect1, screenRect2)
+            } else {
+                Log.e(
+                    SurfaceDuoLayoutStatusHandler::class.java.simpleName,
+                    "Could NOT retrieve dual screens dimensions"
+                )
+                null
+            }
         }
 
         /**
          * Returns if device is in Dual-screen mode or not
          */
-        @JvmStatic fun isDualMode(activity: Activity): Boolean {
-            val hinge = getHinge(activity)
-            val windowRect = getWindowRect(activity)
+        @JvmStatic fun isDualMode(context: Context): Boolean {
+            val hinge = getHinge(context)
+            val windowRect = getWindowRect(context)
 
             return if (hinge != null && windowRect.width() > 0 && windowRect.height() > 0) {
                 // The windowRect doesn't intersect hinge
@@ -119,9 +129,9 @@ class ScreenHelper {
          * according to the rotation the function will return:
          * {Surface.ROTATION_0, Surface.ROTATION_90, Surface.ROTATION_180, Surface.ROTATION_270}
          */
-        @JvmStatic fun getCurrentRotation(activity: Activity): Int {
+        @JvmStatic fun getCurrentRotation(context: Context): Int {
             return try {
-                val wm = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
                 wm.defaultDisplay.rotation
             } catch (e: IllegalStateException) { Surface.ROTATION_0 }
         }
