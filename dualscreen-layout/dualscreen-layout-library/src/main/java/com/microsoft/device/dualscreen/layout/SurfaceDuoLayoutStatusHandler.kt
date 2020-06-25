@@ -124,11 +124,11 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
      *  - Single-Container orientation -> Dual-Container orientation
      *  - Dual-Container orientation -> Dual-Container orientation
      */
-
     private fun refreshDualScreenContainers(surfaceDuoLayout: SurfaceDuoLayout) {
-        if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
-            surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
-            dualPortraitSingleLayoutView != null) {
+        if ((surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
+            dualLandscapeSingleLayoutView != null) ||
+            (surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
+            dualPortraitSingleLayoutView != null)) {
             surfaceDuoLayout.updateConfigCreator().reInflate()
         } else {
             refreshDualContainersState(surfaceDuoLayout)
