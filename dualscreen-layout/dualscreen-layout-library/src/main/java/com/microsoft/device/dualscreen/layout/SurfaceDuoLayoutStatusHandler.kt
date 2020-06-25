@@ -104,10 +104,8 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     ) {
         if (ScreenHelper.isDualMode(surfaceDuoLayout.context) &&
             screenMode == ScreenMode.DUAL_SCREEN) {
-            // DUAL_SCREEN
             refreshDualScreenContainers(surfaceDuoLayout)
         } else if (screenMode == ScreenMode.SINGLE_SCREEN) {
-            // SINGLE_SCREEN
             surfaceDuoLayout
                 .findViewById<FrameLayout>(R.id.single_screen_container_id)
                 .requestLayout()
@@ -126,11 +124,11 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
      *  - Single-Container orientation -> Dual-Container orientation
      *  - Dual-Container orientation -> Dual-Container orientation
      */
+
     private fun refreshDualScreenContainers(surfaceDuoLayout: SurfaceDuoLayout) {
-        if ((surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
-            dualLandscapeSingleLayoutView != null) ||
-            (surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
-            dualPortraitSingleLayoutView != null)) {
+        if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
+            surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
+            dualPortraitSingleLayoutView != null) {
             surfaceDuoLayout.updateConfigCreator().reInflate()
         } else {
             refreshDualContainersState(surfaceDuoLayout)
@@ -150,11 +148,9 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         // Set new Orientation
         when (surfaceDuoLayout.resources.configuration.orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
-                // DUAL_PORTRAIT
                 refreshDualPortraitContainersDimensions(surfaceDuoLayout)
             }
             Configuration.ORIENTATION_PORTRAIT -> {
-                // DUAL_LANDSCAPE
                 refreshDualLandscapeContainersDimensions(surfaceDuoLayout)
             }
         }
