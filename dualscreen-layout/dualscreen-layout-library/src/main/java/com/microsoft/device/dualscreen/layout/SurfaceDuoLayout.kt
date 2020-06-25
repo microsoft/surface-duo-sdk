@@ -109,7 +109,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
      */
     private fun createView(config: Config) {
         surfaceDuoLayoutStatusHandler = SurfaceDuoLayoutStatusHandler(
-            this.context as Activity,
+            this.context,
             this,
             config
         )

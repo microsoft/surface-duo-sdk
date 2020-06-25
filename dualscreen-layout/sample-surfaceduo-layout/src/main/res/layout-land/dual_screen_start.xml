@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/double_portrait_start"
+        android:text="@string/dual_portrait_start"
         android:textColor="@android:color/black"
         android:textSize="@dimen/display_description_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
