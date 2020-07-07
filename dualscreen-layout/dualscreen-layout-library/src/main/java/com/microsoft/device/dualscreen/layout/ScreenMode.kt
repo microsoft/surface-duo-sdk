@@ -16,5 +16,4 @@ enum class ScreenMode(val id: Int) {
             )
         }
     }
-
 }

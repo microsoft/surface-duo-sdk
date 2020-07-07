@@ -7,7 +7,6 @@
 
 package com.microsoft.device.dualscreen.layout
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.TypedArray
@@ -22,7 +21,6 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.microsoft.device.surfaceduo.display.R
 
 /**
  * Class that is the root view of the layout containers for different screen modes.
@@ -157,14 +155,18 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         ).takeIf { it != View.NO_ID }
             ?.let { config.dualLandscapeSingleLayoutId = it }
 
-        val screenMode: ScreenMode = ScreenMode.fromId(styledAttributes.getResourceId(
-            R.styleable.SurfaceDuoLayout_tools_screen_mode,
-            ScreenMode.SINGLE_SCREEN.ordinal
-        ))
-        val hingeColor: HingeColor = HingeColor.fromId(styledAttributes.getResourceId(
-            R.styleable.SurfaceDuoLayout_tools_hinge_color,
-            HingeColor.BLACK.ordinal
-        ))
+        val screenMode: ScreenMode = ScreenMode.fromId(
+            styledAttributes.getResourceId(
+                R.styleable.SurfaceDuoLayout_tools_screen_mode,
+                ScreenMode.SINGLE_SCREEN.ordinal
+            )
+        )
+        val hingeColor: HingeColor = HingeColor.fromId(
+            styledAttributes.getResourceId(
+                R.styleable.SurfaceDuoLayout_tools_hinge_color,
+                HingeColor.BLACK.ordinal
+            )
+        )
 
         PreviewRenderer(config, screenMode, hingeColor)
     }
@@ -305,7 +307,9 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
                         layoutParams = LayoutParams(0, 0)
                     }
                 }
-                else -> { FrameLayout(context) }
+                else -> {
+                    FrameLayout(context)
+                }
             }
         }
 
@@ -400,7 +404,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
      * @param <T> An object that extends BaseConfig
      */
     @Suppress("UNCHECKED_CAST")
-    sealed class BaseConfig<T : BaseConfig<T>> (protected val config: Config) {
+    sealed class BaseConfig<T : BaseConfig<T>>(protected val config: Config) {
 
         /**
          * Class to add a new config in SurfaceDuoLayout

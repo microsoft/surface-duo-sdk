@@ -3,9 +3,8 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.samples.utils
+package com.microsoft.device.dualscreen.layout
 
-import com.microsoft.device.dualscreen.layout.ScreenMode
 import org.junit.Assert
 import org.junit.Test
 
@@ -21,5 +20,4 @@ class ScreenModeTest {
     fun `test from illegal id`() {
         ScreenMode.fromId(-1)
     }
-
 }

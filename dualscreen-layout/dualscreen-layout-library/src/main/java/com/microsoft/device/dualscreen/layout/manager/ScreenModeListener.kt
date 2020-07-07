@@ -5,7 +5,6 @@
 
 package com.microsoft.device.dualscreen.layout.manager
 
-
 interface ScreenModeListener {
     fun onSwitchToSingleScreen()
     fun onSwitchToDualScreen()

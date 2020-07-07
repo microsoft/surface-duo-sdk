@@ -3,9 +3,8 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.samples.utils
+package com.microsoft.device.dualscreen.layout
 
-import com.microsoft.device.dualscreen.layout.HingeColor
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -22,5 +21,4 @@ class HingeColorTest {
     fun `test from illegal id`() {
         HingeColor.fromId(-1)
     }
-
 }

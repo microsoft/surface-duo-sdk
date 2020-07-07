@@ -16,5 +16,4 @@ internal enum class HingeColor(val id: Int) {
             )
         }
     }
-
 }

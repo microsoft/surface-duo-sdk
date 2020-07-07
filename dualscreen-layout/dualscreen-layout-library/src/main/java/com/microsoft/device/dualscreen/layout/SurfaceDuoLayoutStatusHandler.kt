@@ -17,9 +17,7 @@ import android.view.Surface
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-
 import androidx.core.content.ContextCompat
-import com.microsoft.device.surfaceduo.display.R
 
 /**
  * Class responsible for the logic of displaying the layout containers depending on the screen state.
@@ -103,7 +101,8 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         surfaceDuoLayout: SurfaceDuoLayout
     ) {
         if (ScreenHelper.isDualMode(surfaceDuoLayout.context) &&
-            screenMode == ScreenMode.DUAL_SCREEN) {
+            screenMode == ScreenMode.DUAL_SCREEN
+        ) {
             refreshDualScreenContainers(surfaceDuoLayout)
         } else if (screenMode == ScreenMode.SINGLE_SCREEN) {
             surfaceDuoLayout
@@ -125,10 +124,11 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
      *  - Dual-Container orientation -> Dual-Container orientation
      */
     private fun refreshDualScreenContainers(surfaceDuoLayout: SurfaceDuoLayout) {
-        if ((surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
-            dualLandscapeSingleLayoutView != null) ||
-            (surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
-            dualPortraitSingleLayoutView != null)) {
+        if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
+            dualLandscapeSingleLayoutView != null ||
+            surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
+            dualPortraitSingleLayoutView != null
+        ) {
             surfaceDuoLayout.updateConfigCreator().reInflate()
         } else {
             refreshDualContainersState(surfaceDuoLayout)
@@ -253,7 +253,8 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
      */
     private fun dualPortraitLogic() {
         if (surfaceDuoLayoutConfig.isDualPortraitSingleContainer ||
-            dualPortraitSingleLayoutView != null) {
+            dualPortraitSingleLayoutView != null
+        ) {
             val singleContainer = createSingleContainer(
                 R.id.dual_portrait_single_container_id
             )
@@ -288,7 +289,8 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
      */
     private fun dualLandscapeLogic() {
         if (surfaceDuoLayoutConfig.isDualLandscapeSingleContainer ||
-            dualLandscapeSingleLayoutView != null) {
+            dualLandscapeSingleLayoutView != null
+        ) {
             val singleContainer = createSingleContainer(
                 R.id.dual_landscape_single_container_id
             )

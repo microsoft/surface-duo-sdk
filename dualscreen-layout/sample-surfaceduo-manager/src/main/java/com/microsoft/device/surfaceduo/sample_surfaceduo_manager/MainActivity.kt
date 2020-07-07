@@ -6,14 +6,11 @@
 package com.microsoft.device.surfaceduo.sample_surfaceduo_manager
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
 import com.microsoft.device.dualscreen.layout.ScreenMode
 import com.microsoft.device.dualscreen.layout.manager.ScreenModeListener
-import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.StartFragment
 import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.EndFragment
+import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.StartFragment
 
 class MainActivity : FragmentActivity() {
     private val singleScreenFragmentTag = "single_screen_fragment"
@@ -33,13 +30,14 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        (application as SampleApp).surfaceDuoScreenManager.addScreenModeListener( this,
+        (application as SampleApp).surfaceDuoScreenManager.addScreenModeListener(
+            this,
             object :
                 ScreenModeListener {
                 override fun onSwitchToSingleScreen() {}
-
                 override fun onSwitchToDualScreen() {}
-        })
+            }
+        )
     }
 
     private fun handleSingleScreenFragments(savedInstanceState: Bundle?) {

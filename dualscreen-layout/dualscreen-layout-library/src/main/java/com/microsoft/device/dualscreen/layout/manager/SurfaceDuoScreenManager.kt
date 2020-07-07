@@ -98,9 +98,9 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
         screenModeWrappersMap.remove(owner.getMapKey())
     }
 
-    internal inner class ScreenModeListenerWrapper: LifecycleEventObserver {
+    internal inner class ScreenModeListenerWrapper : LifecycleEventObserver {
         private val screenModeListeners = mutableListOf<WeakReference<ScreenModeListener>>()
-        private var isActive : Boolean = true
+        private var isActive: Boolean = true
 
         override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
             when (event) {
@@ -108,10 +108,12 @@ class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLi
                     screenModeListeners
                         .filter { it.get() != null }
                         .map { it.get() }
-                        .forEach { when (screenMode) {
-                            ScreenMode.SINGLE_SCREEN -> it?.onSwitchToSingleScreen()
-                            ScreenMode.DUAL_SCREEN -> it?.onSwitchToDualScreen()
-                        }}
+                        .forEach {
+                            when (screenMode) {
+                                ScreenMode.SINGLE_SCREEN -> it?.onSwitchToSingleScreen()
+                                ScreenMode.DUAL_SCREEN -> it?.onSwitchToDualScreen()
+                            }
+                        }
                 }
                 Lifecycle.Event.ON_PAUSE -> isActive = false
                 Lifecycle.Event.ON_DESTROY -> {

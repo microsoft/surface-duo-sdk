@@ -5,4 +5,4 @@
   ~
   -->
 
-<manifest package="com.microsoft.device.surfaceduo.display" />
+<manifest package="com.microsoft.device.dualscreen.layout" />

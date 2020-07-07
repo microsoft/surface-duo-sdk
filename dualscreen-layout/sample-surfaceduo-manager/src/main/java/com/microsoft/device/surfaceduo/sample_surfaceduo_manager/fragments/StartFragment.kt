@@ -21,15 +21,15 @@ class StartFragment : Fragment() {
         (activity!!.application as SampleApp).surfaceDuoScreenManager.addScreenModeListener(
             this,
             object : ScreenModeListener {
-
                 override fun onSwitchToSingleScreen() {}
-
                 override fun onSwitchToDualScreen() {}
-            })
+            }
+        )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_start, container, false)

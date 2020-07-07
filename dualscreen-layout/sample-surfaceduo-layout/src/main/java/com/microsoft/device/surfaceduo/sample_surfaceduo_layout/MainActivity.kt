@@ -5,10 +5,9 @@
 
 package com.microsoft.device.surfaceduo.sample_surfaceduo_layout
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.microsoft.device.dualscreen.layout.SurfaceDuoLayout
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
