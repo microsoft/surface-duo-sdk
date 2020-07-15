@@ -7,7 +7,7 @@ package com.microsoft.device.surfaceduo.sample_surfaceduo_manager
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import com.microsoft.device.dualscreen.layout.ScreenMode
+import com.microsoft.device.dualscreen.common.ScreenMode
 import com.microsoft.device.dualscreen.layout.manager.ScreenModeListener
 import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.EndFragment
 import com.microsoft.device.surfaceduo.sample_surfaceduo_manager.fragments.StartFragment

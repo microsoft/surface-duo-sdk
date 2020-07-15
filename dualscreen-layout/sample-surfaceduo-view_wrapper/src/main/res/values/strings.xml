@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <string name="app_name">Sample DualScreen- Duo Tab Layout</string>
+    <string name="move_nav_bar">Tap to move the text view</string>
+
+    <string name="move_text_to_start">Tap move the text view to the start</string>
+    <string name="move_text_to_end">Tap move the text view to the end</string>
+    <string name="move_text_to_middle">Tap move the text view to the middle</string>
+</resources>

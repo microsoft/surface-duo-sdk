@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.microsoft.device.dualscreen.common.ScreenMode
 
 /**
  * Class responsible for the logic of displaying the layout containers depending on the screen state.

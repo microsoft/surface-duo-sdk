@@ -13,8 +13,8 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.microsoft.device.dualscreen.common.ScreenMode
 import com.microsoft.device.dualscreen.layout.ScreenHelper
-import com.microsoft.device.dualscreen.layout.ScreenMode
 import java.lang.ref.WeakReference
 
 class SurfaceDuoScreenManager private constructor(app: Application) : ActivityLifecycle() {

@@ -21,6 +21,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import com.microsoft.device.dualscreen.common.ScreenMode
 
 /**
  * Class that is the root view of the layout containers for different screen modes.

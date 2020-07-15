@@ -42,6 +42,12 @@ ext {
             ktxCore         : "androidx.core:core-ktx:$ktxCoreVersion",
     ]
 
+    //Material Design
+    materialVersion = "1.1.0"
+    materialDependencies = [
+            material       : "com.google.android.material:material:$materialVersion"
+    ]
+
     // Navigation version
     navigationVersion = "2.3.0-alpha01"
     navigationDependencies = [

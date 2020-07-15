@@ -3,7 +3,7 @@
  *  Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.layout
+package com.microsoft.device.dualscreen.common
 
 enum class ScreenMode(val id: Int) {
     SINGLE_SCREEN(0),

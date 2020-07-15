@@ -55,7 +55,10 @@ android {
 dependencies {
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
+    implementation androidxDependencies.ktxCore
+
     implementation androidxDependencies.constraintLayout
+    implementation materialDependencies.material
 
     implementation microsoftDependencies.displayMask
 

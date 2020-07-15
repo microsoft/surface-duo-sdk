@@ -5,6 +5,7 @@
 
 package com.microsoft.device.dualscreen.layout
 
+import com.microsoft.device.dualscreen.common.ScreenMode
 import org.junit.Assert
 import org.junit.Test
 
