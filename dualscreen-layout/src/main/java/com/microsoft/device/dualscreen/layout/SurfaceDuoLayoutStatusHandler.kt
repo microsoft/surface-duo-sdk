@@ -94,17 +94,20 @@ class SurfaceDuoLayoutStatusHandler internal constructor(
      * and add a ScreenModeListener to the SurfaceDuoScreenManager class.
      */
     init {
-        if (singleScreenLayout != -1) {
-            singleScreenView = LayoutInflater.from(activity)
-                .inflate(singleScreenLayout, this.rootView, false)
-        }
-        if (dualScreenLayoutStart != -1) {
-            dualScreenStartView = LayoutInflater.from(activity)
-                .inflate(dualScreenLayoutStart, this.rootView, false)
-        }
-        if (dualScreenLayoutEnd != -1) {
-            dualScreenEndView = LayoutInflater.from(activity)
-                .inflate(dualScreenLayoutEnd, this.rootView, false)
+        if (ScreenHelper.isDualMode(activity)) {
+            if (dualScreenLayoutStart != -1) {
+                dualScreenStartView = LayoutInflater.from(activity)
+                    .inflate(dualScreenLayoutStart, this.rootView, false)
+            }
+            if (dualScreenLayoutEnd != -1) {
+                dualScreenEndView = LayoutInflater.from(activity)
+                    .inflate(dualScreenLayoutEnd, this.rootView, false)
+            }
+        } else {
+            if (singleScreenLayout != -1) {
+                singleScreenView = LayoutInflater.from(activity)
+                    .inflate(singleScreenLayout, this.rootView, false)
+            }
         }
         addViewsDependingOnScreenMode()
     }
