@@ -12,6 +12,7 @@ ext {
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 21
 
+
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",

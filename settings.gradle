@@ -2,12 +2,15 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License.
  */
+include ':core'
+include ':core:library'
+include ':core:sample-surfaceduoscreenmanager'
+include ':bottomnavigation:library'
+include ':bottomnavigation:sample'
+include ':layouts:library'
+include ':layouts:sample-surfaceduolayout'
+include ':layouts:sample-surfaceduoframelayout'
+include ':tabs:library'
+include ':tabs:sample'
 
 rootProject.name='DuoSDK'
-include ':dualscreen-layout'
-include 'dualscreen-layout:dualscreen-layout-library'
-include 'dualscreen-layout:sample-surfaceduo-manager'
-include 'dualscreen-layout:sample-surfaceduo-layout'
-include 'dualscreen-layout:sample-surfaceduo-bottomnavigation'
-include 'dualscreen-layout:sample-surfaceduo-tablayout'
-include 'dualscreen-layout:sample-surfaceduo-view_wrapper'
