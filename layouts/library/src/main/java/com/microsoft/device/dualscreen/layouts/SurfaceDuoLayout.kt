@@ -21,7 +21,6 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.example.layouts.R
 import com.microsoft.device.dualscreen.core.ScreenMode
 
 /**

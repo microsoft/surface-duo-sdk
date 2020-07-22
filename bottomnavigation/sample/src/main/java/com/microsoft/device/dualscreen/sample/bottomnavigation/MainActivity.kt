@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.sample_surfaceduo_bottomnavigation
+package com.microsoft.device.dualscreen.sample.bottomnavigation
 
 import android.os.Bundle
 import android.view.View

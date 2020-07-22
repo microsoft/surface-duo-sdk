@@ -18,7 +18,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.example.layouts.R
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import com.microsoft.device.dualscreen.core.ScreenMode
 

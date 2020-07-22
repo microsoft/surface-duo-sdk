@@ -5,7 +5,5 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.layouts">
-
-    /
+    package="com.microsoft.device.dualscreen.layouts">
 </manifest>
