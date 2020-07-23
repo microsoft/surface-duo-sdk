@@ -2,11 +2,13 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License.
  */
+include ':fragmentshandler:sample'
 include ':core'
 include ':core:library'
 include ':core:sample-surfaceduoscreenmanager'
 include ':bottomnavigation:library'
 include ':bottomnavigation:sample'
+include ':fragmentshandler:library'
 include ':layouts:library'
 include ':layouts:sample-surfaceduolayout'
 include ':layouts:sample-surfaceduoframelayout'
