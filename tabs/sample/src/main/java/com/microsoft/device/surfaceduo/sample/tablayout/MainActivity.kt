@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveTabLayout(displayPosition: DisplayPosition) {
-        tab_layout.duoDisplayPosition = displayPosition
+        tab_layout.surfaceDuoDisplayPosition = displayPosition
     }
 
     private fun prepareViewPager() {

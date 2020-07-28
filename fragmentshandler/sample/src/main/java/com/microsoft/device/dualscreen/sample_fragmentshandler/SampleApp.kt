@@ -15,7 +15,6 @@ class SampleApp : Application() {
     override fun onCreate() {
         super.onCreate()
         surfaceDuoScreenManager = SurfaceDuoScreenManager.getInstance(this)
-        val fragmentManagerStateHandler =
-            FragmentManagerStateHandler.getInstance(this, surfaceDuoScreenManager)
+        FragmentManagerStateHandler.initialize(this, surfaceDuoScreenManager)
     }
 }

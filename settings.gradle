@@ -2,17 +2,21 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License.
  */
-include ':fragmentshandler:sample'
-include ':core'
-include ':core:library'
-include ':core:sample-surfaceduoscreenmanager'
-include ':bottomnavigation:library'
+
+include ':core:core-library'
+include ':core:surfaceduoscreenmanager-sample'
+
+include ':bottomnavigation:bottomnavigation-library'
 include ':bottomnavigation:sample'
-include ':fragmentshandler:library'
-include ':layouts:library'
-include ':layouts:sample-surfaceduolayout'
-include ':layouts:sample-surfaceduoframelayout'
-include ':tabs:library'
+
+include ':fragmentshandler:fragmentshandler-library'
+include ':fragmentshandler:sample'
+
+include ':layouts:layouts-library'
+include ':layouts:surfaceduolayout-sample'
+include ':layouts:surfaceduoframelayout-sample'
+
+include ':tabs:tabs-library'
 include ':tabs:sample'
 
 rootProject.name='DuoSDK'

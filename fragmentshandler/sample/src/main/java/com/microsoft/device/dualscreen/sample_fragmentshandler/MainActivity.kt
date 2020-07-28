@@ -6,14 +6,13 @@
 package com.microsoft.device.dualscreen.sample_fragmentshandler
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.microsoft.device.dualscreen.core.ScreenMode
-import com.microsoft.device.dualscreen.fragmentshandler.FragmentManagerStateWrapper
 import com.microsoft.device.dualscreen.sample_fragmentshandler.fragments.DualEndFragment
 import com.microsoft.device.dualscreen.sample_fragmentshandler.fragments.DualStartFragment
 import com.microsoft.device.dualscreen.sample_fragmentshandler.fragments.SingleScreenFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
     companion object {
         private const val FRAGMENT_DUAL_START = "FragmentDualStart"
         private const val FRAGMENT_DUAL_END = "FragmentDualEnd"
@@ -26,29 +25,28 @@ class MainActivity : AppCompatActivity() {
 
         when ((application as SampleApp).surfaceDuoScreenManager.screenMode) {
             ScreenMode.SINGLE_SCREEN -> {
-                if (savedInstanceState?.get(FragmentManagerStateWrapper.FM_STATE_KEY) == null) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.first_container_id,
-                            SingleScreenFragment(),
-                            FRAGMENT_SINGLE_SCREEN
-                        ).commit()
+                if (supportFragmentManager.findFragmentByTag(FRAGMENT_SINGLE_SCREEN) == null) {
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.first_container_id,
+                        SingleScreenFragment(),
+                        FRAGMENT_SINGLE_SCREEN
+                    ).commit()
                 }
             }
             ScreenMode.DUAL_SCREEN -> {
-                if (savedInstanceState?.get(FragmentManagerStateWrapper.FM_STATE_KEY) == null) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.first_container_id,
-                            DualStartFragment(),
-                            FRAGMENT_DUAL_START
-                        ).commit()
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.second_container_id,
-                            DualEndFragment(),
-                            FRAGMENT_DUAL_END
-                        ).commit()
+                if (supportFragmentManager.findFragmentByTag(FRAGMENT_DUAL_START) == null &&
+                    supportFragmentManager.findFragmentByTag(FRAGMENT_DUAL_END) == null
+                ) {
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.first_container_id,
+                        DualStartFragment(),
+                        FRAGMENT_DUAL_START
+                    ).commit()
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.second_container_id,
+                        DualEndFragment(),
+                        FRAGMENT_DUAL_END
+                    ).commit()
                 }
             }
         }

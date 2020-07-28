@@ -22,9 +22,6 @@ android {
         testInstrumentationRunner config.testInstrumentationRunner
     }
 
-    packagingOptions {
-        exclude("META-INF/*.kotlin_module")
-    }
 }
 
 dependencies {
@@ -32,12 +29,11 @@ dependencies {
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
     implementation androidxDependencies.ktxCore
-
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
 
-    implementation project(":fragmentshandler:library")
-    implementation project(":layouts:library")
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-alpha02"
+    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-alpha02"
 }
 

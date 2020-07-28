@@ -32,7 +32,7 @@
         app:layout_constraintStart_toStartOf="@+id/move_to_start"
         app:layout_constraintTop_toBottomOf="@id/move_to_start" />
 
-    <com.microsoft.device.dualscreen.bottomnavigation.DuoBottomNavigationView
+    <com.microsoft.device.dualscreen.bottomnavigation.SurfaceDuoBottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
