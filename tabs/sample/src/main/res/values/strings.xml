@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <string name="app_name">DuoTabLayout Sample</string>
+
+    <string name="move_tab_layout_start">Move to Start</string>
+    <string name="move_tab_layout_end">Move to End</string>
+    <string name="move_tab_layout_middle">Span</string>
+
+    <string name="fragment_no">Fragment no: </string>
+</resources>

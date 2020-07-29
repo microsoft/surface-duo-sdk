@@ -3,6 +3,20 @@
  *  Licensed under the MIT License.
  */
 
+include ':core:core-library'
+include ':core:surfaceduoscreenmanager-sample'
+
+include ':bottomnavigation:bottomnavigation-library'
+include ':bottomnavigation:sample'
+
+include ':fragmentshandler:fragmentshandler-library'
+include ':fragmentshandler:sample'
+
+include ':layouts:layouts-library'
+include ':layouts:surfaceduolayout-sample'
+include ':layouts:surfaceduoframelayout-sample'
+
+include ':tabs:tabs-library'
+include ':tabs:sample'
+
 rootProject.name='DuoSDK'
-include 'dualscreen-layout'
-include ':sample-dualscreen-layout'

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <string name="app_name">SurfaceDuoFrameLayout Sample</string>
+
+    <string name="move_to_start">Move to start</string>
+    <string name="move_to_end">Move to end</string>
+    <string name="move_to_middle">Span</string>
+    <string name="surface">Surface</string>
+    <string name="duo">Duo</string>
+</resources>
