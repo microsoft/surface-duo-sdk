@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffcccccc"
+        app:display_position="start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabGravity="fill"
+        app:tabMode="fixed" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/move_to_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="124dp"
+        android:text="@string/move_tab_layout_start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/move_to_middle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/move_tab_layout_middle"
+        android:layout_margin="@dimen/position_button_margin"
+        app:layout_constraintEnd_toEndOf="@+id/move_to_start"
+        app:layout_constraintStart_toStartOf="@+id/move_to_start"
+        app:layout_constraintTop_toBottomOf="@+id/move_to_start" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/move_to_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/position_button_margin"
+        android:text="@string/move_tab_layout_end"
+        app:layout_constraintEnd_toEndOf="@+id/move_to_middle"
+        app:layout_constraintStart_toStartOf="@+id/move_to_middle"
+        app:layout_constraintTop_toBottomOf="@id/move_to_middle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

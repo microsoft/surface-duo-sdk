@@ -1,0 +1,11 @@
+<!--
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  -->
+
+<resources>
+    <string name="app_name">FragmentsHandler Sample</string>
+    <string name="single_screen_fragment">Single Screen Fragment</string>
+    <string name="dual_end_screen_fragment">Dual End Screen Fragment</string>
+    <string name="dual_start_screen_fragment">Dual Start Screen Fragment</string>
+</resources>

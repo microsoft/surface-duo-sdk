@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Microsoft Corporation. All rights reserved.
+  ~ Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <declare-styleable name="GlobalAttributes">
+        <attr name="display_position" format="enum">
+            <enum name="dual" value="0" />
+            <enum name="start" value="1" />
+            <enum name="end" value="2" />
+        </attr>
+
+        <attr name="tools_application_mode" format="enum">
+            <enum name="single_screen" value="0" />
+            <enum name="dual_screen" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
