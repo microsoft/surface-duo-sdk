@@ -6,7 +6,7 @@
   -->
 
 <resources>
-    <string name="app_name">Sample DualScreen- Duo Tab Layout</string>
+    <string name="app_name">DuoTabLayout Sample</string>
 
     <string name="move_tab_layout_start">Move to Start</string>
     <string name="move_tab_layout_end">Move to End</string>

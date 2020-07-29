@@ -14,19 +14,16 @@ android {
     defaultConfig {
         applicationId "com.microsoft.device.surfaceduo.sample_surfaceduo_tablayout"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+           targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
-    packagingOptions {
-        exclude("META-INF/*.kotlin_module")
-    }
+
 }
 
 dependencies {
-
     implementation kotlinDependencies.kotlinStdlib
 
     implementation androidxDependencies.ktxCore
@@ -42,5 +39,5 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
 
-    implementation project(':tabs:library')
+    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-alpha04"
 }

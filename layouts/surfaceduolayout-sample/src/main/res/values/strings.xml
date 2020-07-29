@@ -1,0 +1,15 @@
+<!--
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  -->
+
+<resources>
+    <string name="app_name">SurfaceDuoLayout Sample</string>
+    <string name="dual_portrait_end">Dual Portrait - END</string>
+    <string name="dual_portrait_start">Dual Portrait - START</string>
+    <string name="dual_landscape_end">Dual Landscape - END</string>
+    <string name="dual_landscape_start">Dual Landscape - START</string>
+    <string name="dual_screen_mode_end">Dual Screen Mode - END</string>
+    <string name="dual_screen_mode_start">Dual Screen Mode - START</string>
+    <string name="single_screen_mode">Single Screen Mode</string>
+</resources>

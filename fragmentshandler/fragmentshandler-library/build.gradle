@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ *
+ */
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+// PUBLISHING CODE
+//task sourceJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier "sources"
+//}
+//
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            mylibrary(MavenPublication) {
+//                from components.release
+//                groupId 'com.microsoft.device.dualscreen'
+//                artifactId 'fragmentshandler'
+//                version '1.0.0-alpha02'
+//                artifact(sourceJar)
+//            }
+//        }
+//        repositories {
+//            maven {
+//                url REPO_URL
+//                credentials {
+//                    username USERNAME
+//                    password PASSWORD
+//                }
+//            }
+//        }
+//    }
+//}
+
+dependencies {
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.ktxCore
+    testImplementation testDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+
+    api project(':core:core-library')
+}

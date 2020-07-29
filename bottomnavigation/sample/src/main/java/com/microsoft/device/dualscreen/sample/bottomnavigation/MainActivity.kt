@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         setListeners()
         setButtonsVisibility()
 
-        nav_view.duoDisplayPosition = DisplayPosition.END
+        nav_view.surfaceDuoDisplayPosition = DisplayPosition.END
         nav_view.setOnClickListener {
             moveNavView()
         }
@@ -50,21 +50,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveNavigationView(displayPosition: DisplayPosition) {
-        nav_view.duoDisplayPosition = displayPosition
+        nav_view.surfaceDuoDisplayPosition = displayPosition
     }
 
     private fun moveNavView() {
-        val mode = nav_view.duoDisplayPosition
+        val mode = nav_view.surfaceDuoDisplayPosition
         if (mode == DisplayPosition.DUAL) {
-            nav_view.duoDisplayPosition = DisplayPosition.START
+            nav_view.surfaceDuoDisplayPosition = DisplayPosition.START
         }
 
         if (mode == DisplayPosition.START) {
-            nav_view.duoDisplayPosition = DisplayPosition.START
+            nav_view.surfaceDuoDisplayPosition = DisplayPosition.START
         }
 
         if (mode == DisplayPosition.END) {
-            nav_view.duoDisplayPosition = DisplayPosition.END
+            nav_view.surfaceDuoDisplayPosition = DisplayPosition.END
         }
     }
 }
