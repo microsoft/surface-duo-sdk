@@ -16,6 +16,11 @@ import com.microsoft.device.dualscreen.duolayoutmanager.DuoLayoutManager.Compani
  * An item decorator that adds spacing for the cells to cover the device hinge when the application is in spanned mode.
  */
 class DuoItemDecoration : RecyclerView.ItemDecoration() {
+    enum class ScreenPosition(val index: Int) {
+        START_SCREEN(0),
+        END_SCREEN(1)
+    }
+
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -40,9 +45,4 @@ class DuoItemDecoration : RecyclerView.ItemDecoration() {
             }
         }
     }
-}
-
-enum class ScreenPosition(val index: Int) {
-    START_SCREEN(0),
-    END_SCREEN(1)
 }
