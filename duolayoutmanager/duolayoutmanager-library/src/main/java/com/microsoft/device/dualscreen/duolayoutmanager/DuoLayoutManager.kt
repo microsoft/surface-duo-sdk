@@ -16,6 +16,10 @@ import com.microsoft.device.dualscreen.core.ScreenHelper.Companion.isDualMode
  * Class that provides a LinearLayoutManager when the device is in single screen mode and a GridLayoutManager when the device is in spanned mode.
  */
 class DuoLayoutManager(activity: AppCompatActivity) {
+    companion object {
+        const val SPAN_COUNT = 2
+    }
+
     private var layoutManager: RecyclerView.LayoutManager? = null
     fun get(): RecyclerView.LayoutManager? {
         return layoutManager
@@ -23,7 +27,7 @@ class DuoLayoutManager(activity: AppCompatActivity) {
 
     init {
         layoutManager = if (isDeviceSurfaceDuo(activity) && isDualMode(activity)) {
-            GridLayoutManager(activity, 2)
+            GridLayoutManager(activity, SPAN_COUNT)
         } else {
             LinearLayoutManager(activity)
         }

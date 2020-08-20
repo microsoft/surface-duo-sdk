@@ -10,21 +10,19 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import com.microsoft.device.dualscreen.core.isDualMode
+import com.microsoft.device.dualscreen.duolayoutmanager.DuoLayoutManager.Companion.SPAN_COUNT
 
 /**
  * An item decorator that adds spacing for the cells to cover the device hinge when the application is in spanned mode.
  */
-class DuoItemDecoration(
-    val innerSpacing: Int = 0
-) : RecyclerView.ItemDecoration() {
-    private val SPAN_COUNT: Int = 2
-
+class DuoItemDecoration : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+
         if (!view.isDualMode()) {
             return
         }
@@ -34,12 +32,17 @@ class DuoItemDecoration(
             val position = parent.getChildAdapterPosition(view)
             val column = position % SPAN_COUNT
 
-            if (column == 0) {
+            if (column == ScreenPosition.START_SCREEN.index) {
                 outRect.right += hingeWidth / 2
             }
-            if (column == 1) {
+            if (column == ScreenPosition.END_SCREEN.index) {
                 outRect.left += hingeWidth / 2
             }
         }
     }
+}
+
+enum class ScreenPosition(val index: Int) {
+    START_SCREEN(0),
+    END_SCREEN(1)
 }
