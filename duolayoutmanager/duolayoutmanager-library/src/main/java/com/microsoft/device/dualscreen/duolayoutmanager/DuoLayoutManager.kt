@@ -5,17 +5,16 @@
 
 package com.microsoft.device.dualscreen.duolayoutmanager
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.microsoft.device.dualscreen.core.ScreenHelper.Companion.isDeviceSurfaceDuo
-import com.microsoft.device.dualscreen.core.ScreenHelper.Companion.isDualMode
+import com.microsoft.device.dualscreen.core.isSurfaceDuoInDualMode
 
 /**
  * Class that provides a LinearLayoutManager when the device is in single screen mode and a GridLayoutManager when the device is in spanned mode.
  */
-class DuoLayoutManager(activity: AppCompatActivity) {
+class DuoLayoutManager(context: Context) {
     companion object {
         const val SPAN_COUNT = 2
     }
@@ -26,10 +25,10 @@ class DuoLayoutManager(activity: AppCompatActivity) {
     }
 
     init {
-        layoutManager = if (isDeviceSurfaceDuo(activity) && isDualMode(activity)) {
-            GridLayoutManager(activity, SPAN_COUNT)
+        layoutManager = if (context.isSurfaceDuoInDualMode()) {
+            GridLayoutManager(context, SPAN_COUNT)
         } else {
-            LinearLayoutManager(activity)
+            LinearLayoutManager(context)
         }
     }
 }
