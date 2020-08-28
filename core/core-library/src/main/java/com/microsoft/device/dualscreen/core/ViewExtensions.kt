@@ -16,5 +16,8 @@ fun View.isSpannedInDualScreen(screenMode: ScreenMode): Boolean {
     }
 }
 
+fun View.isDualMode() =
+    ScreenHelper.isDeviceSurfaceDuo(context) && ScreenHelper.isDualMode(context)
+
 fun View.isPortrait() =
     resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
