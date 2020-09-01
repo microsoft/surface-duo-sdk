@@ -6,13 +6,18 @@
 package com.microsoft.device.dualscreen.sample.bottomnavigation
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.microsoft.device.dualscreen.core.DisplayPosition
 import com.microsoft.device.dualscreen.core.ScreenHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        const val SELECTED_NAV_ITEM = "selected_nav_item"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,10 +25,35 @@ class MainActivity : AppCompatActivity() {
 
         setListeners()
         setButtonsVisibility()
+        setBadges()
 
-        nav_view.surfaceDuoDisplayPosition = DisplayPosition.END
-        nav_view.setOnClickListener {
-            moveNavView()
+        nav_view.setOnNavigationItemSelectedListener { item: MenuItem ->
+            changeFragment(item)
+            return@setOnNavigationItemSelectedListener true
+        }
+
+        nav_view.selectedItemId = getSavedNavItem(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(SELECTED_NAV_ITEM, nav_view.selectedItemId)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun changeFragment(item: MenuItem) {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(
+            R.id.fragment_container,
+            SelectedFragment.newInstance(item.title.toString())
+        )
+        transaction.commit()
+    }
+
+    private fun getSavedNavItem(savedInstanceState: Bundle?): Int {
+        return if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_NAV_ITEM)) {
+            savedInstanceState.getInt(SELECTED_NAV_ITEM)
+        } else {
+            R.id.navigation_home
         }
     }
 
@@ -53,18 +83,10 @@ class MainActivity : AppCompatActivity() {
         nav_view.surfaceDuoDisplayPosition = displayPosition
     }
 
-    private fun moveNavView() {
-        val mode = nav_view.surfaceDuoDisplayPosition
-        if (mode == DisplayPosition.DUAL) {
-            nav_view.surfaceDuoDisplayPosition = DisplayPosition.START
-        }
-
-        if (mode == DisplayPosition.START) {
-            nav_view.surfaceDuoDisplayPosition = DisplayPosition.START
-        }
-
-        if (mode == DisplayPosition.END) {
-            nav_view.surfaceDuoDisplayPosition = DisplayPosition.END
-        }
+    private fun setBadges() {
+        var badge = nav_view.getOrCreateBadge(R.id.navigation_alerts)
+        badge.isVisible = true
+        // set a random number
+        badge.number = 20
     }
 }

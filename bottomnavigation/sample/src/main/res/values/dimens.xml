@@ -6,4 +6,8 @@
   -->
 <resources>
     <dimen name="position_button_margin">32dp</dimen>
+    <dimen name="fragment_name_margin">50dp</dimen>
+    <dimen name="fragment_btn_margin">100dp</dimen>
+
+    <dimen name="fragment_text_size">25sp</dimen>
 </resources>

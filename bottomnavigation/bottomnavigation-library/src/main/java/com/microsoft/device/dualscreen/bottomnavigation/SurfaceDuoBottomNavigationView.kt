@@ -7,8 +7,8 @@ package com.microsoft.device.dualscreen.bottomnavigation
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.core.view.children
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import android.view.Gravity
+import android.view.ViewGroup
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.microsoft.device.dualscreen.core.DisplayPosition
 import com.microsoft.device.dualscreen.core.ScreenHelper
@@ -42,13 +42,18 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
 
     init {
-        extractAttributes(context, attrs)
         setScreenParameters(context)
+        extractAttributes(context, attrs)
     }
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {
         val styledAttributes =
-            context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoBottomNavigationView, 0, 0)
+            context.theme.obtainStyledAttributes(
+                attrs,
+                R.styleable.SurfaceDuoBottomNavigationView,
+                0,
+                0
+            )
         try {
             displayPosition = DisplayPosition.fromId(
                 styledAttributes.getInt(
@@ -81,31 +86,44 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
         if (!isSpannedInDualScreen(screenMode) || isPortrait()) {
             return
         }
 
-        children.filterIsInstance(BottomNavigationMenuView::class.java).forEach { menu ->
-            when (displayPosition) {
-                DisplayPosition.START -> {
-                    val screenWidth = (right - left - hingeWidth) / 2
-                    val childLeft = (screenWidth - menu.measuredWidth) / 2
-                    val childRight = childLeft + menu.measuredWidth
-                    menu.layout(childLeft, 0, childRight, menu.measuredHeight)
-                }
-                DisplayPosition.END -> {
-                    val screenWidth = (right - left - hingeWidth) / 2
-                    val padding = (screenWidth - menu.measuredWidth) / 2
-                    val childLeft = screenWidth + hingeWidth + padding
-                    val childRight = (right - left) - padding
-                    menu.layout(childLeft, 0, childRight, menu.measuredHeight)
-                }
-                DisplayPosition.DUAL -> {
-                }
-            }
+        if (childCount == 1) {
+            adjustChildMeasurements(heightMeasureSpec)
+        }
+    }
+
+    private fun adjustChildMeasurements(heightMeasureSpec: Int) {
+        val desiredLength = when (displayPosition) {
+            DisplayPosition.START -> singleScreenWidth
+            DisplayPosition.END -> singleScreenWidth
+            else -> totalScreenWidth
+        }
+
+        val gravity = when (displayPosition) {
+            DisplayPosition.START -> Gravity.START
+            DisplayPosition.END -> Gravity.END
+            else -> Gravity.CENTER
+        }
+
+        val child = getChildAt(0)
+        val remeasure = child.measuredWidth != desiredLength
+        if (remeasure) {
+            val childHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
+                heightMeasureSpec,
+                paddingTop + paddingBottom,
+                child.layoutParams.height
+            )
+            val childWidthMeasureSpec =
+                MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
+            child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
+            val params = child.layoutParams as LayoutParams
+            params.gravity = gravity
         }
     }
 }
