@@ -6,9 +6,12 @@
 package com.microsoft.device.dualscreen.tabs
 
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
 import com.microsoft.device.dualscreen.core.DisplayPosition
 import com.microsoft.device.dualscreen.core.ScreenHelper
@@ -36,6 +39,7 @@ class SurfaceDuoTabLayout : TabLayout {
             totalScreenWidth = it.right
         }
         setInitialPosition()
+        updateBackground()
     }
 
     private var singleScreenWidth = -1
@@ -44,6 +48,9 @@ class SurfaceDuoTabLayout : TabLayout {
     private var displayPosition = DisplayPosition.DUAL
     private var screenMode = ScreenMode.DUAL_SCREEN
 
+    private var setEmptyAreaToTransparent = false
+    private var initialBackground: Drawable? = null
+
     var surfaceDuoDisplayPosition: DisplayPosition
         get() {
             return displayPosition
@@ -51,6 +58,16 @@ class SurfaceDuoTabLayout : TabLayout {
         set(value) {
             displayPosition = value
             requestLayout()
+            updateBackground()
+        }
+
+    var surfaceDuoTransparentBackground: Boolean
+        get() {
+            return setEmptyAreaToTransparent
+        }
+        set(value) {
+            setEmptyAreaToTransparent = value
+            updateBackground()
         }
 
     private fun initialize(attrs: AttributeSet) {
@@ -69,6 +86,11 @@ class SurfaceDuoTabLayout : TabLayout {
                     ScreenMode.DUAL_SCREEN.ordinal
                 )
             )
+            setEmptyAreaToTransparent =
+                styledAttributes.getBoolean(
+                    R.styleable.SurfaceDuoTabLayout_setEmptyAreaToTransparent,
+                    setEmptyAreaToTransparent
+                )
         } finally {
             styledAttributes.recycle()
         }
@@ -135,5 +157,39 @@ class SurfaceDuoTabLayout : TabLayout {
             val params = child.layoutParams as LayoutParams
             params.gravity = gravity
         }
+    }
+
+    override fun setBackground(background: Drawable?) {
+        if (initialBackground == null) {
+            initialBackground = background
+        }
+        super.setBackground(background)
+    }
+
+    private fun updateBackground() {
+        if (!isSpannedInDualScreen(screenMode) || isPortrait() || childCount != 1 || !setEmptyAreaToTransparent) {
+            if (background != initialBackground) {
+                background = initialBackground
+            }
+        } else {
+            background = createHalfTransparentBackground()
+        }
+    }
+
+    private fun createHalfTransparentBackground(): LayerDrawable {
+        val transparentBackground =
+            ContextCompat.getDrawable(context, R.drawable.background_transparent)
+        val finalBackground = LayerDrawable(arrayOf(initialBackground, transparentBackground))
+
+        if (displayPosition == DisplayPosition.START) {
+            finalBackground.setLayerInset(0, 0, 0, singleScreenWidth, 0)
+            finalBackground.setLayerInset(1, singleScreenWidth, 0, 0, 0)
+        }
+
+        if (displayPosition == DisplayPosition.END) {
+            finalBackground.setLayerInset(0, singleScreenWidth, 0, 0, 0)
+            finalBackground.setLayerInset(1, 0, 0, singleScreenWidth, 0)
+        }
+        return finalBackground
     }
 }

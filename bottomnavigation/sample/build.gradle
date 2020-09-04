@@ -31,7 +31,6 @@ dependencies {
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
     implementation navigationDependencies.fragmentKtx
-    implementation navigationDependencies.uiKtx
 
     // Unit Testing
     testImplementation testDependencies.junit

@@ -21,7 +21,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="fill"
-        app:tabMode="fixed" />
+        app:tabMode="fixed"
+        app:setEmptyAreaToTransparent="true" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
@@ -46,8 +47,8 @@
         android:id="@+id/move_to_middle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/move_tab_layout_middle"
         android:layout_margin="@dimen/position_button_margin"
+        android:text="@string/move_tab_layout_middle"
         app:layout_constraintEnd_toEndOf="@+id/move_to_start"
         app:layout_constraintStart_toStartOf="@+id/move_to_start"
         app:layout_constraintTop_toBottomOf="@+id/move_to_start" />

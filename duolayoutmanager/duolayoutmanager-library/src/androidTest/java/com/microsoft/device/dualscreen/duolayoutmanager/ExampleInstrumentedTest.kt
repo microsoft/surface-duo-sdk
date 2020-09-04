@@ -4,7 +4,7 @@
  *
  */
 
-package com.microsoft.device.dualscreen.bottomnavigation
+package com.microsoft.device.dualscreen.duolayoutmanager
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -24,7 +24,7 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals(
-            "com.microsoft.device.dualscreen.bottomnavigation.test",
+            "com.microsoft.device.dualscreen.duolayoutmanager.test",
             appContext.packageName
         )
     }

@@ -4,7 +4,7 @@
  *
  */
 
-package com.microsoft.device.dualscreen.bottomnavigation
+package com.microsoft.device.dualscreen.duolayoutmanager
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

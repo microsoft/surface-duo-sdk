@@ -60,13 +60,16 @@ android {
 //}
 
 dependencies {
+    api project(':core:core-library')
+
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.ktxCore
+
+    implementation materialDependencies.material
+    api navigationDependencies.ui
+
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-
-    api project(':core:core-library')
-    implementation materialDependencies.material
 }

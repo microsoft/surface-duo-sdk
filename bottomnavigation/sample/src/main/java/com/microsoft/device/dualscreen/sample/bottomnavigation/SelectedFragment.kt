@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_selected.*
 
 class SelectedFragment : Fragment() {
@@ -32,6 +33,10 @@ class SelectedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         fragment_name.text = getString(R.string.key_fragment, getTitle())
+
+        recyclerView.hasFixedSize()
+        recyclerView.adapter = NumbersAdapter()
+        recyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     private fun getTitle() = arguments?.getString(ARG_NAME)

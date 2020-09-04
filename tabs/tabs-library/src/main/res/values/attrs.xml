@@ -9,5 +9,6 @@
     <declare-styleable name="SurfaceDuoTabLayout">
         <attr name="display_position" />
         <attr name="tools_application_mode" />
+        <attr name="setEmptyAreaToTransparent" />
     </declare-styleable>
 </resources>
