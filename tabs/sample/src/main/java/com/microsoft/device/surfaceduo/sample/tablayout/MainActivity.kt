@@ -7,6 +7,7 @@ package com.microsoft.device.surfaceduo.sample.tablayout
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         setButtonsVisibility()
         setListeners()
         prepareViewPager()
+
+        tab_layout.surfaceDuoUseAnimation = true
+        tab_layout.surfaceDuoAnimationInterpolator = OvershootInterpolator()
     }
 
     private fun setButtonsVisibility() {

@@ -12,7 +12,6 @@ ext {
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 21
 
-
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
@@ -46,7 +45,7 @@ ext {
     //Material Design
     materialVersion = "1.1.0"
     materialDependencies = [
-            material       : "com.google.android.material:material:$materialVersion"
+            material: "com.google.android.material:material:$materialVersion"
     ]
 
     // Navigation version

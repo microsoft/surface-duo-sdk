@@ -20,7 +20,6 @@ android {
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
-
 }
 
 dependencies {

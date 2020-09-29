@@ -7,10 +7,12 @@ package com.microsoft.device.dualscreen.tabs
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.BaseInterpolator
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayout
 import com.microsoft.device.dualscreen.core.DisplayPosition
@@ -22,31 +24,22 @@ import com.microsoft.device.dualscreen.core.isSpannedInDualScreen
 /**
  * A sub class of the Tab layout that positions it's children on the start, end or both screens when the application is spanned on both screens.
  */
-class SurfaceDuoTabLayout : TabLayout {
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
-    constructor(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int = 0) : super(
-        context,
-        attributeSet,
-        defStyleAttr
-    ) {
-        attributeSet?.let { initialize(it) }
-        ScreenHelper.getHinge(context)?.let {
-            singleScreenWidth = it.left
-        }
 
-        ScreenHelper.getWindowRect(context).let {
-            totalScreenWidth = it.right
-        }
-        setInitialPosition()
-        updateBackground()
-    }
+open class SurfaceDuoTabLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : TabLayout(context, attrs, defStyleAttr) {
 
     private var singleScreenWidth = -1
     private var totalScreenWidth = -1
+    private var hingeWidth = -1
 
     private var displayPosition = DisplayPosition.DUAL
     private var screenMode = ScreenMode.DUAL_SCREEN
+
+    private var useAnimations = true
+    private var animationInterpolator: BaseInterpolator = AccelerateDecelerateInterpolator()
 
     private var setEmptyAreaToTransparent = false
     private var initialBackground: Drawable? = null
@@ -56,9 +49,23 @@ class SurfaceDuoTabLayout : TabLayout {
             return displayPosition
         }
         set(value) {
-            displayPosition = value
-            requestLayout()
-            updateBackground()
+            updateDisplayPosition(value)
+        }
+
+    var surfaceDuoUseAnimation: Boolean
+        get() {
+            return useAnimations
+        }
+        set(value) {
+            useAnimations = value
+        }
+
+    var surfaceDuoAnimationInterpolator: BaseInterpolator
+        get() {
+            return animationInterpolator
+        }
+        set(value) {
+            animationInterpolator = value
         }
 
     var surfaceDuoTransparentBackground: Boolean
@@ -67,10 +74,30 @@ class SurfaceDuoTabLayout : TabLayout {
         }
         set(value) {
             setEmptyAreaToTransparent = value
-            updateBackground()
+            tryUpdateBackground()
         }
 
-    private fun initialize(attrs: AttributeSet) {
+    init {
+        getMultiScreenParameters(context)
+        extractAttributes(attrs)
+        tryUpdateBackground()
+    }
+
+    private fun getMultiScreenParameters(context: Context) {
+        ScreenHelper.getHinge(context)?.let {
+            singleScreenWidth = it.left
+        }
+
+        ScreenHelper.getWindowRect(context).let {
+            totalScreenWidth = it.right
+        }
+
+        ScreenHelper.getHinge(context)?.let {
+            hingeWidth = it.right - it.left
+        }
+    }
+
+    private fun extractAttributes(attrs: AttributeSet?) {
         val styledAttributes =
             context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoTabLayout, 0, 0)
         try {
@@ -96,26 +123,51 @@ class SurfaceDuoTabLayout : TabLayout {
         }
     }
 
-    private fun setInitialPosition() {
-        val view = getChildAt(0)
-        val params = view.layoutParams as LayoutParams
+    private fun updateDisplayPosition(displayPosition: DisplayPosition) {
+        if (!isSpannedInDualScreen(screenMode) || isPortrait()) {
+            return
+        }
 
-        when (displayPosition) {
-            DisplayPosition.DUAL -> {
-                params.width = LayoutParams.MATCH_PARENT
+        if (this.displayPosition == displayPosition) {
+            return
+        }
+
+        if (!useAnimations) {
+            this.displayPosition = displayPosition
+            tryUpdateBackground()
+            requestLayout()
+            return
+        }
+
+        if (displayPosition == DisplayPosition.DUAL) {
+            this.displayPosition = displayPosition
+            tryUpdateBackground()
+            requestLayout()
+            return
+        }
+
+        requestLayout()
+        animateToNewPosition(displayPosition)
+        this.displayPosition = displayPosition
+        tryUpdateBackground()
+    }
+
+    private fun animateToNewPosition(displayPosition: DisplayPosition) {
+        getChildAt(0)?.let { buttons ->
+            val xPosition = if (displayPosition == DisplayPosition.END) {
+                (hingeWidth + singleScreenWidth).toFloat()
+            } else {
+                0f
             }
 
-            DisplayPosition.START -> {
-                params.width = singleScreenWidth
-                params.gravity = Gravity.START
-            }
-
-            DisplayPosition.END -> {
-                params.width = singleScreenWidth
-                params.gravity = Gravity.END
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                buttons.translationX = xPosition
+            } else {
+                buttons.animate()
+                    .setInterpolator(surfaceDuoAnimationInterpolator)
+                    .translationX(xPosition)
             }
         }
-        view.layoutParams = params
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -137,14 +189,17 @@ class SurfaceDuoTabLayout : TabLayout {
             else -> totalScreenWidth
         }
 
-        val gravity = when (displayPosition) {
-            DisplayPosition.START -> Gravity.START
-            DisplayPosition.END -> Gravity.END
-            else -> Gravity.CENTER
-        }
+        val translationX =
+            when (displayPosition) {
+                DisplayPosition.DUAL,
+                DisplayPosition.START -> 0
+                DisplayPosition.END -> singleScreenWidth + hingeWidth
+                else -> (singleScreenWidth - hingeWidth) / 2
+            }
 
         val child = getChildAt(0)
-        val remeasure = child.measuredWidth != desiredLength
+        val remeasure =
+            child.measuredWidth != desiredLength || child.translationX != translationX.toFloat()
         if (remeasure) {
             val childHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
                 heightMeasureSpec,
@@ -155,7 +210,8 @@ class SurfaceDuoTabLayout : TabLayout {
                 MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
             val params = child.layoutParams as LayoutParams
-            params.gravity = gravity
+            params.gravity = Gravity.LEFT
+            child.translationX = translationX.toFloat()
         }
     }
 
@@ -166,30 +222,29 @@ class SurfaceDuoTabLayout : TabLayout {
         super.setBackground(background)
     }
 
-    private fun updateBackground() {
+    private fun tryUpdateBackground() {
         if (!isSpannedInDualScreen(screenMode) || isPortrait() || childCount != 1 || !setEmptyAreaToTransparent) {
             if (background != initialBackground) {
                 background = initialBackground
             }
         } else {
-            background = createHalfTransparentBackground()
+            updateBackground()
         }
     }
 
-    private fun createHalfTransparentBackground(): LayerDrawable {
-        val transparentBackground =
-            ContextCompat.getDrawable(context, R.drawable.background_transparent)
-        val finalBackground = LayerDrawable(arrayOf(initialBackground, transparentBackground))
-
-        if (displayPosition == DisplayPosition.START) {
-            finalBackground.setLayerInset(0, 0, 0, singleScreenWidth, 0)
-            finalBackground.setLayerInset(1, singleScreenWidth, 0, 0, 0)
+    private fun updateBackground() {
+        when (displayPosition) {
+            DisplayPosition.START,
+            DisplayPosition.END -> {
+                this.background =
+                    ContextCompat.getDrawable(context, R.drawable.background_transparent)
+                getChildAt(0).background = initialBackground
+            }
+            DisplayPosition.DUAL -> {
+                this.background = initialBackground
+                getChildAt(0).background =
+                    ContextCompat.getDrawable(context, R.drawable.background_transparent)
+            }
         }
-
-        if (displayPosition == DisplayPosition.END) {
-            finalBackground.setLayerInset(0, singleScreenWidth, 0, 0, 0)
-            finalBackground.setLayerInset(1, 0, 0, singleScreenWidth, 0)
-        }
-        return finalBackground
     }
 }

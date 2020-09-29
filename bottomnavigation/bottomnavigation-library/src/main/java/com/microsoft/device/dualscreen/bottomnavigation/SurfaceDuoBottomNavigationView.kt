@@ -7,10 +7,12 @@ package com.microsoft.device.dualscreen.bottomnavigation
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.BaseInterpolator
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.microsoft.device.dualscreen.core.DisplayPosition
@@ -35,6 +37,9 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
     private var displayPosition = DisplayPosition.DUAL
     private var screenMode = ScreenMode.DUAL_SCREEN
 
+    private var useAnimations = true
+    private var animationInterpolator: BaseInterpolator = AccelerateDecelerateInterpolator()
+
     private var setEmptyAreaToTransparent = false
     private var initialBackground: Drawable? = null
 
@@ -43,9 +48,23 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
             return displayPosition
         }
         set(value) {
-            displayPosition = value
-            requestLayout()
-            updateBackground()
+            updateDisplayPosition(value)
+        }
+
+    var surfaceDuoUseAnimation: Boolean
+        get() {
+            return useAnimations
+        }
+        set(value) {
+            useAnimations = value
+        }
+
+    var surfaceDuoAnimationInterpolator: BaseInterpolator
+        get() {
+            return animationInterpolator
+        }
+        set(value) {
+            animationInterpolator = value
         }
 
     var surfaceDuoTransparentBackground: Boolean
@@ -54,16 +73,30 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
         set(value) {
             setEmptyAreaToTransparent = value
-            updateBackground()
+            tryUpdateBackground()
         }
 
     init {
-        setScreenParameters(context)
-        extractAttributes(context, attrs)
-        updateBackground()
+        getMultiScreenParameters(context)
+        extractAttributes(attrs)
+        tryUpdateBackground()
     }
 
-    private fun extractAttributes(context: Context, attrs: AttributeSet?) {
+    private fun getMultiScreenParameters(context: Context) {
+        ScreenHelper.getHinge(context)?.let {
+            singleScreenWidth = it.left
+        }
+
+        ScreenHelper.getWindowRect(context).let {
+            totalScreenWidth = it.right
+        }
+
+        ScreenHelper.getHinge(context)?.let {
+            hingeWidth = it.right - it.left
+        }
+    }
+
+    private fun extractAttributes(attrs: AttributeSet?) {
         val styledAttributes =
             context.theme.obtainStyledAttributes(
                 attrs,
@@ -94,17 +127,48 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
     }
 
-    private fun setScreenParameters(context: Context) {
-        ScreenHelper.getHinge(context)?.let {
-            singleScreenWidth = it.left
+    private fun updateDisplayPosition(displayPosition: DisplayPosition) {
+        if (!isSpannedInDualScreen(screenMode) || isPortrait()) {
+            return
+        }
+        if (this.displayPosition == displayPosition) {
+            return
         }
 
-        ScreenHelper.getWindowRect(context).let {
-            totalScreenWidth = it.right
+        if (!useAnimations) {
+            this.displayPosition = displayPosition
+            requestLayout()
+            tryUpdateBackground()
+            return
         }
 
-        ScreenHelper.getHinge(context)?.let {
-            hingeWidth = it.right - it.left
+        if (displayPosition == DisplayPosition.DUAL) {
+            this.displayPosition = displayPosition
+            requestLayout()
+            tryUpdateBackground()
+            return
+        }
+
+        animateToNewPosition(displayPosition)
+        this.displayPosition = displayPosition
+        tryUpdateBackground()
+    }
+
+    private fun animateToNewPosition(displayPosition: DisplayPosition) {
+        getChildAt(0)?.let { buttons ->
+            val xPosition = if (displayPosition == DisplayPosition.END) {
+                (hingeWidth + singleScreenWidth).toFloat()
+            } else {
+                0f
+            }
+
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                buttons.translationX = xPosition
+            } else {
+                buttons.animate()
+                    .setInterpolator(surfaceDuoAnimationInterpolator)
+                    .translationX(xPosition)
+            }
         }
     }
 
@@ -127,14 +191,16 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
             else -> totalScreenWidth
         }
 
-        val gravity = when (displayPosition) {
-            DisplayPosition.START -> Gravity.START
-            DisplayPosition.END -> Gravity.END
-            else -> Gravity.CENTER
-        }
+        val translationX =
+            when (displayPosition) {
+                DisplayPosition.START -> 0
+                DisplayPosition.END -> singleScreenWidth + hingeWidth
+                else -> (singleScreenWidth - hingeWidth) / 2
+            }
 
         val child = getChildAt(0)
-        val remeasure = child.measuredWidth != desiredLength
+        val remeasure =
+            child.measuredWidth != desiredLength || child.translationX != translationX.toFloat()
         if (remeasure) {
             val childHeightMeasureSpec = ViewGroup.getChildMeasureSpec(
                 heightMeasureSpec,
@@ -145,7 +211,8 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
                 MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
             val params = child.layoutParams as LayoutParams
-            params.gravity = gravity
+            params.gravity = Gravity.START
+            child.translationX = translationX.toFloat()
         }
     }
 
@@ -156,30 +223,29 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         super.setBackground(background)
     }
 
-    private fun updateBackground() {
+    private fun tryUpdateBackground() {
         if (!isSpannedInDualScreen(screenMode) || isPortrait() || childCount != 1 || !setEmptyAreaToTransparent) {
             if (background != initialBackground) {
                 background = initialBackground
             }
         } else {
-            background = createHalfTransparentBackground()
+            updateBackground()
         }
     }
 
-    private fun createHalfTransparentBackground(): LayerDrawable {
-        val transparentBackground =
-            ContextCompat.getDrawable(context, R.drawable.background_transparent)
-        val finalBackground = LayerDrawable(arrayOf(initialBackground, transparentBackground))
-
-        if (displayPosition == DisplayPosition.START) {
-            finalBackground.setLayerInset(0, 0, 0, singleScreenWidth + hingeWidth, 0)
-            finalBackground.setLayerInset(1, singleScreenWidth, 0, 0, 0)
+    private fun updateBackground() {
+        when (displayPosition) {
+            DisplayPosition.START,
+            DisplayPosition.END -> {
+                this.background =
+                    ContextCompat.getDrawable(context, R.drawable.background_transparent)
+                getChildAt(0).background = initialBackground
+            }
+            DisplayPosition.DUAL -> {
+                this.background = initialBackground
+                getChildAt(0).background =
+                    ContextCompat.getDrawable(context, R.drawable.background_transparent)
+            }
         }
-
-        if (displayPosition == DisplayPosition.END) {
-            finalBackground.setLayerInset(0, singleScreenWidth + hingeWidth, 0, 0, 0)
-            finalBackground.setLayerInset(1, 0, 0, singleScreenWidth, 0)
-        }
-        return finalBackground
     }
 }

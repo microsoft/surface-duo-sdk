@@ -8,6 +8,7 @@ package com.microsoft.device.dualscreen.sample.bottomnavigation
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.microsoft.device.dualscreen.core.DisplayPosition
@@ -33,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         nav_view.selectedItemId = getSavedNavItem(savedInstanceState)
+
+        nav_view.surfaceDuoUseAnimation = true
+        nav_view.surfaceDuoAnimationInterpolator = OvershootInterpolator()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
