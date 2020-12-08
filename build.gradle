@@ -26,19 +26,16 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            url config.duoSdkUrl
-        }
     }
     apply from: "$rootDir/ktlint.gradle"
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }

@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.microsoft.device.surfaceduo.tests"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation project(':screenmanager:utils')
+    implementation project(commonDependencies.screenManager)
+
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.lifecycleViewmodel
+
+    testImplementation testDependencies.junit
+    testImplementation commonDependencies.googleTruth
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation commonDependencies.googleTruth
+    androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation commonDependencies.mockitoDexMaker
+}

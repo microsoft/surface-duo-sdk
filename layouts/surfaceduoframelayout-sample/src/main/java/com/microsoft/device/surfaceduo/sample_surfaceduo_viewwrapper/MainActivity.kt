@@ -5,25 +5,45 @@
 
 package com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.microsoft.device.dualscreen.core.DisplayPosition
-import com.microsoft.device.dualscreen.core.ScreenHelper
+import com.microsoft.device.dualscreen.DisplayPosition
+import com.microsoft.device.dualscreen.ScreenInfo
+import com.microsoft.device.dualscreen.ScreenInfoListener
+import com.microsoft.device.dualscreen.ScreenManagerProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ScreenInfoListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setButtonsVisibility()
         setListeners()
     }
 
-    private fun setButtonsVisibility() {
-        val visibility = if (ScreenHelper.isDeviceSurfaceDuo(this) &&
-            ScreenHelper.isDualMode(this)
+    override fun onStart() {
+        super.onStart()
+        ScreenManagerProvider.getScreenManager().addScreenInfoListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(this)
+    }
+
+    override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
+        setButtonsVisibility(screenInfo)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        ScreenManagerProvider.getScreenManager().onConfigurationChanged()
+    }
+
+    private fun setButtonsVisibility(screenInfo: ScreenInfo) {
+        val visibility = if (screenInfo.isDualMode()
         ) {
             View.VISIBLE
         } else {

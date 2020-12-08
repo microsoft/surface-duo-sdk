@@ -11,14 +11,16 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.microsoft.device.dualscreen.core.DisplayPosition
-import com.microsoft.device.dualscreen.core.ScreenHelper
-import com.microsoft.device.dualscreen.core.ScreenMode
-import com.microsoft.device.dualscreen.core.isPortrait
-import com.microsoft.device.dualscreen.core.isSpannedInDualScreen
+import com.microsoft.device.dualscreen.DisplayPosition
+import com.microsoft.device.dualscreen.ScreenInfo
+import com.microsoft.device.dualscreen.ScreenInfoListener
+import com.microsoft.device.dualscreen.ScreenManagerProvider
+import com.microsoft.device.dualscreen.ScreenMode
+import com.microsoft.device.dualscreen.isPortrait
+import com.microsoft.device.dualscreen.isSpannedInDualScreen
 
 /**
- * A wrapper layout that positions it's child on the start, end or both screens when the application is spanned on both screens.
+ * A wrapper layout that positions its child on the start, end or both screens when the application is spanned on both screens.
  * This class supports only one child.
  */
 open class SurfaceDuoFrameLayout @JvmOverloads constructor(
@@ -44,9 +46,26 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
             requestLayout()
         }
 
+    private var currentScreenInfo: ScreenInfo? = null
+    private val screenInfoListener = object : ScreenInfoListener {
+        override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
+            currentScreenInfo = screenInfo
+            setScreenParameters(screenInfo)
+        }
+    }
+
     init {
         extractAttributes(context, attrs)
-        setScreenParameters(context)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
     }
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {
@@ -70,16 +89,17 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
         }
     }
 
-    private fun setScreenParameters(context: Context) {
-        ScreenHelper.getHinge(context)?.let {
+    private fun setScreenParameters(screenInfo: ScreenInfo) {
+        screenInfo.getHinge()?.let {
             hingeWidth = it.right - it.left
-        }
-
-        ScreenHelper.getHinge(context)?.let {
             singleScreenWidth = it.left
         }
 
-        ScreenHelper.getWindowRect(context).let {
+        screenInfo.getHinge()?.let {
+            singleScreenWidth = it.left
+        }
+
+        screenInfo.getWindowRect().let {
             totalScreenWidth = it.right
         }
     }
@@ -87,7 +107,8 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        if (!isSpannedInDualScreen(screenMode) || isPortrait()) {
+        val screenInfo = currentScreenInfo
+        if (screenInfo != null && !isSpannedInDualScreen(screenMode, screenInfo) || isPortrait()) {
             return
         }
 
@@ -107,8 +128,7 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
                 paddingTop + paddingBottom,
                 child.layoutParams.height
             )
-            val childWidthMeasureSpec =
-                MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
+            val childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
             val params = child.layoutParams as LayoutParams
             params.gravity = gravity
