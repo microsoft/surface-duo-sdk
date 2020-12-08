@@ -5,14 +5,19 @@
 
 package com.microsoft.device.dualscreen.sample.bottomnavigation
 
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.microsoft.device.dualscreen.core.DisplayPosition
-import com.microsoft.device.dualscreen.core.ScreenHelper
+import com.microsoft.device.dualscreen.DisplayPosition
+import com.microsoft.device.dualscreen.ScreenInfo
+import com.microsoft.device.dualscreen.ScreenInfoListener
+import com.microsoft.device.dualscreen.ScreenManagerProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,12 +25,12 @@ class MainActivity : AppCompatActivity() {
         const val SELECTED_NAV_ITEM = "selected_nav_item"
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setListeners()
-        setButtonsVisibility()
         setBadges()
 
         nav_view.setOnNavigationItemSelectedListener { item: MenuItem ->
@@ -34,9 +39,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         nav_view.selectedItemId = getSavedNavItem(savedInstanceState)
+        nav_view.useTransparentBackground = true
+        nav_view.arrangeButtons(3, 2)
 
-        nav_view.surfaceDuoUseAnimation = true
-        nav_view.surfaceDuoAnimationInterpolator = OvershootInterpolator()
+        nav_view.useAnimation = true
+        nav_view.animationInterpolator = OvershootInterpolator()
+        nav_view.allowFlingGesture = true
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+    }
+
+    private val screenInfoListener = object : ScreenInfoListener {
+        override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
+            setButtonsVisibility(screenInfo)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        ScreenManagerProvider.getScreenManager().onConfigurationChanged()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -61,9 +90,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setButtonsVisibility() {
-        val visibility = if (ScreenHelper.isDeviceSurfaceDuo(this) &&
-            ScreenHelper.isDualMode(this)
+    private fun setButtonsVisibility(screenInfo: ScreenInfo) {
+        val visibility = if (screenInfo.isDualMode()
         ) {
             View.VISIBLE
         } else {
@@ -72,6 +100,7 @@ class MainActivity : AppCompatActivity() {
 
         move_to_start.visibility = visibility
         move_to_end.visibility = visibility
+        span_buttons.visibility = visibility
     }
 
     private fun setListeners() {
@@ -81,14 +110,17 @@ class MainActivity : AppCompatActivity() {
         move_to_end.setOnClickListener {
             moveNavigationView(DisplayPosition.END)
         }
+        span_buttons.setOnClickListener {
+            nav_view.arrangeButtons(2, 3)
+        }
     }
 
     private fun moveNavigationView(displayPosition: DisplayPosition) {
-        nav_view.surfaceDuoDisplayPosition = displayPosition
+        nav_view.displayPosition = displayPosition
     }
 
     private fun setBadges() {
-        var badge = nav_view.getOrCreateBadge(R.id.navigation_alerts)
+        val badge = nav_view.getOrCreateBadge(R.id.navigation_alerts)
         badge.isVisible = true
         // set a random number
         badge.number = 20

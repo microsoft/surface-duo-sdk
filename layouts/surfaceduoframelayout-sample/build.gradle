@@ -25,16 +25,16 @@ android {
 }
 
 dependencies {
+    implementation project(':layouts:layouts-library')
+    implementation project(commonDependencies.screenManager)
+
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.ktxCore
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
-    // Unit Testing
+    implementation androidxDependencies.lifecycleViewmodel
+
     testImplementation testDependencies.junit
-    // Espresso UI Testing
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-alpha02"
-    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-alpha02"
 }

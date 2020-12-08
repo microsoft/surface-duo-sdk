@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tabGravity="fill"
         app:tabMode="fixed"
-        app:setEmptyAreaToTransparent="true" />
+        app:useTransparentBackground="true" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"

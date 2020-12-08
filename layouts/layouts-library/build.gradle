@@ -20,14 +20,17 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner config.testInstrumentationRunner
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
     buildTypes {
         release {
             minifyEnabled false
         }
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 // PUBLISHING CODE
@@ -59,14 +62,22 @@ android {
 //    }
 //}
 dependencies {
+    api project(':screenmanager:utils')
+    compileOnly project(commonDependencies.screenManager)
+
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
-    implementation androidxDependencies.ktxCore
     implementation androidxDependencies.constraintLayout
-    implementation materialDependencies.material
+    implementation androidxDependencies.lifecycleViewmodel
+
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-
-    api project(':core:core-library')
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.testRunner
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+    androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation androidxDependencies.appCompat
+    androidTestImplementation project(commonDependencies.screenManager)
 }

@@ -26,6 +26,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/span_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/span_buttons"
+        app:layout_constraintEnd_toStartOf="@id/move_to_end"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/move_to_end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,14 +48,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
-        app:display_position="start"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        app:setEmptyAreaToTransparent="true"
-        app:tools_application_mode="dual_screen" />
+        app:tools_application_mode="dual_screen"
+        app:useTransparentBackground="true" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"

@@ -27,6 +27,11 @@ android {
             minifyEnabled false
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 // PUBLISHING CODE
@@ -59,16 +64,18 @@ android {
 //}
 
 dependencies {
-    api project(':core:core-library')
+    api project(':screenmanager:utils')
+    compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.appCompat
-    implementation androidxDependencies.ktxCore
-
-    implementation materialDependencies.material
-    api navigationDependencies.uiKtx
+    api materialDependencies.material
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+    androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation project(commonDependencies.screenManager)
 }

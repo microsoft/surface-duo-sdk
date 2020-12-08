@@ -6,8 +6,11 @@
 
 <resources>
     <declare-styleable name="SurfaceDuoBottomNavigationView">
-        <attr name="display_position" />
         <attr name="tools_application_mode" />
-        <attr name="setEmptyAreaToTransparent" format="boolean" />
+
+        <attr name="display_position" />
+        <attr name="useAnimation" />
+        <attr name="allowFlingGesture" />
+        <attr name="useTransparentBackground" />
     </declare-styleable>
 </resources>

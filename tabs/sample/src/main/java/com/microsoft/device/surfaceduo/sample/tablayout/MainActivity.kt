@@ -5,34 +5,52 @@
 
 package com.microsoft.device.surfaceduo.sample.tablayout
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.animation.OvershootInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.microsoft.device.dualscreen.core.DisplayPosition
-import com.microsoft.device.dualscreen.core.ScreenHelper
+import com.microsoft.device.dualscreen.DisplayPosition
+import com.microsoft.device.dualscreen.ScreenInfo
+import com.microsoft.device.dualscreen.ScreenInfoListener
+import com.microsoft.device.dualscreen.ScreenManagerProvider
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ScreenInfoListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        setButtonsVisibility()
         setListeners()
         prepareViewPager()
 
-        tab_layout.surfaceDuoUseAnimation = true
-        tab_layout.surfaceDuoAnimationInterpolator = OvershootInterpolator()
+        tab_layout.arrangeButtons(2, 4)
+        tab_layout.allowFlingGesture = true
     }
 
-    private fun setButtonsVisibility() {
-        val visibility = if (ScreenHelper.isDeviceSurfaceDuo(this) &&
-            ScreenHelper.isDualMode(this)
+    override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
+        setButtonsVisibility(screenInfo)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        ScreenManagerProvider.getScreenManager().onConfigurationChanged()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ScreenManagerProvider.getScreenManager().addScreenInfoListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(this)
+    }
+
+    private fun setButtonsVisibility(screenInfo: ScreenInfo) {
+        val visibility = if (screenInfo.isDualMode()
         ) {
             View.VISIBLE
         } else {
@@ -52,12 +70,12 @@ class MainActivity : AppCompatActivity() {
             moveTabLayout(DisplayPosition.END)
         }
         move_to_middle.setOnClickListener {
-            moveTabLayout(DisplayPosition.DUAL)
+            tab_layout.arrangeButtons(4, 2)
         }
     }
 
     private fun moveTabLayout(displayPosition: DisplayPosition) {
-        tab_layout.surfaceDuoDisplayPosition = displayPosition
+        tab_layout.displayPosition = displayPosition
     }
 
     private fun prepareViewPager() {

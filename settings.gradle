@@ -2,12 +2,18 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License.
  */
+include ':screenmanager:tests'
+include ':screenmanager:utils'
+include ':screenmanager:core'
 
-include ':core:core-library'
-include ':core:surfaceduoscreenmanager-sample'
+include ':screenmanager:dm:library'
+include ':screenmanager:dm:sample'
 
-include ':duolayoutmanager:duolayoutmanager-library'
-include ':duolayoutmanager:sample'
+include ':screenmanager:wm:library'
+include ':screenmanager:wm:sample'
+
+include ':recyclerview:recyclerview-library'
+include ':recyclerview:sample'
 
 include ':bottomnavigation:bottomnavigation-library'
 include ':bottomnavigation:sample'

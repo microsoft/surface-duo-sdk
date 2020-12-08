@@ -10,7 +10,7 @@
 
     <string name="move_tab_layout_start">Move to Start</string>
     <string name="move_tab_layout_end">Move to End</string>
-    <string name="move_tab_layout_middle">Span</string>
+    <string name="move_tab_layout_middle">Span 4-2</string>
 
     <string name="fragment_no">Fragment no: </string>
 </resources>

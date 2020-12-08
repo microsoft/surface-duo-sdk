@@ -13,6 +13,7 @@
     <string name="title_alerts">Alerts</string>
 
     <string name="move_view_to_start">Move to start</string>
+    <string name="span_buttons">Span 2-3</string>
     <string name="move_view_to_end">Move to end</string>
     <string name="move_view_to_middle">Span</string>
 
