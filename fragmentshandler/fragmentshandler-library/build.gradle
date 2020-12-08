@@ -27,6 +27,10 @@ android {
             minifyEnabled false
         }
     }
+
+    configurations.all {
+        resolutionStrategy.force androidxDependencies.lifecycleViewmodel
+    }
 }
 
 // PUBLISHING CODE
@@ -59,12 +63,21 @@ android {
 //}
 
 dependencies {
+    api project(':screenmanager:utils')
+    compileOnly project(commonDependencies.screenManager)
+
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
-    implementation androidxDependencies.ktxCore
+
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-
-    api project(':core:core-library')
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation commonDependencies.googleTruth
+    androidTestImplementation androidxDependencies.ktxCore
+    androidTestImplementation androidxDependencies.lifecycleViewmodel
+    androidTestImplementation project(':screenmanager:utils')
+    androidTestImplementation project(':layouts:layouts-library')
+    androidTestImplementation project(commonDependencies.screenManager)
 }

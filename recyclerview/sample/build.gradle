@@ -1,0 +1,41 @@
+/*
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License.
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.microsoft.device.dualscreen.sample_recyclerview"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+    }
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+    }
+}
+
+dependencies {
+    implementation project(':recyclerview:recyclerview-library')
+    implementation project(commonDependencies.screenManager)
+
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.constraintLayout
+
+    testImplementation testDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+}

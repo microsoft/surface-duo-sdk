@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ *
+ */
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven-publish'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+    }
+}
+
+// PUBLISHING CODE
+//task sourceJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier "sources"
+//}
+//
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            mylibrary(MavenPublication) {
+//                from components.release
+//                groupId 'com.microsoft.device.dualscreen'
+//                artifactId 'core'
+//                version '1.0.0-alpha01'
+//                artifact(sourceJar)
+//            }
+//        }
+//        repositories {
+//            maven {
+//                url REPO_URL
+//                credentials {
+//                    username USERNAME
+//                    password PASSWORD
+//                }
+//            }
+//        }
+//    }
+//}
+
+dependencies {
+    api project(path: ':screenmanager:core')
+
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.window
+    implementation androidxDependencies.ktxCore
+
+    testImplementation testDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+}
+

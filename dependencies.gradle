@@ -5,19 +5,16 @@
  */
 
 ext {
-    gradlePluginVersion = "4.0.0"
-    kotlinVersion = "1.3.72"
+    gradlePluginVersion = "4.1.1"
+    kotlinVersion = "1.4.10"
     compileSdkVersion = 29
     buildToolsVersion = '29.0.3'
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 21
 
-
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-            duoSdkUrl                :
-                    "https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1",
             testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner"
     ]
 
@@ -25,28 +22,39 @@ ext {
             kotlinStdlib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     ]
 
-    // Display Mask
-    displayMaskVersion = "0.3.0"
-
-    microsoftDependencies = [
-            displayMask: "com.microsoft.device.display:display-mask:$displayMaskVersion"
-    ]
-
     //AndroidX versions
-    appCompatVersion = "1.1.0"
+    appCompatVersion = "1.2.0"
     constraintLayoutVersion = "1.1.3"
-    ktxCoreVersion = "1.2.0"
+    ktxCoreVersion = "1.3.1"
+    windowVersion = "1.0.0-alpha01"
+    lifecycleVersion = "2.2.0"
+    recycleViewVersion = "1.1.0"
 
     androidxDependencies = [
-            appCompat       : "androidx.appcompat:appcompat:$appCompatVersion",
-            constraintLayout: "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
-            ktxCore         : "androidx.core:core-ktx:$ktxCoreVersion",
+            appCompat         : "androidx.appcompat:appcompat:$appCompatVersion",
+            constraintLayout  : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
+            ktxCore           : "androidx.core:core-ktx:$ktxCoreVersion",
+            window            : "androidx.window:window:$windowVersion",
+            lifecycleViewmodel: "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion",
+            recycleView       : "androidx.recyclerview:recyclerview:$recycleViewVersion"
     ]
 
     //Material Design
     materialVersion = "1.1.0"
     materialDependencies = [
-            material       : "com.google.android.material:material:$materialVersion"
+            material: "com.google.android.material:material:$materialVersion"
+    ]
+
+    googleTruthVersion = "1.0.1"
+    mockitoVersion = "3.3.3"
+    mockitoDexMakerVersion = "2.28.0"
+    screenManagerVersion = "wm"
+
+    commonDependencies = [
+            googleTruth    : "com.google.truth:truth:$googleTruthVersion",
+            mockitoCore    : "org.mockito:mockito-core:$mockitoVersion",
+            mockitoDexMaker: "com.linkedin.dexmaker:dexmaker-mockito:$mockitoDexMakerVersion",
+            screenManager  : ":screenmanager:$screenManagerVersion:library"
     ]
 
     // Navigation version
@@ -73,10 +81,15 @@ ext {
     junitInstrumentationVersion = "1.1.1"
     espressoCoreVersion = "3.2.0"
     testRunnerVersion = "1.2.0"
+    testRulesVersion = "1.2.0"
+    uiAutomatorVersion = "2.2.0"
+    supportTestRulesVersion = "1.0.2"
 
     instrumentationTestDependencies = [
             junit       : "androidx.test.ext:junit:$junitInstrumentationVersion",
             espressoCore: "androidx.test.espresso:espresso-core:$espressoCoreVersion",
-            testRunner  : "androidx.test:runner:$testRunnerVersion"
+            testRunner  : "androidx.test:runner:$testRunnerVersion",
+            testRules   : "androidx.test:rules:$testRulesVersion",
+            uiAutomator : "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion",
     ]
 }
