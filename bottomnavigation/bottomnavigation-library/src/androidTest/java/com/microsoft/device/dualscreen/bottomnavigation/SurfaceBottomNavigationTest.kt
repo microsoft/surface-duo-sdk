@@ -105,6 +105,9 @@ class SurfaceBottomNavigationTest {
     @Test
     fun testSwipeLeft() {
         spanApplication()
+        screenInfoListener.waitForScreenInfoChanges()
+        screenInfoListener.resetScreenInfoCounter()
+
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.nav_view)).perform(ViewActions.swipeLeft())
@@ -114,6 +117,9 @@ class SurfaceBottomNavigationTest {
     @Test
     fun testSwipeRight() {
         spanApplication()
+        screenInfoListener.waitForScreenInfoChanges()
+        screenInfoListener.resetScreenInfoCounter()
+
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.nav_view)).perform(ViewActions.swipeRight())
