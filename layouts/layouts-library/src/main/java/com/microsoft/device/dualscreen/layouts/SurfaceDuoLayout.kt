@@ -15,13 +15,19 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.microsoft.device.dualscreen.core.ScreenMode
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import com.microsoft.device.dualscreen.ScreenInfoProvider
+import com.microsoft.device.dualscreen.ScreenMode
+import com.microsoft.device.dualscreen.Version
+import com.microsoft.device.dualscreen.getScreenRectangles
+import com.microsoft.device.dualscreen.screenMode
 
 /**
  * Class that is the root view of the layout containers for different screen modes.
@@ -39,9 +45,17 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
     constructor(context: Context, config: Config) : this(context, null, 0, config)
 
     private lateinit var surfaceDuoLayoutStatusHandler: SurfaceDuoLayoutStatusHandler
+    private lateinit var viewModel: SurfaceDuoLayoutViewModel
 
     init {
-        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        if (context !is ViewModelStoreOwner) {
+            throw RuntimeException(
+                "Context must implement androidx.lifecycle.ViewModelStoreOwner " +
+                    "or should extend androidx.fragment.app.FragmentActivity or androidx.appcompat.app.AppCompatActivity"
+            )
+        }
+
+        layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
         gravity = Gravity.BOTTOM
 
         if (attrs != null) {
@@ -55,11 +69,48 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         } else {
             createView(config)
         }
+
+        setupViewModel()
+        addContent()
+    }
+
+    /**
+     * Creates the view model and initialise his internal state
+     */
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(context as ViewModelStoreOwner).get(SurfaceDuoLayoutViewModel::class.java)
+        val screenInfo = ScreenInfoProvider.getScreenInfo(context)
+        val hingeRect = when (ScreenInfoProvider.version) {
+            Version.DisplayMask -> screenInfo.getHinge()
+            Version.WindowManager -> viewModel.screenState.hingeRect
+        }
+        val spanningMode = when (ScreenInfoProvider.version) {
+            Version.DisplayMask -> screenInfo.screenMode
+            Version.WindowManager -> viewModel.screenState.screenMode
+        }
+        viewModel.screenState = ScreenSavedState(
+            spanningMode,
+            getScreenRectangles(hingeRect, screenInfo.getWindowRect()),
+            hingeRect,
+            screenInfo.getScreenRotation()
+        )
+    }
+
+    /**
+     * Adds the layout containers depending on view model screen state.
+     */
+    private fun addContent() {
+        surfaceDuoLayoutStatusHandler.addViewsDependingOnSpanningMode(viewModel.screenState)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        val screenInfo = ScreenInfoProvider.getScreenInfo(context)
+        viewModel.screenState = viewModel.screenState.copy(screenMode = screenInfo.screenMode, hingeRect = screenInfo.getHinge())
     }
 
     private fun readAttributes(context: Context, attrs: AttributeSet?): TypedArray {
-        val styledAttributes =
-            context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoLayout, 0, 0)
+        val styledAttributes = context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoLayout, 0, 0)
         try {
             createConfiguration(styledAttributes)
         } finally {
@@ -107,16 +158,19 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
      * @param config The configuration of the SurfaceDuoLayout
      */
     private fun createView(config: Config) {
-        surfaceDuoLayoutStatusHandler = SurfaceDuoLayoutStatusHandler(
-            this.context,
-            this,
-            config
-        )
+        surfaceDuoLayoutStatusHandler = SurfaceDuoLayoutStatusHandler(this.context, this, config)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        surfaceDuoLayoutStatusHandler.onConfigurationChanged(this, newConfig)
+        val screenInfo = ScreenInfoProvider.getScreenInfo(context)
+        viewModel.screenState = ScreenSavedState(
+            screenInfo.screenMode,
+            screenInfo.getScreenRectangles(),
+            screenInfo.getHinge(),
+            screenInfo.getScreenRotation()
+        )
+        surfaceDuoLayoutStatusHandler.onConfigurationChanged(this, newConfig, viewModel.screenState)
     }
 
     /**
@@ -182,11 +236,8 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         init {
             when (screenMode) {
                 ScreenMode.SINGLE_SCREEN -> {
-                    val singleScreenView = LayoutInflater
-                        .from(context)
-                        .inflate(config.singleScreenLayoutId, null)
-                    singleScreenView.layoutParams =
-                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    val singleScreenView = LayoutInflater.from(context).inflate(config.singleScreenLayoutId, null)
+                    singleScreenView.layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
                     this@SurfaceDuoLayout.orientation = VERTICAL
                     this@SurfaceDuoLayout.addView(singleScreenView)
                 }
@@ -202,29 +253,19 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
 
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    hinge.layoutParams = LayoutParams(
-                        HINGE_DIMENSION,
-                        LayoutParams.MATCH_PARENT
-                    )
+                    hinge.layoutParams = LayoutParams(HINGE_DIMENSION, MATCH_PARENT)
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    hinge.layoutParams = LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        HINGE_DIMENSION
-                    )
+                    hinge.layoutParams = LayoutParams(MATCH_PARENT, HINGE_DIMENSION)
                 }
             }
 
             when (hingeColor) {
                 HingeColor.BLACK -> {
-                    hinge.background = ColorDrawable(
-                        ContextCompat.getColor(context, R.color.black)
-                    )
+                    hinge.background = ColorDrawable(ContextCompat.getColor(context, R.color.black))
                 }
                 HingeColor.WHITE -> {
-                    hinge.background = ColorDrawable(
-                        ContextCompat.getColor(context, R.color.white)
-                    )
+                    hinge.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
                 }
             }
             return hinge
@@ -232,10 +273,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
 
         private fun addDualScreenPreview() {
             this@SurfaceDuoLayout.weightSum = 2F
-            this@SurfaceDuoLayout.layoutParams = LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT
-            )
+            this@SurfaceDuoLayout.layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 if (config.dualPortraitSingleLayoutId != View.NO_ID) {
@@ -257,53 +295,23 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
 
             val hingeConstraintSet = ConstraintSet()
             hingeConstraintSet.clone(root)
-            hingeConstraintSet.connect(
-                view.id,
-                ConstraintSet.TOP,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP,
-                0
-            )
-            hingeConstraintSet.connect(
-                view.id,
-                ConstraintSet.LEFT,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.LEFT,
-                0
-            )
-            hingeConstraintSet.connect(
-                view.id,
-                ConstraintSet.RIGHT,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.RIGHT,
-                0
-            )
-            hingeConstraintSet.connect(
-                view.id,
-                ConstraintSet.BOTTOM,
-                ConstraintSet.PARENT_ID,
-                ConstraintSet.BOTTOM,
-                0
-            )
+            hingeConstraintSet.connect(view.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
+            hingeConstraintSet.connect(view.id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
+            hingeConstraintSet.connect(view.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
+            hingeConstraintSet.connect(view.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
             hingeConstraintSet.applyTo(root)
         }
 
         private fun getSingleContainerLayout(): View {
             return when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    LayoutInflater.from(context).inflate(
-                        config.dualPortraitSingleLayoutId,
-                        null
-                    ).apply {
+                    LayoutInflater.from(context).inflate(config.dualPortraitSingleLayoutId, null).apply {
                         id = View.generateViewId()
                         layoutParams = LayoutParams(0, 0)
                     }
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    LayoutInflater.from(context).inflate(
-                        config.dualLandscapeSingleLayoutId,
-                        null
-                    ).apply {
+                    LayoutInflater.from(context).inflate(config.dualLandscapeSingleLayoutId, null).apply {
                         id = View.generateViewId()
                         layoutParams = LayoutParams(0, 0)
                     }
@@ -317,10 +325,7 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
         private fun addDualScreenSingleContainerPreview() {
             val rootContainer = ConstraintLayout(context)
             rootContainer.id = View.generateViewId()
-            rootContainer.layoutParams = ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
+            rootContainer.layoutParams = ConstraintLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
             val hinge = createHingePreview(hingeColor)
             applyParentConstraintsToView(hinge, rootContainer)
@@ -343,21 +348,13 @@ open class SurfaceDuoLayout @JvmOverloads constructor(
             when (resources.configuration.orientation) {
                 Configuration.ORIENTATION_LANDSCAPE -> {
                     this@SurfaceDuoLayout.orientation = HORIZONTAL
-                    val params = LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        1F
-                    )
+                    val params = LayoutParams(0, MATCH_PARENT, 1F)
                     dualScreenStartView.layoutParams = params
                     dualScreenEndView.layoutParams = params
                 }
                 Configuration.ORIENTATION_PORTRAIT -> {
                     this@SurfaceDuoLayout.orientation = VERTICAL
-                    val params = LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        0,
-                        1F
-                    )
+                    val params = LayoutParams(MATCH_PARENT, 0, 1F)
                     dualScreenStartView.layoutParams = params
                     dualScreenEndView.layoutParams = params
                 }

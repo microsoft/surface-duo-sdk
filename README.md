@@ -6,51 +6,79 @@ Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelin
 
 ## Add to your project
 
-1. Add the maven repository to the top-level **build.gradle** file:
+1. Make sure you have **jcenter()** repository in your top level **build.gradle** file:
 
     ```gradle
     allprojects {
-       repositories {
-           maven {
-               url "https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1"
-           }
-       }
+        repositories {
+            google()
+            jcenter()
+         }
     }
     ```
 
-2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here). There are multiple libraries available - you should always reference **Core** plus any additional libraries you plan to use:
+2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here). There are multiple libraries available - you should always reference **ScreenManager** plus any additional libraries you plan to use:
 
-    **Core**
+    **ScreenManager**
+
+    If you want to choose the version that uses Display Mask API, then you should add the following lines to your gradle file.
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:core:1.0.0-alpha01"
+    implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta1"
+    ```
+
+    or if you want to choose the version that uses Window Manager API, then you should add the following lines.
+
+    ```gradle
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta1"
     ```
 
     **Bottom navigation**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-alpha03"
+    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta1"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta1"
+    // Or, if you want to use the screen manager with display mask version
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta1"
     ```
 
     **Fragments handler**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-alpha02"
+    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta1"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta1"
+    // Or, if you want to use the screen manager with display mask version
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta1"
     ```
 
     **Layouts**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-alpha02"
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta1"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta1"
+    // Or, if you want to use the screen manager with display mask version
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta1"
     ```
 
     **Tabs**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-alpha04"
+    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-beta1"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta1"
+    // Or, if you want to use the screen manager with display mask version
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta1"
     ```
 
-## Useful links
+    **RecyclerView**
+
+    ```gradle
+    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta1"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta1"
+    // Or, if you want to use the screen manager with display mask version
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta1"
+    ```
+
+### Useful links
 
 - Documentation for these libraries at [dual-screen library](https://docs.microsoft.com/dual-screen/android/api-reference/dualscreen-library/)
 - Surface Duo developer documentation at [docs.microsoft.com/dual-screen](https://docs.microsoft.com/dual-screen).

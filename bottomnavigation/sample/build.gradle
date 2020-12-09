@@ -24,17 +24,15 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':bottomnavigation:bottomnavigation-library')
+    implementation project(commonDependencies.screenManager)
+
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.ktxCore
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
-    implementation navigationDependencies.fragmentKtx
-    implementation navigationDependencies.uiKtx
-    // Unit Testing
+
     testImplementation testDependencies.junit
-    // Espresso UI Testing
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-
-    implementation 'com.microsoft.device.dualscreen:bottomnavigation:1.0.0-alpha03'
 }

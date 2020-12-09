@@ -8,13 +8,17 @@ package com.microsoft.device.dualscreen.fragmentshandler
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 
 /**
  * Swaps FragmentManagerState depending on the device's screen mode
  */
 internal class FragmentManagerStateWrapper {
-    private var singleScreenFragmentManagerState: Parcelable? = null
-    private var dualScreenFragmentManagerState: Parcelable? = null
+    @VisibleForTesting
+    var singleScreenFragmentManagerState: Parcelable? = null
+
+    @VisibleForTesting
+    var dualScreenFragmentManagerState: Parcelable? = null
 
     /**
      * Swap single screen mode FragmentManagerState with dual screen mode FragmentManagerState
@@ -37,6 +41,7 @@ internal class FragmentManagerStateWrapper {
     }
 
     companion object {
-        private const val FM_STATE_KEY = "android:support:fragments"
+        @VisibleForTesting
+        const val FM_STATE_KEY = "android:support:fragments"
     }
 }
