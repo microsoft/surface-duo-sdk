@@ -19,6 +19,11 @@ interface ScreenInfo {
     fun getHinge(): Rect?
 
     /**
+     * Updates the hinge rectangle if it's null
+     */
+    fun updateHingeIfNull()
+
+    /**
      * Check if the device is SurfaceDuo
      * @return [true] if the device is SurfaceDuo, false otherwise
      */

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.layouts
+package com.microsoft.device.dualscreen.layouts.utils
 
 import android.content.res.Configuration
 import android.view.View
@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.DisplayPosition
+import com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher

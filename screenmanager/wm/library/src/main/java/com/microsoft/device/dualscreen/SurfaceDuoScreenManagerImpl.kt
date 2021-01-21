@@ -7,7 +7,6 @@ package com.microsoft.device.dualscreen
 
 import android.app.Activity
 import android.app.Application
-import androidx.core.view.doOnAttach
 import androidx.core.view.doOnNextLayout
 
 /**
@@ -27,7 +26,6 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
         override fun onActivityDestroyed(activity: Activity) {
             super.onActivityDestroyed(activity)
             currentActivity = null
-            currentScreenInfo = null
         }
     }
 
@@ -55,11 +53,17 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      * @param activity the current activity
      */
     private fun onActivityStarted(activity: Activity) {
-        currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity)
-        currentScreenInfo?.let {
-            notifyObservers(it)
+        currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity).also { screenInfo ->
+            notifyObservers(screenInfo)
+
+            currentActivity?.doOnAttach {
+                screenInfo.updateHingeIfNull()
+            }
         }
     }
+
+    override val lastKnownScreenInfo: ScreenInfo?
+        get() = currentScreenInfo
 
     /**
      * Add a new listener for changes to the screen info.
@@ -70,13 +74,9 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
             screenInfoListeners.add(it)
         }
 
-        currentActivity?.run {
-            val rootView = window?.decorView?.rootView
-            val screenInfo = currentScreenInfo ?: ScreenInfoProvider.getScreenInfo(this)
-
-            rootView?.doOnAttach {
-                listener?.onScreenInfoChanged(screenInfo)
-            }
+        currentActivity?.doOnAttach {
+            val screenInfo = currentScreenInfo ?: ScreenInfoProvider.getScreenInfo(it)
+            listener?.onScreenInfoChanged(screenInfo)
         }
     }
 

@@ -7,7 +7,9 @@ package com.microsoft.device.dualscreen.layouts
 
 import android.graphics.Rect
 import android.view.Surface
+import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.ScreenMode
+import com.microsoft.device.dualscreen.screenMode
 
 /**
  * Internal application screen state.
@@ -17,7 +19,8 @@ internal data class ScreenSavedState(
     /**
      * Application spanning mode. Can be one of the following values [ScreenMode.SINGLE_SCREEN] or [ScreenMode.DUAL_SCREEN]
      */
-    val screenMode: ScreenMode = ScreenMode.SINGLE_SCREEN,
+    val screenMode: ScreenMode = ScreenManagerProvider.getScreenManager().lastKnownScreenInfo?.screenMode
+        ?: ScreenMode.SINGLE_SCREEN,
 
     /**
      * Contains only one screen rectangle, if the application spanning mode is [ScreenMode.SINGLE_SCREEN],
@@ -28,7 +31,8 @@ internal data class ScreenSavedState(
     /**
      * Contains the hinge coordinates.
      */
-    val hingeRect: Rect? = Rect(0, 0, 0, 0),
+    val hingeRect: Rect? = ScreenManagerProvider.getScreenManager().lastKnownScreenInfo?.getHinge()
+        ?: Rect(0, 0, 0, 0),
 
     /**
      * The application orientation.

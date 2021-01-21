@@ -35,7 +35,7 @@ internal class ScreenInfoImpl(context: Context) : AbstractScreenInfo(context) {
      * Returns coordinates for hinge location
      * @return [Rect] object with hinge coordinates or null if device is not SurfaceDuo
      */
-    override fun getHinge(): Rect? {
+    override fun extractHinge(): Rect? {
         // Hinge's coordinates of its 4 edges in different mode
         // Dual Landscape Rect(0, 1350 - 1800, 1434)
         // Dual Portrait  Rect(1350, 0 - 1434, 1800)

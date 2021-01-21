@@ -25,6 +25,7 @@ android {
 
 dependencies {
     implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.ktxCore
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit

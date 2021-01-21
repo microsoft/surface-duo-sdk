@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.layouts
+package com.microsoft.device.dualscreen.layouts.utils
 
 import android.content.res.Configuration
 import android.os.Bundle

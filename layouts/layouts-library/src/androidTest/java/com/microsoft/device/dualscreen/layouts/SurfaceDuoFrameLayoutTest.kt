@@ -13,6 +13,10 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.layouts.test.R
+import com.microsoft.device.dualscreen.layouts.utils.SimpleDuoFrameLayoutActivity
+import com.microsoft.device.dualscreen.layouts.utils.changeDisplayPosition
+import com.microsoft.device.dualscreen.layouts.utils.isFrameLayoutOnScreen
+import com.microsoft.device.dualscreen.layouts.utils.spanApplication
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

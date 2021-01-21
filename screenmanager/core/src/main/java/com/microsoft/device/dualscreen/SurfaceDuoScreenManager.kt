@@ -12,6 +12,11 @@ import android.app.Activity
  */
 interface SurfaceDuoScreenManager {
     /**
+     * The most recent screen info
+     */
+    val lastKnownScreenInfo: ScreenInfo?
+
+    /**
      * Add a new listener for changes to the screen info.
      * @param listener the listener to be added
      */

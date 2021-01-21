@@ -18,6 +18,11 @@ import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.layouts.utils.SimpleDuoLayoutActivity
+import com.microsoft.device.dualscreen.layouts.utils.changeOrientation
+import com.microsoft.device.dualscreen.layouts.utils.isViewOnScreen
+import com.microsoft.device.dualscreen.layouts.utils.resetOrientation
+import com.microsoft.device.dualscreen.layouts.utils.spanApplication
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
