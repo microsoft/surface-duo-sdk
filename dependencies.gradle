@@ -5,17 +5,50 @@
  */
 
 ext {
+
+    //---- Important -------------------
+    // We have to update following versionName and versionCode
+    // groups in order to publish correctly a new version
+    // of our libraries. Please, do this as last commit on the
+    // PR that will target the release
+
+    // SurfaceDuo SDK libraries version code, we can increase them in one with every new release
+    screenManagerCoreVersionCode = 1
+    screenManagerDMVersionCode = 1
+    screenManagerWMVersionCode = 1
+    screenManagerUtilsVersionCode = 1
+    layoutsVersionCode = 1
+    fragmentsHandlerVersionCode = 1
+    bottomNavigationVersionCode = 1
+    tabsVersionCode = 1
+    recyclerviewVersionCode = 1
+
+    // SurfaceDuo SDK libraries version name
+    screenManagerCoreVersionName = '1.0.0-beta1'
+    screenManagerDMVersionName = '1.0.0-beta1'
+    screenManagerWMVersionName = '1.0.0-beta1'
+    screenManagerUtilsVersionName = '1.0.0-beta1'
+    layoutsVersionName = '1.0.0-beta1'
+    fragmentsHandlerVersionName = '1.0.0-beta1'
+    bottomNavigationVersionName = '1.0.0-beta1'
+    tabsVersionName = '1.0.0-beta1'
+    recyclerviewVersionName = '1.0.0-beta1'
+    // ----------------------------------
+
+    //Config Android sdk, plugins and libraries version
     gradlePluginVersion = "4.1.1"
     kotlinVersion = "1.4.10"
     compileSdkVersion = 29
     buildToolsVersion = '29.0.3'
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 21
+    bintrayPluginVersion = '1.8.5'
 
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner"
+            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner",
+            bintrayPlugin            : "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayPluginVersion"
     ]
 
     kotlinDependencies = [

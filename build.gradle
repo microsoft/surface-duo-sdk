@@ -19,6 +19,7 @@ buildscript {
     dependencies {
         classpath config.gradlePlugin
         classpath config.kotlinGradlePlugin
+        classpath config.bintrayPlugin
     }
 }
 
@@ -38,4 +39,18 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Used to get the value of a local property or if not found the value that could
+// be stored in the repo settings as a token.
+String getPropertyValue(String property) {
+    def localPropertyFound = project.hasProperty(property)
+    def envProperty = System.getenv(property)
+    if (localPropertyFound) {
+        return project.getProperties().get(property)
+    } else if (envProperty != null) {
+        return envProperty
+    } else {
+        return "NO_VALUE"
+    }
 }
