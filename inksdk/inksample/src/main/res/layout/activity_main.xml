@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:InkView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity">
+
+    
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.microsoft.device.ink.InkView
+            android:id="@+id/inkView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            InkView:enable_pressure="true"
+            InkView:ink_color="@color/black"
+            InkView:max_stroke_width="8"
+            InkView:min_stroke_width="3" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/btnClear"
+        android:layout_width="wrap_content"
+        android:layout_height="@android:dimen/app_icon_size"
+
+        android:onClick="clickClear"
+        android:text="Clear"
+
+
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout" />
+
+    <ImageView
+        android:id="@+id/redColorPick"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:background="#FF0000"
+        android:onClick="setRed"
+        InkView:srcCompat="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/btnClear"
+        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+
+    <ImageView
+        android:id="@+id/greenColorPick"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:background="#00FF00"
+        android:onClick="setGreen"
+        InkView:srcCompat="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/redColorPick"
+        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+
+    <ImageView
+        android:id="@+id/blueColorPick"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:background="#0000FF"
+        android:onClick="setBlue"
+        InkView:srcCompat="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/greenColorPick"
+        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+
+    <ImageView
+        android:id="@+id/backColorPick"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:background="#000000"
+        android:onClick="setBlack"
+        InkView:srcCompat="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/blueColorPick"
+        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+
+
+    <ImageView
+        android:id="@+id/imageCopy"
+        android:layout_width="202dp"
+        android:layout_height="189dp"
+        android:background="#7E7E7E"
+        android:onClick="copyImage"
+        InkView:srcCompat="@android:drawable/ic_menu_gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
