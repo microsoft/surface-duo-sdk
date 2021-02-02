@@ -16,7 +16,7 @@ import com.microsoft.device.ink.InkView
 
 class MainActivity : AppCompatActivity() {
 
-    private var inkView: InkView? = null
+    private lateinit var inkView: InkView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,33 +25,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun clickClear(view: View) {
-        inkView!!.clearInk()
+    fun clickClear() {
+        inkView.clearInk()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setRed(view: View) {
-        inkView!!.setColor(Color.valueOf(Color.RED))
+    fun setRed() {
+        inkView.setColor(Color.valueOf(Color.RED))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setGreen(view: View) {
-        inkView!!.setColor(Color.valueOf(Color.GREEN))
+    fun setGreen() {
+        inkView.setColor(Color.valueOf(Color.GREEN))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setBlue(view: View) {
-        inkView!!.setColor(Color.valueOf(Color.BLUE))
+    fun setBlue() {
+        inkView.setColor(Color.valueOf(Color.BLUE))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setBlack(view: View) {
-        inkView!!.setColor(Color.valueOf(Color.BLACK))
+    fun setBlack() {
+        inkView.setColor(Color.valueOf(Color.BLACK))
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun copyImage(view: View) {
         val image = view as ImageView
-        image.setImageBitmap(inkView!!.saveBitmap())
+        image.setImageBitmap(inkView.saveBitmap())
     }
 }

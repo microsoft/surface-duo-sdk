@@ -17,7 +17,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.annotation.RequiresApi
 
-@RequiresApi(Build.VERSION_CODES.M)
 class InkView constructor(
     context: Context,
     attributeSet: AttributeSet

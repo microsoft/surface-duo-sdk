@@ -6,14 +6,10 @@
 package com.microsoft.device.ink
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.RequiresApi
 import com.google.mlkit.vision.digitalink.Ink
 
-@RequiresApi(Build.VERSION_CODES.M)
 class InputManager(view: View, penInputHandler: PenInputHandler) {
 
     private val inputHandler: PenInputHandler
@@ -50,7 +46,6 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
         val secondaryButtonState: Boolean
     ) {
         companion object {
-            @RequiresApi(Build.VERSION_CODES.M)
             fun createFromEvent(event: MotionEvent): PenInfo {
                 val pointerType: PointerType = when (event.getToolType(0)) {
                     MotionEvent.TOOL_TYPE_FINGER -> PointerType.FINGER
@@ -108,12 +103,9 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("ClickableViewAccessibility")
     private fun setupInputEvents(view: View) {
-
         view.setOnTouchListener { _: View, event: MotionEvent ->
-
             var consumed = true
             val penInfo = PenInfo.createFromEvent(event)
 
@@ -135,11 +127,6 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
             }
 
             consumed
-
         }
-    }
-
-    companion object {
-        private const val TAG = "Ink.InputManager"
     }
 }
