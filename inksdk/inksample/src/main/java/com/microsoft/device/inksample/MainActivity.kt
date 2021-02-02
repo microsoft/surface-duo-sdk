@@ -25,27 +25,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun clickClear() {
+    fun clickClear(view: View) {
         inkView.clearInk()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setRed() {
+    fun setRed(view: View) {
         inkView.setColor(Color.valueOf(Color.RED))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setGreen() {
+    fun setGreen(view: View) {
         inkView.setColor(Color.valueOf(Color.GREEN))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setBlue() {
+    fun setBlue(view: View) {
         inkView.setColor(Color.valueOf(Color.BLUE))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun setBlack() {
+    fun setBlack(view: View) {
         inkView.setColor(Color.valueOf(Color.BLACK))
     }
 
