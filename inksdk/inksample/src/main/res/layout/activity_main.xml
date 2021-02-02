@@ -10,10 +10,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".MainActivity">
 
-    
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="400dp"
@@ -44,11 +42,8 @@
         android:id="@+id/btnClear"
         android:layout_width="wrap_content"
         android:layout_height="@android:dimen/app_icon_size"
-
         android:onClick="clickClear"
         android:text="Clear"
-
-
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintStart_toStartOf="@+id/frameLayout" />
 
@@ -96,7 +91,6 @@
         app:layout_constraintStart_toEndOf="@+id/blueColorPick"
         app:layout_constraintTop_toTopOf="@+id/btnClear" />
 
-
     <ImageView
         android:id="@+id/imageCopy"
         android:layout_width="202dp"
@@ -107,6 +101,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

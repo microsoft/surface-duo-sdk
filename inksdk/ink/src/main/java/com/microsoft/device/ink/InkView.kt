@@ -6,12 +6,18 @@
 package com.microsoft.device.ink
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BlendMode
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import androidx.annotation.RequiresApi
 
+@RequiresApi(Build.VERSION_CODES.M)
 class InkView constructor(
     context: Context,
     attributeSet: AttributeSet
@@ -32,11 +38,11 @@ class InkView constructor(
 
     private var _dynamicPaintHandler: DynamicPaintHandler? = null
 
-    var dynamicPaintHandler: DynamicPaintHandler? = _dynamicPaintHandler
+    var dynamicPaintHandler = _dynamicPaintHandler
         set(value) {
             _dynamicPaintHandler = value
+            field = value
         }
-
 
     interface DynamicPaintHandler {
         fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint
@@ -44,7 +50,6 @@ class InkView constructor(
 
     init {
         //handle attributes
-
         context.theme.obtainStyledAttributes(
             attributeSet,
             R.styleable.InkView,
@@ -61,9 +66,8 @@ class InkView constructor(
             }
         }
 
-        Log.d(TAG, "enable_preasure $enablePressure")
-
         inputManager = InputManager(this, object : InputManager.PenInputHandler {
+            @RequiresApi(Build.VERSION_CODES.Q)
             override fun strokeStarted(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
@@ -72,24 +76,19 @@ class InkView constructor(
                 if (penInfo.pointerType == InputManager.PointerType.PEN_ERASER) {
                     clearInk()
                 }
-
             }
 
             override fun strokeUpdated(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
-                //  Log.i(TAG, "strokeUpdated " + stroke.getPoints().size)
                 invalidate()
-
-
             }
 
             override fun strokeCompleted(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
-                //  Log.i(TAG, "strokeCompleted " + stroke.getPoints().size)
                 drawStroke(drawCanvas, stroke)
                 strokeList += stroke
             }
@@ -104,11 +103,13 @@ class InkView constructor(
             minStrokeWidth,
             resources.displayMetrics
         )
+
         currentStrokePaint.style = Paint.Style.STROKE
         currentStrokePaint.strokeJoin = Paint.Join.ROUND
         currentStrokePaint.strokeCap = Paint.Cap.ROUND
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun clearInk() {
         drawCanvas.drawColor(Color.TRANSPARENT, BlendMode.CLEAR)
         strokeList.clear()
@@ -122,6 +123,7 @@ class InkView constructor(
         return bitmap
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setColor(color: Color) {
         inkColor = color.toArgb()
         currentStrokePaint.color = inkColor
@@ -143,7 +145,7 @@ class InkView constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        var stroke = inputManager.currentStroke
+        val stroke = inputManager.currentStroke
         drawStroke(canvas, stroke)
     }
 
@@ -159,25 +161,16 @@ class InkView constructor(
         for (i in 1 until points.size) {
             val penInfo = stroke.getPenInfo(points[i])
             if (penInfo != null && penInfo.pointerType != InputManager.PointerType.PEN_ERASER) {
-
                 var paint = currentStrokePaint
                 if (_dynamicPaintHandler != null) {
                     paint = _dynamicPaintHandler!!.generatePaintFromPenInfo(penInfo)
-                    Log.i(TAG, "dinamic! ")
                 } else if (enablePressure) {
                     updateStrokeWidth(penInfo.pressure)
-                    Log.i(TAG, "not dinamic! ")
                 }
 
                 canvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, paint)
                 startPoint = points[i]
             }
-
         }
-    }
-
-
-    companion object {
-        private const val TAG = "Ink.InkView"
     }
 }

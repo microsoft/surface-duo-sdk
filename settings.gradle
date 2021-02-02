@@ -2,8 +2,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License.
  */
-include ':inksdk:inksample'
-include ':inksdk:ink'
 include ':screenmanager:tests'
 include ':screenmanager:utils'
 include ':screenmanager:core'
@@ -29,5 +27,8 @@ include ':layouts:surfaceduoframelayout-sample'
 
 include ':tabs:tabs-library'
 include ':tabs:sample'
+
+include ':inksdk:inksample'
+include ':inksdk:ink'
 
 rootProject.name='DuoSDK'

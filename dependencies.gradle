@@ -92,4 +92,9 @@ ext {
             testRules   : "androidx.test:rules:$testRulesVersion",
             uiAutomator : "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion",
     ]
+
+    mlKitVersion = "16.1.0"
+    mlKitDependencies = [
+            digitalInk  : "com.google.mlkit:digital-ink-recognition:$mlKitVersion"
+    ]
 }

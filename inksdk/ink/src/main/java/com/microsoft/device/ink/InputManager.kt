@@ -6,11 +6,14 @@
 package com.microsoft.device.ink
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.RequiresApi
 import com.google.mlkit.vision.digitalink.Ink
 
+@RequiresApi(Build.VERSION_CODES.M)
 class InputManager(view: View, penInputHandler: PenInputHandler) {
 
     private val inputHandler: PenInputHandler
@@ -21,7 +24,6 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
         inputHandler = penInputHandler
         currentStroke.reset()
     }
-
 
     interface PenInputHandler {
         fun strokeStarted(penInfo: PenInfo, stroke: ExtendedStroke)
@@ -47,8 +49,8 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
         val primaryButtonState: Boolean,
         val secondaryButtonState: Boolean
     ) {
-
         companion object {
+            @RequiresApi(Build.VERSION_CODES.M)
             fun createFromEvent(event: MotionEvent): PenInfo {
                 val pointerType: PointerType = when (event.getToolType(0)) {
                     MotionEvent.TOOL_TYPE_FINGER -> PointerType.FINGER
@@ -72,7 +74,6 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
                 )
             }
         }
-
     }
 
     class ExtendedStroke {
@@ -97,9 +98,9 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
             builder = Ink.Stroke.builder()
             penInfos.clear()
         }
-
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("ClickableViewAccessibility")
     private fun setupInputEvents(view: View) {
 
@@ -107,8 +108,6 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
 
             var consumed = true
             val penInfo = PenInfo.createFromEvent(event)
-
-            Log.i(TAG, "Pen Info !$penInfo")
 
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -127,12 +126,10 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
                 else -> consumed = false
             }
 
-
             consumed
 
         }
     }
-
 
     companion object {
         private const val TAG = "Ink.InputManager"

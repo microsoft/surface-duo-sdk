@@ -3,18 +3,20 @@
  *  Licensed under the MIT License.
  */
 
-package com.example.inksample
+package com.microsoft.device.inksample
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.microsoft.device.ink.InkView
 
 class MainActivity : AppCompatActivity() {
 
-    var inkView: InkView? = null
+    private var inkView: InkView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,26 +24,32 @@ class MainActivity : AppCompatActivity() {
         inkView = findViewById(R.id.inkView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun clickClear(view: View) {
         inkView!!.clearInk()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setRed(view: View) {
         inkView!!.setColor(Color.valueOf(Color.RED))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setGreen(view: View) {
         inkView!!.setColor(Color.valueOf(Color.GREEN))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setBlue(view: View) {
         inkView!!.setColor(Color.valueOf(Color.BLUE))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setBlack(view: View) {
         inkView!!.setColor(Color.valueOf(Color.BLACK))
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun copyImage(view: View) {
         val image = view as ImageView
         image.setImageBitmap(inkView!!.saveBitmap())
