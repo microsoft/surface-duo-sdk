@@ -150,15 +150,15 @@ class InkView constructor(
     }
 
     private fun drawStroke(canvas: Canvas, stroke: InputManager.ExtendedStroke) {
-        canvas.drawBitmap(canvasBitmap, 0f, 0f, null)
+
 
         val points = stroke.getPoints()
         if (points.size < 2) {
             return
         }
-        var startPoint = points[0]
+        var startPoint = points[stroke.lastPointReferenced]
 
-        for (i in 1 until points.size) {
+        for (i in stroke.lastPointReferenced+1 until points.size) {
             val penInfo = stroke.getPenInfo(points[i])
             if (penInfo != null && penInfo.pointerType != InputManager.PointerType.PEN_ERASER) {
                 var paint = currentStrokePaint
@@ -168,9 +168,11 @@ class InkView constructor(
                     updateStrokeWidth(penInfo.pressure)
                 }
 
-                canvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, paint)
+                drawCanvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, paint)
                 startPoint = points[i]
             }
         }
+        stroke.lastPointReferenced = points.size-1
+        canvas.drawBitmap(canvasBitmap, 0f, 0f, null)
     }
 }

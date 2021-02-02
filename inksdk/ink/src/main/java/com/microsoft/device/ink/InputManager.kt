@@ -80,6 +80,13 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
         private var builder = Ink.Stroke.builder()
         private var penInfos = HashMap<Int, PenInfo>()
 
+        private var _lastPointReferenced = 0
+        var lastPointReferenced: Int
+            get() = _lastPointReferenced
+            set(value) {
+                _lastPointReferenced = value
+            }
+
         fun addPoint(penInfo: PenInfo) {
             val point = Ink.Point.create(penInfo.x, penInfo.y)
             builder.addPoint(point)
@@ -96,6 +103,7 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
 
         fun reset() {
             builder = Ink.Stroke.builder()
+            lastPointReferenced=0
             penInfos.clear()
         }
     }
