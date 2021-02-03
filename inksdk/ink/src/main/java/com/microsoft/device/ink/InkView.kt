@@ -26,21 +26,28 @@ class InkView constructor(
     private var inputManager: InputManager
     private lateinit var canvasBitmap: Bitmap
     private lateinit var drawCanvas: Canvas
-    private val currentStrokePaint: Paint
+    private val currentStrokePaint = Paint()
     private val strokeList = mutableListOf<InputManager.ExtendedStroke>()
 
     // attributes
     private var enablePressure = false
-    private var inkColor = Color.GRAY
     private var minStrokeWidth = 1f
     private var maxStrokeWidth = 10f
 
     private var _dynamicPaintHandler: DynamicPaintHandler? = null
 
+    // properties
     var dynamicPaintHandler = _dynamicPaintHandler
         set(value) {
             _dynamicPaintHandler = value
             field = value
+        }
+
+    var color = Color.GRAY
+        get() = field
+        set(value) {
+            field = value
+            currentStrokePaint.color = value
         }
 
     interface DynamicPaintHandler {
@@ -57,7 +64,7 @@ class InkView constructor(
 
             try {
                 enablePressure = getBoolean(R.styleable.InkView_enable_pressure, enablePressure)
-                inkColor = getColor(R.styleable.InkView_ink_color, inkColor)
+                color = getColor(R.styleable.InkView_ink_color, color)
                 minStrokeWidth = getFloat(R.styleable.InkView_min_stroke_width, minStrokeWidth)
                 maxStrokeWidth = getFloat(R.styleable.InkView_max_stroke_width, maxStrokeWidth)
             } finally {
@@ -93,8 +100,7 @@ class InkView constructor(
             }
         })
 
-        currentStrokePaint = Paint()
-        currentStrokePaint.color = inkColor
+        currentStrokePaint.color = color
         currentStrokePaint.isAntiAlias = true
         // Set stroke width based on display density.
         currentStrokePaint.strokeWidth = TypedValue.applyDimension(
@@ -120,12 +126,6 @@ class InkView constructor(
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         draw(Canvas(bitmap))
         return bitmap
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun setColor(color: Color) {
-        inkColor = color.toArgb()
-        currentStrokePaint.color = inkColor
     }
 
     private fun updateStrokeWidth(preeasure: Float) {

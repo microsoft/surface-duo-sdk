@@ -6,13 +6,22 @@
 package com.microsoft.device.inksample
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
+import android.widget.Switch
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import com.microsoft.device.ink.InkView
+import com.microsoft.device.ink.InkView.DynamicPaintHandler
+import com.microsoft.device.ink.InputManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,29 +38,60 @@ class MainActivity : AppCompatActivity() {
         inkView.clearInk()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setRed(view: View) {
-        inkView.setColor(Color.valueOf(Color.RED))
+        inkView.color = Color.RED
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setGreen(view: View) {
-        inkView.setColor(Color.valueOf(Color.GREEN))
+        inkView.color = Color.GREEN
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setBlue(view: View) {
-        inkView.setColor(Color.valueOf(Color.BLUE))
+        inkView.color = Color.BLUE
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setBlack(view: View) {
-        inkView.setColor(Color.valueOf(Color.BLACK))
+        inkView.color = Color.BLACK
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun copyImage(view: View) {
         val image = view as ImageView
         image.setImageBitmap(inkView.saveBitmap())
+    }
+
+    fun fancySwitchChanged(view: View) {
+        var switch = view as Switch
+        if (switch.isChecked ){
+            inkView.dynamicPaintHandler = object : DynamicPaintHandler {
+                @RequiresApi(Build.VERSION_CODES.O)
+                override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
+                    var paint = Paint()
+                    val a = penInfo.pressure * 255
+
+
+                    paint.color = Color.argb(
+                        a.toInt(),
+                        inkView.color.red,
+                        inkView.color.green,
+                        inkView.color.blue
+                    )
+                    paint.isAntiAlias = true
+                    // Set stroke width based on display density.
+                    paint.strokeWidth = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        penInfo.pressure * 8 + 3,
+                        resources.displayMetrics
+                    )
+                    paint.style = Paint.Style.STROKE
+                    paint.strokeJoin = Paint.Join.ROUND
+                    paint.strokeCap = Paint.Cap.ROUND;
+
+                    return paint;
+                }
+            }
+        } else {
+            inkView.dynamicPaintHandler = null
+        }
     }
 }

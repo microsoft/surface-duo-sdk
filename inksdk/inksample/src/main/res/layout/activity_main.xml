@@ -10,6 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#918E8E"
     tools:context=".MainActivity">
 
     <FrameLayout
@@ -81,7 +82,7 @@
         app:layout_constraintTop_toTopOf="@+id/btnClear" />
 
     <ImageView
-        android:id="@+id/backColorPick"
+        android:id="@+id/blackColorPick"
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:layout_marginStart="10dp"
@@ -90,6 +91,18 @@
         InkView:srcCompat="@android:drawable/ic_menu_edit"
         app:layout_constraintStart_toEndOf="@+id/blueColorPick"
         app:layout_constraintTop_toTopOf="@+id/btnClear" />
+
+    <Switch
+        android:id="@+id/fancySwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:checked="true"
+        android:onClick="fancySwitchChanged"
+        app:layout_constraintStart_toEndOf="@+id/blackColorPick"
+        app:layout_constraintTop_toTopOf="@+id/btnClear"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
 
     <ImageView
         android:id="@+id/imageCopy"
@@ -101,5 +114,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
