@@ -41,13 +41,15 @@ android {
 }
 
 dependencies {
-
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.ktxCore
     implementation androidxDependencies.appCompat
     implementation materialDependencies.material
+    implementation mlKitDependencies.digitalInk
+
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-    implementation mlKitDependencies.digitalInk
+    testImplementation commonDependencies.mockitoCore
+    androidTestImplementation commonDependencies.mockitoDexMaker
 }

@@ -5,36 +5,37 @@
 
 package com.microsoft.device.ink
 
-import android.os.SystemClock
 import android.view.MotionEvent
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.mockito.Mockito
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class ExampleUnitTest {
     @Test
     fun testPenInfoCreate() {
-    // MotionEvent parameters
-        val downTime = SystemClock.uptimeMillis()
-        val eventTime = SystemClock.uptimeMillis()
-        val action = MotionEvent.ACTION_DOWN
-        val x = 200
-        val y = 200
-        val metaState = 0
+        val x = 200.toFloat()
+        val y = 200.toFloat()
         val pressure = 0.5.toFloat()
-        val size = 0.5.toFloat()
-        val xPrecision = 0.5.toFloat()
-        val yPrecision = 0.5.toFloat()
-        val deviceId = 0
-        val edgeFlags = 0
-        val motionEvent = MotionEvent.obtain(downTime, eventTime, action, x.toFloat(), y.toFloat(), pressure, size, metaState, xPrecision, yPrecision, deviceId, edgeFlags)
+        val tilt = 0.5.toFloat()
+        val orientation = 10.toFloat()
+
+        val motionEvent = Mockito.mock(MotionEvent::class.java)
+        Mockito.`when`(motionEvent.x).thenReturn(x)
+        Mockito.`when`(motionEvent.y).thenReturn(y)
+        Mockito.`when`(motionEvent.getToolType(0)).thenReturn(MotionEvent.TOOL_TYPE_MOUSE)
+        Mockito.`when`(motionEvent.pressure).thenReturn(pressure)
+        Mockito.`when`(motionEvent.getAxisValue(MotionEvent.AXIS_TILT)).thenReturn(tilt)
+        Mockito.`when`(motionEvent.orientation).thenReturn(orientation)
+        Mockito.`when`(motionEvent.buttonState).thenReturn(MotionEvent.BUTTON_PRIMARY)
+
         val penInfo = InputManager.PenInfo.createFromEvent(motionEvent)
         assertEquals(x, penInfo.x)
         assertEquals(y, penInfo.y)
-        assertEquals(InputManager.PointerType.UNKNOWN, penInfo.pointerType)
+        assertEquals(tilt, penInfo.tilt)
+        assertEquals(orientation, penInfo.orientation)
+        assertEquals(InputManager.PointerType.MOUSE, penInfo.pointerType)
+        assertEquals(pressure, penInfo.pressure)
+        assertEquals(true, penInfo.primaryButtonState)
+        assertEquals(false, penInfo.secondaryButtonState)
     }
 }

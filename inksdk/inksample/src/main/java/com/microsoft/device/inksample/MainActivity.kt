@@ -34,23 +34,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun clickClear(view: View) {
+    fun clickClear(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.clearInk()
     }
 
-    fun setRed(view: View) {
+    fun setRed(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.RED
     }
 
-    fun setGreen(view: View) {
+    fun setGreen(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.GREEN
     }
 
-    fun setBlue(view: View) {
+    fun setBlue(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.BLUE
     }
 
-    fun setBlack(view: View) {
+    fun setBlack(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.BLACK
     }
 
