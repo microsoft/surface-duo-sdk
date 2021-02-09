@@ -58,6 +58,7 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
 
             currentActivity?.doOnAttach {
                 screenInfo.updateHingeIfNull()
+                screenInfo.updateScreenModeIfNull()
             }
         }
     }
@@ -109,5 +110,14 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
         screenInfoListeners.forEach {
             it.onScreenInfoChanged(screenInfo)
         }
+    }
+
+    /**
+     * Clears the internal data.
+     */
+    override fun clear() {
+        currentScreenInfo = null
+        currentActivity = null
+        screenInfoListeners.clear()
     }
 }

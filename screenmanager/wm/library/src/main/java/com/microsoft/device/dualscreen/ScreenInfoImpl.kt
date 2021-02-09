@@ -23,7 +23,7 @@ internal class ScreenInfoImpl(context: Context) : AbstractScreenInfo(context) {
      * Check if the device is in Dual-screen mode or not.
      * @return [true] if the device is in dual screen mode, [false] otherwise
      */
-    override fun isDualMode(): Boolean {
+    override fun checkForDualMode(): Boolean {
         return getWindowLayoutInfo()?.displayFeatures?.isEmpty() == false
     }
 

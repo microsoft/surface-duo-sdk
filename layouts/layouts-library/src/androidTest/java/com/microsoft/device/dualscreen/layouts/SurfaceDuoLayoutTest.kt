@@ -37,7 +37,7 @@ class SurfaceDuoLayoutTest {
     private var screenInfoListener = ScreenInfoListenerImpl()
 
     @Before
-    fun reset() {
+    fun before() {
         ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
         resetOrientation()
         screenInfoListener.waitForScreenInfoChanges()
@@ -46,7 +46,7 @@ class SurfaceDuoLayoutTest {
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+        ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfoCounter()
     }
 

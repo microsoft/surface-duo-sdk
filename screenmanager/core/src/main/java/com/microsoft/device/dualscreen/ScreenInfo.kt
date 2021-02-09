@@ -24,6 +24,11 @@ interface ScreenInfo {
     fun updateHingeIfNull()
 
     /**
+     * Updates the screen mode flag if it's null
+     */
+    fun updateScreenModeIfNull()
+
+    /**
      * Check if the device is SurfaceDuo
      * @return [true] if the device is SurfaceDuo, false otherwise
      */

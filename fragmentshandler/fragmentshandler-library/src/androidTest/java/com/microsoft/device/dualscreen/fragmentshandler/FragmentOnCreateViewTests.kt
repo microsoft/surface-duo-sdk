@@ -43,7 +43,8 @@ class FragmentOnCreateViewTests {
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+        unfreezeRotation()
+        ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfo()
         screenInfoListener.resetScreenInfoCounter()
         rule.finishActivity()
@@ -84,7 +85,6 @@ class FragmentOnCreateViewTests {
         rule.activity.resetFragments()
         setOrientationRight()
         testOnCreateView()
-        unfreezeRotation()
     }
 
     @Test
@@ -93,6 +93,5 @@ class FragmentOnCreateViewTests {
         screenInfoListener.resetScreenInfoCounter()
         setOrientationLeft()
         testOnCreateView()
-        unfreezeRotation()
     }
 }

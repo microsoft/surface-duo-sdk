@@ -39,11 +39,17 @@ class FragmentManagerStateHandlerTest {
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+        switchFragmentManagerStateToSingleScreen()
+        unfreezeRotation()
+        ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfo()
         screenInfoListener.resetScreenInfoCounter()
         rule.finishActivity()
         FragmentManagerStateHandler.instance?.clear()
+    }
+
+    private fun switchFragmentManagerStateToSingleScreen() {
+        switchFromDualToSingleScreen()
     }
 
     @Test
@@ -103,8 +109,6 @@ class FragmentManagerStateHandlerTest {
 
         assertThat(rule.lastSavedInstanceState).isNotNull()
         assertThat(rule.fragmentManagerState).isNotNull()
-
-        unfreezeRotation()
     }
 
     @Test
@@ -137,7 +141,6 @@ class FragmentManagerStateHandlerTest {
 
         assertThat(rule.lastSavedInstanceState).isNotNull()
         assertThat(rule.fragmentManagerState).isNotNull()
-        unfreezeRotation()
     }
 }
 
