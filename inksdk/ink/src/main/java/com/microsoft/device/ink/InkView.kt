@@ -13,8 +13,6 @@ import android.util.TypedValue
 import android.view.Surface
 import android.view.TextureView
 import androidx.annotation.RequiresApi
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -31,7 +29,8 @@ class InkView constructor(
     private lateinit var drawCanvas: Canvas
     private val currentStrokePaint = Paint()
     private val strokeList = mutableListOf<InputManager.ExtendedStroke>()
-    private val overidePaint : Paint
+    private val overridePaint : Paint
+    private val clearPaint : Paint
 
     // attributes
     private var enablePressure = false
@@ -73,8 +72,10 @@ class InkView constructor(
             }
         }
         this.surfaceTextureListener = this
-        overidePaint = Paint()
-        overidePaint.blendMode = BlendMode.SRC
+        overridePaint = Paint()
+        overridePaint.blendMode = BlendMode.SRC
+        clearPaint = Paint()
+        clearPaint.blendMode = BlendMode.CLEAR
 
         inputManager = InputManager(this, object : InputManager.PenInputHandler {
             @RequiresApi(Build.VERSION_CODES.Q)
@@ -82,14 +83,6 @@ class InkView constructor(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
-                // Log.i(TAG, "strokeStarted " + stroke.getPoints().size)
-                if (penInfo.pointerType == InputManager.PointerType.PEN_ERASER) {
-
-                        var paint = Paint()
-                        paint.blendMode = BlendMode.CLEAR
-                    drawCanvas.drawCircle(penInfo.x,penInfo.y ,30f ,paint)
-
-                }
                 redrawTexture()
             }
 
@@ -98,13 +91,6 @@ class InkView constructor(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
-                if (penInfo.pointerType == InputManager.PointerType.PEN_ERASER) {
-
-                    var paint = Paint()
-                    paint.blendMode = BlendMode.CLEAR
-                    drawCanvas.drawCircle(penInfo.x,penInfo.y ,30f ,paint)
-
-                }
                 redrawTexture()
             }
 
@@ -147,10 +133,10 @@ class InkView constructor(
         return bitmap
     }
 
-    private fun updateStrokeWidth(preeasure: Float) {
+    private fun updateStrokeWidth(pressure: Float) {
         currentStrokePaint.strokeWidth = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            minStrokeWidth + ((maxStrokeWidth - minStrokeWidth) * preeasure),
+            minStrokeWidth + ((maxStrokeWidth - minStrokeWidth) * pressure),
             resources.displayMetrics
         )
     }
@@ -196,7 +182,7 @@ class InkView constructor(
 
 
         if(strokeList.isEmpty() &&  points.isEmpty()){
-            canvas.drawBitmap(canvasBitmap, 0f, 0f, overidePaint)
+            canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
             return
         }
 
@@ -208,21 +194,29 @@ class InkView constructor(
         var startPoint = points[stroke.lastPointReferenced]
         for (i in stroke.lastPointReferenced+1 until points.size) {
             val penInfo = stroke.getPenInfo(points[i])
-            if (penInfo != null && penInfo.pointerType != InputManager.PointerType.PEN_ERASER) {
-                var paint = currentStrokePaint
-                if (_dynamicPaintHandler != null) {
-                    paint = _dynamicPaintHandler!!.generatePaintFromPenInfo(penInfo)
-                } else if (enablePressure) {
-                    updateStrokeWidth(penInfo.pressure)
+            if (penInfo != null) {
+
+                when {
+                    penInfo.pointerType == InputManager.PointerType.PEN_ERASER -> {
+                        drawCanvas.drawCircle(penInfo.x,penInfo.y ,30f ,clearPaint)
+
+                    }
+                    _dynamicPaintHandler != null -> {
+                        val paint = _dynamicPaintHandler!!.generatePaintFromPenInfo(penInfo)
+                        drawCanvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, paint)
+                    }
+                    enablePressure -> {
+                        updateStrokeWidth(penInfo.pressure)
+                        drawCanvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, currentStrokePaint)
+                    }
                 }
 
-                drawCanvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, paint)
                 startPoint = points[i]
             }
         }
         stroke.lastPointReferenced = points.size-1
         //copy image to the canvas
-        canvas.drawBitmap(canvasBitmap, 0f, 0f, overidePaint)
+        canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
     }
 
     /**

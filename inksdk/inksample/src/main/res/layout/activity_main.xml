@@ -27,6 +27,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:layout_width="230dp"
+            android:layout_height="115dp"
+            android:fontFamily="sans-serif-black"
+            android:text="Textgrmlgmhtrivlgmhtrlighmiltrehgmvil5rthgilervhmgilrhvView"
+            android:textColor="#009688" />
+
+
         <com.microsoft.device.ink.InkView
             android:id="@+id/inkView"
             android:layout_width="match_parent"
@@ -36,6 +44,8 @@
             InkView:ink_color="@color/black"
             InkView:max_stroke_width="8"
             InkView:min_stroke_width="3" />
+
+
 
     </FrameLayout>
 
