@@ -22,19 +22,21 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 
+@RequiresApi(Build.VERSION_CODES.Q)
 class InkView constructor(
     context: Context,
     attributeSet: AttributeSet
 ) :
-    TextureView(context, attributeSet) {
+    TextureView(context, attributeSet), TextureView.SurfaceTextureListener {
 
+    private var mSurface: Surface? = null
+    private var mSurfaceTexture: SurfaceTexture? = null
     private var inputManager: InputManager
     private lateinit var canvasBitmap: Bitmap
     private lateinit var drawCanvas: Canvas
     private val currentStrokePaint = Paint()
     private val strokeList = mutableListOf<InputManager.ExtendedStroke>()
-
-    private lateinit var mRenderer : Renderer
+    private val overidePaint : Paint
 
     // attributes
     private var enablePressure = false
@@ -75,6 +77,9 @@ class InkView constructor(
                 recycle()
             }
         }
+        this.surfaceTextureListener = this
+        overidePaint = Paint()
+        overidePaint.blendMode = BlendMode.SRC
 
         inputManager = InputManager(this, object : InputManager.PenInputHandler {
             @RequiresApi(Build.VERSION_CODES.Q)
@@ -86,13 +91,15 @@ class InkView constructor(
                 if (penInfo.pointerType == InputManager.PointerType.PEN_ERASER) {
                     clearInk()
                 }
+                redrawTexture()
             }
 
+            @RequiresApi(Build.VERSION_CODES.Q)
             override fun strokeUpdated(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
-                invalidate()
+                redrawTexture()
             }
 
             @RequiresApi(Build.VERSION_CODES.Q)
@@ -100,7 +107,7 @@ class InkView constructor(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
-                drawStroke(drawCanvas, stroke)
+                redrawTexture()
                 strokeList += stroke
             }
         })
@@ -124,7 +131,7 @@ class InkView constructor(
         drawCanvas.drawColor(Color.TRANSPARENT, BlendMode.CLEAR)
         strokeList.clear()
         inputManager.currentStroke.reset()
-
+        redrawTexture()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -142,11 +149,32 @@ class InkView constructor(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         canvasBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         drawCanvas = Canvas(canvasBitmap)
-        invalidate()
+        redrawTexture()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun redrawTexture(){
+        val canvas: Canvas = mSurface?.lockCanvas(null) ?: return
+        try {
+            drawIt(canvas)
+        } finally {
+            // Publish the frame.  If we overrun the consumer, frames will be dropped,
+            // so on a sufficiently fast device the animation will run at faster than
+            // the display refresh rate.
+            //
+            // If the SurfaceTexture has been destroyed, this will throw an exception.
+            try {
+                mSurface?.unlockCanvasAndPost(canvas)
+            } catch (iae: IllegalArgumentException) {
+                return
+            }
+        }
+
     }
 
      @RequiresApi(Build.VERSION_CODES.Q)
@@ -160,17 +188,18 @@ class InkView constructor(
 
         val points = stroke.getPoints()
 
+
         if(strokeList.isEmpty() &&  points.isEmpty()){
-            canvas.drawColor(Color.TRANSPARENT, BlendMode.CLEAR)
+            canvas.drawBitmap(canvasBitmap, 0f, 0f, overidePaint)
             return
         }
-
 
         if (points.size < 2) {
             return
         }
-        var startPoint = points[stroke.lastPointReferenced]
 
+        // update the drawCanvas with the latest stroke data
+        var startPoint = points[stroke.lastPointReferenced]
         for (i in stroke.lastPointReferenced+1 until points.size) {
             val penInfo = stroke.getPenInfo(points[i])
             if (penInfo != null && penInfo.pointerType != InputManager.PointerType.PEN_ERASER) {
@@ -186,159 +215,62 @@ class InkView constructor(
             }
         }
         stroke.lastPointReferenced = points.size-1
-        canvas.drawBitmap(canvasBitmap, 0f, 0f, null)
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        mRenderer = Renderer()
-        mRenderer.drawCallback =  object : Renderer.DrawCallback {
-            @RequiresApi(Build.VERSION_CODES.Q)
-            override fun draw(canvas: Canvas) {
-                drawIt(canvas)
-            }
-        }
-
-        mRenderer.start()
-        this.surfaceTextureListener = mRenderer
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        mRenderer.halt()
+        //copy image to the canvas
+        canvas.drawBitmap(canvasBitmap, 0f, 0f, overidePaint)
     }
 
     /**
-     * Handles Canvas rendering and SurfaceTexture callbacks.
+     * Invoked when a [TextureView]'s SurfaceTexture is ready for use.
      *
-     *
-     * We don't create a Looper, so the SurfaceTexture-by-way-of-TextureView callbacks
-     * happen on the UI thread.
+     * @param surface The surface returned by
+     * [android.view.TextureView.getSurfaceTexture]
+     * @param width The width of the surface
+     * @param height The height of the surface
      */
-    private class Renderer : Thread("TextureViewCanvas Renderer"),
-        SurfaceTextureListener {
-        private val mLock = ReentrantLock() // guards mSurfaceTexture, mDone
-        private val condition  = mLock.newCondition()
-        private var mSurfaceTexture: SurfaceTexture? = null
-        private var mDone = false
-        private var mWidth // from SurfaceTexture
-                = 0
-        private var mHeight = 0
-
-
-        private var _drawCallback: DrawCallback? = null
-        var drawCallback = _drawCallback
-            set(value) {
-                _drawCallback = value
-                field = value
-            }
-        interface DrawCallback {
-            fun draw(canvas: Canvas)
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+        mSurfaceTexture = surface
+        if (surface != null){
+            mSurface = Surface(surface)
+        } else {
+            mSurface?.release()
+            mSurface = null
         }
 
+    }
 
-        override fun run() {
-            while (true) {
-                var surfaceTexture: SurfaceTexture? = null
+    /**
+     * Invoked when the [SurfaceTexture]'s buffers size changed.
+     *
+     * @param surface The surface returned by
+     * [android.view.TextureView.getSurfaceTexture]
+     * @param width The new width of the surface
+     * @param height The new height of the surface
+     */
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
 
-                // Latch the SurfaceTexture when it becomes available.  We have to wait for
-                // the TextureView to create it.
-                mLock.withLock {
-                    while (!mDone && mSurfaceTexture.also { surfaceTexture = it } == null) {
-                        try {
-                            condition.await()
-                        } catch (ie: InterruptedException) {
-                            throw RuntimeException(ie) // not expected
-                        }
-                    }
-                }
+    }
 
-                // Render frames until we're told to stop or the SurfaceTexture is destroyed.
-                doAnimation()
-            }
-        }
+    /**
+     * Invoked when the specified [SurfaceTexture] is about to be destroyed.
+     * If returns true, no rendering should happen inside the surface texture after this method
+     * is invoked. If returns false, the client needs to call [SurfaceTexture.release].
+     * Most applications should return true.
+     *
+     * @param surface The surface about to be destroyed
+     */
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+        mSurfaceTexture = null
+        mSurface?.release()
+        return true
+    }
 
-        /**
-         * Draws updates as fast as the system will allow.
-         *
-         *
-         * In 4.4, with the synchronous buffer queue queue, the frame rate will be limited.
-         * In previous (and future) releases, with the async queue, many of the frames we
-         * render may be dropped.
-         *
-         *
-         * The correct thing to do here is use Choreographer to schedule frame updates off
-         * of vsync, but that's not nearly as much fun.
-         */
-        private fun doAnimation() {
+    /**
+     * Invoked when the specified [SurfaceTexture] is updated through
+     * [SurfaceTexture.updateTexImage].
+     *
+     * @param surface The surface just updated
+     */
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
 
-            // Create a Surface for the SurfaceTexture.
-            var surface: Surface?
-            mLock.withLock {
-                when (val surfaceTexture = mSurfaceTexture) {
-                    null -> {
-                        return
-                    }
-                    else -> surface = Surface(surfaceTexture)
-                }
-            }
-            while (true) {
-                val canvas: Canvas = surface?.lockCanvas(null) ?: break
-                try {
-                    drawCallback?.draw(canvas)
-                } finally {
-                    // Publish the frame.  If we overrun the consumer, frames will be dropped,
-                    // so on a sufficiently fast device the animation will run at faster than
-                    // the display refresh rate.
-                    //
-                    // If the SurfaceTexture has been destroyed, this will throw an exception.
-                    try {
-                        surface?.unlockCanvasAndPost(canvas)
-                    } catch (iae: IllegalArgumentException) {
-                        break
-                    }
-                }
-
-            }
-            surface?.release()
-        }
-
-        /**
-         * Tells the thread to stop running.
-         */
-        fun halt() {
-            mLock.withLock {
-                mDone = true
-                condition.signal()
-            }
-        }
-
-        // will be called on UI thread
-        override fun onSurfaceTextureAvailable(st: SurfaceTexture, width: Int, height: Int) {
-            mWidth = width
-            mHeight = height
-            mLock.withLock {
-                mSurfaceTexture = st
-                condition.signal()
-            }
-        }
-
-        // will be called on UI thread
-        override fun onSurfaceTextureSizeChanged(st: SurfaceTexture, width: Int, height: Int) {
-            mWidth = width
-            mHeight = height
-        }
-
-        // will be called on UI thread
-        override fun onSurfaceTextureDestroyed(st: SurfaceTexture): Boolean {
-            mLock.withLock { mSurfaceTexture = null }
-            return true
-        }
-
-        // will be called on UI thread
-        override fun onSurfaceTextureUpdated(st: SurfaceTexture) {
-            //Log.d(TAG, "onSurfaceTextureUpdated");
-            
-        }
     }
 }
