@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.annotation.RequiresApi
@@ -26,11 +28,18 @@ import com.microsoft.device.ink.InputManager
 class MainActivity : AppCompatActivity() {
 
     private lateinit var inkView: InkView
+    private lateinit var webView: WebView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         inkView = findViewById(R.id.inkView)
+        webView = findViewById<WebView>(R.id.webView)
+        webView.webViewClient = WebViewClient()
+        webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
+        val webSettings = webView.settings
+        webSettings.javaScriptEnabled = true
+
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -54,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         inkView.color = Color.BLACK
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun copyImage(view: View) {
         val image = view as ImageView
         image.setImageBitmap(inkView.saveBitmap())
@@ -94,6 +103,17 @@ class MainActivity : AppCompatActivity() {
             paint.strokeCap = Paint.Cap.ROUND;
 
             return paint;
+        }
+    }
+
+    fun webSwitchChanged(view: View) {
+        var switch = view as Switch
+        if (switch.isChecked ){
+            this.webView.visibility = View.VISIBLE
+
+
+        } else {
+            this.webView.visibility = View.INVISIBLE
         }
     }
 }

@@ -27,13 +27,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="230dp"
-            android:layout_height="115dp"
-            android:fontFamily="sans-serif-black"
-            android:text="Textgrmlgmhtrivlgmhtrlighmiltrehgmvil5rthgilervhmgilrhvView"
-            android:textColor="#009688" />
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
+            android:visibility="invisible" />
 
         <com.microsoft.device.ink.InkView
             android:id="@+id/inkView"
@@ -110,9 +109,21 @@
         android:checked="false"
         android:onClick="fancySwitchChanged"
         app:layout_constraintStart_toEndOf="@+id/blackColorPick"
-        app:layout_constraintTop_toTopOf="@+id/btnClear"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
+    <Switch
+        android:id="@+id/webSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:checked="false"
+        android:onClick="webSwitchChanged"
+        android:text="Web View"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <ImageView
         android:id="@+id/imageCopy"
