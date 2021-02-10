@@ -63,35 +63,37 @@ class MainActivity : AppCompatActivity() {
     fun fancySwitchChanged(view: View) {
         var switch = view as Switch
         if (switch.isChecked ){
-            inkView.dynamicPaintHandler = object : DynamicPaintHandler {
-                @RequiresApi(Build.VERSION_CODES.O)
-                override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
-                    var paint = Paint()
-                    val a = penInfo.pressure * 255
-
-
-                    paint.color = Color.argb(
-                        a.toInt(),
-                        inkView.color.red,
-                        inkView.color.green,
-                        inkView.color.blue
-                    )
-                    paint.isAntiAlias = true
-                    // Set stroke width based on display density.
-                    paint.strokeWidth = TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        penInfo.pressure * 8 + 3,
-                        resources.displayMetrics
-                    )
-                    paint.style = Paint.Style.STROKE
-                    paint.strokeJoin = Paint.Join.ROUND
-                    paint.strokeCap = Paint.Cap.ROUND;
-
-                    return paint;
-                }
-            }
+            inkView.dynamicPaintHandler = FancyPaintHandler()
         } else {
             inkView.dynamicPaintHandler = null
+        }
+    }
+
+    inner class FancyPaintHandler : DynamicPaintHandler {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
+            var paint = Paint()
+            val a = penInfo.pressure * 255
+
+
+            paint.color = Color.argb(
+                a.toInt(),
+                inkView.color.red,
+                inkView.color.green,
+                inkView.color.blue
+            )
+            paint.isAntiAlias = true
+            // Set stroke width based on display density.
+            paint.strokeWidth = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                penInfo.pressure * 10 + 5,
+                resources.displayMetrics
+            )
+            paint.style = Paint.Style.STROKE
+            paint.strokeJoin = Paint.Join.ROUND
+            paint.strokeCap = Paint.Cap.ROUND;
+
+            return paint;
         }
     }
 }
