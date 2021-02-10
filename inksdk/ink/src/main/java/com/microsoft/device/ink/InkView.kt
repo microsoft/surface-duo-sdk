@@ -6,12 +6,7 @@
 package com.microsoft.device.ink
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BlendMode
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.SurfaceTexture
+import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -89,7 +84,11 @@ class InkView constructor(
             ) {
                 // Log.i(TAG, "strokeStarted " + stroke.getPoints().size)
                 if (penInfo.pointerType == InputManager.PointerType.PEN_ERASER) {
-                    clearInk()
+
+                        var paint = Paint()
+                        paint.blendMode = BlendMode.CLEAR
+                    drawCanvas.drawCircle(penInfo.x,penInfo.y ,30f ,paint)
+
                 }
                 redrawTexture()
             }
@@ -99,6 +98,13 @@ class InkView constructor(
                 penInfo: InputManager.PenInfo,
                 stroke: InputManager.ExtendedStroke
             ) {
+                if (penInfo.pointerType == InputManager.PointerType.PEN_ERASER) {
+
+                    var paint = Paint()
+                    paint.blendMode = BlendMode.CLEAR
+                    drawCanvas.drawCircle(penInfo.x,penInfo.y ,30f ,paint)
+
+                }
                 redrawTexture()
             }
 
