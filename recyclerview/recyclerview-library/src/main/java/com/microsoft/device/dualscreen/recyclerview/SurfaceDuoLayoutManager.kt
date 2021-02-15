@@ -26,7 +26,7 @@ class SurfaceDuoLayoutManager(context: Context, screenInfo: ScreenInfo) {
     }
 
     init {
-        layoutManager = if (isSurfaceDuoInDualMode(screenInfo)) {
+        layoutManager = if (isSurfaceDuoInDualMode(screenInfo) && screenInfo.isDeviceInLandscape()) {
             GridLayoutManager(context, SPAN_COUNT)
         } else {
             LinearLayoutManager(context)

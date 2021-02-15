@@ -3,23 +3,28 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.recyclerview
+package com.microsoft.device.dualscreen.recyclerview.activities
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.microsoft.device.dualscreen.ScreenInfo
 import com.microsoft.device.dualscreen.ScreenInfoListener
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.recyclerview.SurfaceDuoItemDecoration
 import com.microsoft.device.dualscreen.recyclerview.SurfaceDuoLayoutManager
-import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
-import kotlinx.android.synthetic.main.activity_main.*
+import com.microsoft.device.dualscreen.recyclerview.test.R
+import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
 
-class MainActivity : AppCompatActivity(), ScreenInfoListener {
+class SimpleRecyclerViewActivity : BaseTestActivity(), ScreenInfoListener {
+
+    override fun getContentViewLayoutResId(): Int {
+        return R.layout.activity_simple_surfaceduo_recyclerview
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.hasFixedSize()
         recyclerView.adapter = NumbersAdapter()
     }
@@ -35,6 +40,7 @@ class MainActivity : AppCompatActivity(), ScreenInfoListener {
     }
 
     override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = SurfaceDuoLayoutManager(this, screenInfo).get()
         recyclerView.addItemDecoration(SurfaceDuoItemDecoration(screenInfo))
     }

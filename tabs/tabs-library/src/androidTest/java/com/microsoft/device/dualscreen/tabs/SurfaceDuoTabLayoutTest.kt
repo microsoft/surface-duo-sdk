@@ -113,7 +113,7 @@ class SurfaceDuoTabLayoutTest {
     @Test
     fun testSwipeRight() {
         spanApplication()
-        onView(withId(R.id.tabs)).perform(changeButtonArrangement(2, 3))
+        onView(withId(R.id.tabs)).perform(changeButtonArrangement(3, 2))
 
         onView(withId(R.id.tabs)).perform(swipeRight())
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.END)))

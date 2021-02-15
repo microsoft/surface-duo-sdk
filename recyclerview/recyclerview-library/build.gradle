@@ -40,9 +40,14 @@ dependencies {
     implementation kotlinDependencies.kotlinStdlib
     api androidxDependencies.recycleView
 
+    implementation materialDependencies.material
+
     testImplementation testDependencies.junit
+
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation project(commonDependencies.screenManager)
 }
 
