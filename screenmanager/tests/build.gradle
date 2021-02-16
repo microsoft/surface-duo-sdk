@@ -27,11 +27,6 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
-
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
 }
 
 dependencies {
@@ -47,9 +42,9 @@ dependencies {
     testImplementation commonDependencies.googleTruth
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation project(':test-utils')
 }

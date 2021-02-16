@@ -48,10 +48,10 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
-    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':test-utils')
 }
 
 // ---- Artifact publication -----

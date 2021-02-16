@@ -50,11 +50,11 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation instrumentationTestDependencies.testRunner
-    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':test-utils')
 }
 
 // ---- Artifact publication -----

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.utils
+package com.microsoft.device.dualscreen.test.utils
 
 import org.mockito.Mockito
 

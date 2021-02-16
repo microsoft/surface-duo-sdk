@@ -11,34 +11,14 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout
+import com.microsoft.device.dualscreen.test.utils.DUAL_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.test.utils.HINGE_WIDTH
+import com.microsoft.device.dualscreen.test.utils.SINGLE_SCREEN_WIDTH
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-
-const val SCREEN_WIDTH = 1350
-const val HINGE_WIDTH = 84
-const val SCREEN_COUNT = 2
-const val TOTAL_WIDTH = SCREEN_WIDTH * SCREEN_COUNT + HINGE_WIDTH
-
-fun spanApplication() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.swipe(675, 1780, 1350, 900, 400)
-}
-
-fun changeOrientation() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.setOrientationRight()
-}
-
-fun resetOrientation() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.setOrientationNatural()
-    device.unfreezeRotation()
-}
 
 fun isViewOnScreen(pos: DisplayPosition, orientation: Int): Matcher<View> =
     object : TypeSafeMatcher<View>() {
@@ -114,13 +94,13 @@ fun isFrameLayoutOnScreen(pos: DisplayPosition): Matcher<View> =
 fun areCoordinatesOnSurfaceScreen(pos: DisplayPosition, xStart: Int, xEnd: Int): Boolean {
     return when (pos) {
         DisplayPosition.DUAL ->
-            xStart in 0..SCREEN_WIDTH &&
-                xEnd in (SCREEN_WIDTH + HINGE_WIDTH)..TOTAL_WIDTH
+            xStart in 0..SINGLE_SCREEN_WIDTH &&
+                xEnd in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH
         DisplayPosition.START ->
-            xStart in 0..SCREEN_WIDTH &&
-                xEnd in 0..SCREEN_WIDTH
+            xStart in 0..SINGLE_SCREEN_WIDTH &&
+                xEnd in 0..SINGLE_SCREEN_WIDTH
         DisplayPosition.END ->
-            xStart in (SCREEN_WIDTH + HINGE_WIDTH)..TOTAL_WIDTH &&
-                xEnd in (SCREEN_WIDTH + HINGE_WIDTH)..TOTAL_WIDTH
+            xStart in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH &&
+                xEnd in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH
     }
 }

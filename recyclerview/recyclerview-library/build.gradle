@@ -31,6 +31,11 @@ android {
             minifyEnabled false
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -47,8 +52,8 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
-    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':test-utils')
 }
 
 // ---- Artifact publication -----

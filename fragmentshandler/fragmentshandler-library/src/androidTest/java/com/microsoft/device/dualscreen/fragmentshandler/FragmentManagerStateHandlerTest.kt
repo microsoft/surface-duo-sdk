@@ -8,12 +8,12 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.fragmentshandler.utils.SampleActivity
-import com.microsoft.device.dualscreen.fragmentshandler.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.fragmentshandler.utils.setOrientationLeft
-import com.microsoft.device.dualscreen.fragmentshandler.utils.setOrientationRight
-import com.microsoft.device.dualscreen.fragmentshandler.utils.switchFromDualToSingleScreen
-import com.microsoft.device.dualscreen.fragmentshandler.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.fragmentshandler.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.resetOrientation
+import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromDualToSingleScreen
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -40,7 +40,7 @@ class FragmentManagerStateHandlerTest {
     @After
     fun after() {
         switchFragmentManagerStateToSingleScreen()
-        unfreezeRotation()
+        resetOrientation()
         ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfo()
         screenInfoListener.resetScreenInfoCounter()

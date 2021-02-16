@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.tabs
+package com.microsoft.device.dualscreen.tabs.utils
 
 import com.microsoft.device.dualscreen.tabs.compatibility.activities.BaseTestActivity
 import com.microsoft.device.dualscreen.tabs.test.R

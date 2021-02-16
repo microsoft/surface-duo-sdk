@@ -17,12 +17,13 @@ import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.layouts.test.R
-import com.microsoft.device.dualscreen.layouts.utils.ScreenInfoListenerImpl
 import com.microsoft.device.dualscreen.layouts.utils.SimpleDuoLayoutActivity
-import com.microsoft.device.dualscreen.layouts.utils.changeOrientation
 import com.microsoft.device.dualscreen.layouts.utils.isViewOnScreen
-import com.microsoft.device.dualscreen.layouts.utils.resetOrientation
-import com.microsoft.device.dualscreen.layouts.utils.spanApplication
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.resetOrientation
+import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -58,7 +59,7 @@ class SurfaceDuoLayoutTest {
 
     @Test
     fun testLayoutSingleScreenLandscape() {
-        changeOrientation()
+        setOrientationRight()
         screenInfoListener.waitForScreenInfoChanges()
 
         onView(withId(R.id.textViewSingle)).check(matches(isDisplayed()))
@@ -67,7 +68,7 @@ class SurfaceDuoLayoutTest {
 
     @Test
     fun testLayoutDualScreenLandscape() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
@@ -87,11 +88,11 @@ class SurfaceDuoLayoutTest {
 
     @Test
     fun testLayoutDualScreenPortrait() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
 
-        changeOrientation()
+        setOrientationLeft()
         screenInfoListener.waitForScreenInfoChanges()
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.bottomnavigation
+package com.microsoft.device.dualscreen.bottomnavigation.utils
 
 import com.google.android.material.bottomnavigation.compatibility.activities.BaseTestActivity
 import com.microsoft.device.dualscreen.bottomnavigation.test.R

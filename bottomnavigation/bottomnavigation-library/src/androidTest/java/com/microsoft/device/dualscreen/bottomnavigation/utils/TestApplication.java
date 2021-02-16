@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.tabs;
+package com.microsoft.device.dualscreen.bottomnavigation.utils;
 
 import android.app.Application;
 

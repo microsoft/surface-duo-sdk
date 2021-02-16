@@ -3,11 +3,26 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.fragmentshandler.utils
+package com.microsoft.device.dualscreen.test.utils
 
+import android.graphics.Rect
 import android.view.Surface
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+
+val START_SCREEN_RECT = Rect(0, 0, 1350, 1800)
+val END_SCREEN_RECT = Rect(1434, 0, 2784, 1800)
+
+val SINGLE_SCREEN_WINDOW_RECT = START_SCREEN_RECT
+val DUAL_SCREEN_WINDOW_RECT = Rect(0, 0, 2784, 1800)
+
+val SINGLE_SCREEN_HINGE_RECT = Rect()
+val DUAL_SCREEN_HINGE_RECT = Rect(1350, 0, 1434, 1800)
+
+const val SINGLE_SCREEN_WIDTH = 1350
+const val HINGE_WIDTH = 84
+const val SCREEN_COUNT = 2
+const val DUAL_SCREEN_WIDTH = SINGLE_SCREEN_WIDTH * SCREEN_COUNT + HINGE_WIDTH
 
 /**
  * Switches application from single screen mode to dual screen mode
@@ -68,4 +83,13 @@ fun setOrientationNatural() {
 fun setOrientationRight() {
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     device.setOrientationRight()
+}
+
+/**
+ * Simulates orienting the device into its natural orientation,
+ * re-enables the sensors and un-freezes the device rotation
+ */
+fun resetOrientation() {
+    setOrientationNatural()
+    unfreezeRotation()
 }

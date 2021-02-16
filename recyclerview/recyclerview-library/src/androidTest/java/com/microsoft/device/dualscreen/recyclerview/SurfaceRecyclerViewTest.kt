@@ -14,15 +14,14 @@ import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.recyclerview.activities.SimpleRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
-import com.microsoft.device.dualscreen.recyclerview.utils.ScreenInfoListenerImpl
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
-import com.microsoft.device.dualscreen.recyclerview.utils.resetOrientation
-import com.microsoft.device.dualscreen.recyclerview.utils.setOrientationLeft
-import com.microsoft.device.dualscreen.recyclerview.utils.setOrientationRight
-import com.microsoft.device.dualscreen.recyclerview.utils.spanApplication
-import com.microsoft.device.dualscreen.recyclerview.utils.unSpanApplicationToEnd
-import com.microsoft.device.dualscreen.recyclerview.utils.unSpanApplicationToStart
-import com.microsoft.device.dualscreen.recyclerview.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.resetOrientation
+import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromDualToSingleScreen
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -40,7 +39,6 @@ class SurfaceRecyclerViewTest {
     @Before
     fun before() {
         ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-        resetOrientation()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
     }
@@ -49,12 +47,12 @@ class SurfaceRecyclerViewTest {
     fun after() {
         screenInfoListener.resetScreenInfoCounter()
         ScreenManagerProvider.getScreenManager().clear()
-        unfreezeRotation()
+        resetOrientation()
     }
 
     @Test
     fun testSpanMode() {
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
@@ -64,7 +62,7 @@ class SurfaceRecyclerViewTest {
 
     @Test
     fun testRotationLeft() {
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
@@ -80,7 +78,7 @@ class SurfaceRecyclerViewTest {
 
     @Test
     fun testRotationRight() {
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
@@ -96,7 +94,7 @@ class SurfaceRecyclerViewTest {
 
     @Test
     fun testMultipleRotations() {
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
@@ -118,7 +116,7 @@ class SurfaceRecyclerViewTest {
         screenInfoListener.resetScreenInfoCounter()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
-        resetOrientation()
+        unfreezeRotation()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
@@ -126,22 +124,22 @@ class SurfaceRecyclerViewTest {
 
     @Test
     fun testMultipleSpanning() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
-        unSpanApplicationToStart()
+        switchFromDualToSingleScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
-        unSpanApplicationToEnd()
+        switchFromDualToSingleScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))

@@ -16,11 +16,11 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.layouts.test.R
-import com.microsoft.device.dualscreen.layouts.utils.ScreenInfoListenerImpl
 import com.microsoft.device.dualscreen.layouts.utils.SimpleStartActivity
-import com.microsoft.device.dualscreen.layouts.utils.changeOrientation
-import com.microsoft.device.dualscreen.layouts.utils.resetOrientation
-import com.microsoft.device.dualscreen.layouts.utils.spanApplication
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.resetOrientation
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -35,7 +35,7 @@ class TestLayoutOnSecondActivity {
     private var screenInfoListener = ScreenInfoListenerImpl()
 
     @Before
-    fun reset() {
+    fun before() {
         ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
         resetOrientation()
         screenInfoListener.waitForScreenInfoChanges()
@@ -44,7 +44,7 @@ class TestLayoutOnSecondActivity {
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+        ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfoCounter()
     }
 
@@ -58,7 +58,7 @@ class TestLayoutOnSecondActivity {
 
     @Test
     fun testLayoutSingleScreenLandscape() {
-        changeOrientation()
+        setOrientationRight()
         screenInfoListener.waitForScreenInfoChanges()
 
         onView(withId(R.id.start)).perform(click())
@@ -69,9 +69,8 @@ class TestLayoutOnSecondActivity {
 
     @Test
     fun testLayoutDualScreenLandscape() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfo()
 
         onView(withId(R.id.start)).perform(click())
 
@@ -83,8 +82,8 @@ class TestLayoutOnSecondActivity {
 
     @Test
     fun testLayoutDualScreenPortrait() {
-        spanApplication()
-        changeOrientation()
+        switchFromSingleToDualScreen()
+        setOrientationRight()
         screenInfoListener.waitForScreenInfoChanges()
 
         onView(withId(R.id.start)).perform(click())

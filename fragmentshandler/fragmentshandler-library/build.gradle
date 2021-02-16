@@ -35,6 +35,11 @@ android {
     configurations.all {
         resolutionStrategy.force androidxDependencies.lifecycleViewmodel
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -47,7 +52,6 @@ dependencies {
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation androidxDependencies.ktxCore
@@ -55,6 +59,7 @@ dependencies {
     androidTestImplementation project(':screenmanager:utils')
     androidTestImplementation project(':layouts:layouts-library')
     androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':test-utils')
 }
 
 // ---- Artifact publication -----

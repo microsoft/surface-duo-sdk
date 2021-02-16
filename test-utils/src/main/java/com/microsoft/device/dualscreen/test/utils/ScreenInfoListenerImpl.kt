@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.fragmentshandler.utils
+package com.microsoft.device.dualscreen.test.utils
 
 import com.microsoft.device.dualscreen.ScreenInfo
 import com.microsoft.device.dualscreen.ScreenInfoListener
@@ -17,11 +17,11 @@ class ScreenInfoListenerImpl : ScreenInfoListener {
     private var _screenInfo: ScreenInfo? = null
     val screenInfo: ScreenInfo?
         get() = _screenInfo
-    private var screenInfoLatch: CountDownLatch? = null
+    private var screenInfoLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)
 
     override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
         _screenInfo = screenInfo
-        screenInfoLatch?.countDown()
+        screenInfoLatch.countDown()
     }
 
     /**
@@ -36,7 +36,7 @@ class ScreenInfoListenerImpl : ScreenInfoListener {
      * [waitForScreenInfoChanges].
      */
     fun resetScreenInfoCounter() {
-        screenInfoLatch = CountDownLatch(1)
+        screenInfoLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)
     }
 
     /**
@@ -46,10 +46,14 @@ class ScreenInfoListenerImpl : ScreenInfoListener {
      */
     fun waitForScreenInfoChanges(): Boolean {
         return try {
-            val result = screenInfoLatch?.await(10, TimeUnit.SECONDS) ?: false
+            val result = screenInfoLatch.await(10, TimeUnit.SECONDS) ?: false
             result
         } catch (e: InterruptedException) {
             false
         }
+    }
+
+    companion object {
+        private const val COUNT_DOWN_LATCH_COUNT = 1
     }
 }

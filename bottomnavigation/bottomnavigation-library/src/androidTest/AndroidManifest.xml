@@ -20,7 +20,7 @@
     <uses-sdk tools:overrideLibrary="androidx.test, android.app, androidx.test.rule,
         androidx.test.espresso, androidx.test.espresso.idling" />
 
-    <application android:name=".TestApplication">
+    <application android:name=".utils.TestApplication">
 
         <activity
             android:name="androidx.appcompat.app.AppCompatActivity"
@@ -35,7 +35,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".SimpleBottomNavigationActivity"
+            android:name=".utils.SimpleBottomNavigationActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
     </application>
