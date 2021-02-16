@@ -1,20 +1,20 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Build and publish
-# This workflow build and publish the different libraries the project has.
+name: publish
+# This workflow (builds and) publishes the different libraries the project has.
+# Publication gets triggered when a new release-tag is created (we also have manual publishing if needed).
 # Every library publication has its own job, so if one fails the other can run, and we can see them all
 # individually in Github Actions view.
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  create:
+    tags:
+      - '*'
   workflow_dispatch:
     inputs:
       name:
-        description: 'manual build trigger'
+        description: 'manual publish trigger'
       home:
         description: 'location'
         required: false
@@ -48,8 +48,7 @@ jobs:
         run: ./gradlew ktlint
 
   publish-screenmanager-core:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -67,8 +66,7 @@ jobs:
         run: ./gradlew :screenmanager:core:bintrayUpload
 
   publish-screenmanager-displaymask:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -86,8 +84,7 @@ jobs:
         run: ./gradlew :screenmanager:dm:bintrayUpload
 
   publish-screenmanager-windowmanager:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -105,8 +102,7 @@ jobs:
         run: ./gradlew :screenmanager:wm:bintrayUpload
 
   publish-screenmanager-utils:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -124,8 +120,7 @@ jobs:
         run: ./gradlew :screenmanager:utils:bintrayUpload
 
   publish-layouts:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -143,8 +138,7 @@ jobs:
         run: ./gradlew :layouts:bintrayUpload
 
   publish-fragmentshandler:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -162,8 +156,7 @@ jobs:
         run: ./gradlew :fragmentshandler:bintrayUpload
 
   publish-bottomnavigation:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -181,8 +174,7 @@ jobs:
         run: ./gradlew :bottomnavigation:bintrayUpload
 
   publish-tabs:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -200,8 +192,7 @@ jobs:
         run: ./gradlew :tabs:bintrayUpload
 
   publish-recyclerview:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-test-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -7,12 +7,14 @@
 ext {
 
     //---- Important -------------------
-    // We have to update following versionName and versionCode
-    // groups in order to publish correctly a new version
-    // of our libraries. Please, do this as last commit on the
-    // PR that will target the release
+    // We have to update following versionName and versionCode groups in order to
+    // publish correctly a new version of each of our libraries.
+    // e.g. screenManager library, you could have as a current version
+    // 1.0.0-beta1, if you want to publish a new version you will have to increase in one the
+    //screenManagerCoreVersionCode and to bump the screenManagerCoreVersionName.
 
-    // SurfaceDuo SDK libraries version code, we can increase them in one with every new release
+    // SurfaceDuo SDK libraries version code.
+    // If you want to publish a new version, bump in one (1) the specific line(s)
     screenManagerCoreVersionCode = 1
     screenManagerDMVersionCode = 1
     screenManagerWMVersionCode = 1
@@ -23,7 +25,8 @@ ext {
     tabsVersionCode = 1
     recyclerviewVersionCode = 1
 
-    // SurfaceDuo SDK libraries version name
+    // SurfaceDuo SDK libraries version name:
+    // If you want to publish a new version, bump the specific line(s)
     screenManagerCoreVersionName = '1.0.0-beta1'
     screenManagerDMVersionName = '1.0.0-beta1'
     screenManagerWMVersionName = '1.0.0-beta1'
