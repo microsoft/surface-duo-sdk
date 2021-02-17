@@ -25,7 +25,7 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
 
         override fun onActivityDestroyed(activity: Activity) {
             super.onActivityDestroyed(activity)
-            currentScreenInfo = null
+            currentActivity = null
         }
     }
 
@@ -53,11 +53,18 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      * @param activity the current activity
      */
     private fun onActivityStarted(activity: Activity) {
-        currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity)
-        currentScreenInfo?.let {
-            notifyObservers(it)
+        currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity).also { screenInfo ->
+            notifyObservers(screenInfo)
+
+            currentActivity?.doOnAttach {
+                screenInfo.updateHingeIfNull()
+                screenInfo.updateScreenModeIfNull()
+            }
         }
     }
+
+    override val lastKnownScreenInfo: ScreenInfo?
+        get() = currentScreenInfo
 
     /**
      * Add a new listener for changes to the screen info.
@@ -100,5 +107,14 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      */
     private fun notifyObservers(screenInfo: ScreenInfo) {
         screenInfoListeners.forEach { it.onScreenInfoChanged(screenInfo) }
+    }
+
+    /**
+     * Clears the internal data.
+     */
+    override fun clear() {
+        currentScreenInfo = null
+        currentActivity = null
+        screenInfoListeners.clear()
     }
 }

@@ -5,17 +5,53 @@
  */
 
 ext {
-    gradlePluginVersion = "4.1.1"
-    kotlinVersion = "1.4.10"
+
+    //---- Important -------------------
+    // We have to update following versionName and versionCode groups in order to
+    // publish correctly a new version of each of our libraries.
+    // e.g. screenManager library, you could have as a current version
+    // 1.0.0-beta1, if you want to publish a new version you will have to increase in one the
+    //screenManagerCoreVersionCode and to bump the screenManagerCoreVersionName.
+
+    // SurfaceDuo SDK libraries version code.
+    // If you want to publish a new version, bump in one (1) the specific line(s)
+    screenManagerCoreVersionCode = 2
+    screenManagerDMVersionCode = 2
+    screenManagerWMVersionCode = 2
+    screenManagerUtilsVersionCode = 2
+    layoutsVersionCode = 2
+    fragmentsHandlerVersionCode = 1
+    bottomNavigationVersionCode = 1
+    tabsVersionCode = 1
+    recyclerviewVersionCode = 2
+
+    // SurfaceDuo SDK libraries version name:
+    // If you want to publish a new version, bump the specific line(s)
+    screenManagerCoreVersionName = '1.0.0-beta2'
+    screenManagerDMVersionName = '1.0.0-beta2'
+    screenManagerWMVersionName = '1.0.0-beta2'
+    screenManagerUtilsVersionName = '1.0.0-beta2'
+    layoutsVersionName = '1.0.0-beta2'
+    fragmentsHandlerVersionName = '1.0.0-beta1'
+    bottomNavigationVersionName = '1.0.0-beta1'
+    tabsVersionName = '1.0.0-beta1'
+    recyclerviewVersionName = '1.0.0-beta2'
+    // ----------------------------------
+
+    //Config Android sdk, plugins and libraries version
+    gradlePluginVersion = "4.1.2"
+    kotlinVersion = "1.4.30"
     compileSdkVersion = 29
     buildToolsVersion = '29.0.3'
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 21
+    bintrayPluginVersion = '1.8.5'
 
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner"
+            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner",
+            bintrayPlugin            : "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayPluginVersion"
     ]
 
     kotlinDependencies = [
@@ -71,7 +107,7 @@ ext {
     ]
 
     //Test dependencies version
-    junitVersion = "4.13"
+    junitVersion = "4.13.2"
 
     testDependencies = [
             junit: "junit:junit:$junitVersion"

@@ -13,6 +13,10 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.layouts.test.R
+import com.microsoft.device.dualscreen.layouts.utils.SimpleDuoFrameLayoutActivity
+import com.microsoft.device.dualscreen.layouts.utils.changeDisplayPosition
+import com.microsoft.device.dualscreen.layouts.utils.isFrameLayoutOnScreen
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,14 +30,14 @@ class SurfaceDuoFrameLayoutTest {
 
     @Test
     fun testDisplayPositionFromLayout() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         onView(withId(R.id.duo_wrapper))
             .check(matches(isFrameLayoutOnScreen(DisplayPosition.END)))
     }
 
     @Test
     fun testDisplayPositionEnd() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         onView(withId(R.id.duo_wrapper))
             .perform(changeDisplayPosition(DisplayPosition.END))
         onView(withId(R.id.duo_wrapper))
@@ -42,7 +46,7 @@ class SurfaceDuoFrameLayoutTest {
 
     @Test
     fun testDisplayPositionDual() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         onView(withId(R.id.duo_wrapper))
             .perform(changeDisplayPosition(DisplayPosition.DUAL))
         onView(withId(R.id.duo_wrapper))
@@ -51,7 +55,7 @@ class SurfaceDuoFrameLayoutTest {
 
     @Test
     fun testDisplayPositionStart() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         onView(withId(R.id.duo_wrapper))
             .perform(changeDisplayPosition(DisplayPosition.START))
         onView(withId(R.id.duo_wrapper))

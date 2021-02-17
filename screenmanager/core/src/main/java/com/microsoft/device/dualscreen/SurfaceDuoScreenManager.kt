@@ -6,11 +6,17 @@
 package com.microsoft.device.dualscreen
 
 import android.app.Activity
+import androidx.annotation.VisibleForTesting
 
 /**
  * Interface that defines methods used to register/unregister screen info listeners.
  */
 interface SurfaceDuoScreenManager {
+    /**
+     * The most recent screen info
+     */
+    val lastKnownScreenInfo: ScreenInfo?
+
     /**
      * Add a new listener for changes to the screen info.
      * @param listener the listener to be added
@@ -28,4 +34,10 @@ interface SurfaceDuoScreenManager {
      * android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
      */
     fun onConfigurationChanged()
+
+    /**
+     * Clears the internal data.
+     */
+    @VisibleForTesting
+    fun clear()
 }

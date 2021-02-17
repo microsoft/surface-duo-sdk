@@ -8,12 +8,12 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.fragmentshandler.utils.SampleActivity
-import com.microsoft.device.dualscreen.fragmentshandler.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.fragmentshandler.utils.setOrientationLeft
-import com.microsoft.device.dualscreen.fragmentshandler.utils.setOrientationRight
-import com.microsoft.device.dualscreen.fragmentshandler.utils.switchFromDualToSingleScreen
-import com.microsoft.device.dualscreen.fragmentshandler.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.fragmentshandler.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.resetOrientation
+import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromDualToSingleScreen
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -39,11 +39,17 @@ class FragmentManagerStateHandlerTest {
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+        switchFragmentManagerStateToSingleScreen()
+        resetOrientation()
+        ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfo()
         screenInfoListener.resetScreenInfoCounter()
         rule.finishActivity()
         FragmentManagerStateHandler.instance?.clear()
+    }
+
+    private fun switchFragmentManagerStateToSingleScreen() {
+        switchFromDualToSingleScreen()
     }
 
     @Test
@@ -103,8 +109,6 @@ class FragmentManagerStateHandlerTest {
 
         assertThat(rule.lastSavedInstanceState).isNotNull()
         assertThat(rule.fragmentManagerState).isNotNull()
-
-        unfreezeRotation()
     }
 
     @Test
@@ -137,7 +141,6 @@ class FragmentManagerStateHandlerTest {
 
         assertThat(rule.lastSavedInstanceState).isNotNull()
         assertThat(rule.fragmentManagerState).isNotNull()
-        unfreezeRotation()
     }
 }
 

@@ -56,6 +56,7 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
         currentSpanningMode = previousSpanningMode
         oldOrientation = Configuration.ORIENTATION_UNDEFINED
         orientation = oldOrientation
+        screenModeWasChanged = false
         fragmentManagerStateMap.clear()
     }
 

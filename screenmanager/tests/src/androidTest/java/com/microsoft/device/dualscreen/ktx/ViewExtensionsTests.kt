@@ -15,10 +15,10 @@ import com.microsoft.device.dualscreen.ScreenMode.DUAL_SCREEN
 import com.microsoft.device.dualscreen.ScreenMode.SINGLE_SCREEN
 import com.microsoft.device.dualscreen.isPortrait
 import com.microsoft.device.dualscreen.isSpannedInDualScreen
-import com.microsoft.device.dualscreen.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.utils.setOrientationRight
-import com.microsoft.device.dualscreen.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
 import kotlinx.android.synthetic.main.activity_sample.*
 import org.junit.After
 import org.junit.Rule
@@ -50,7 +50,7 @@ class ViewExtensionsTests {
 
         rule.launchActivity(null)
         screenInfoListener.waitForScreenInfoChanges()
-        val view = rule.activity.simple_view
+        val view = rule.activity.containerView
         val spyView = spy(view)
 
         assertThat(screenInfoListener.screenInfo).isNotNull()
@@ -85,7 +85,7 @@ class ViewExtensionsTests {
 
         rule.launchActivity(null)
         screenInfoListener.waitForScreenInfoChanges()
-        val view = rule.activity.simple_view
+        val view = rule.activity.containerView
 
         assertThat(view.isPortrait()).isTrue()
         screenInfoListener.resetScreenInfo()

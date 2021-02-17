@@ -15,7 +15,19 @@ import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.bottomnavigation.test.R
-import com.microsoft.device.dualscreen.bottomnavigation.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.bottomnavigation.utils.SimpleBottomNavigationActivity
+import com.microsoft.device.dualscreen.bottomnavigation.utils.areTabsOnScreen
+import com.microsoft.device.dualscreen.bottomnavigation.utils.changeButtonArrangement
+import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosition
+import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
+import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
+import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.resetOrientation
+import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -34,7 +46,6 @@ class SurfaceBottomNavigationTest {
     @Before
     fun before() {
         ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-        resetOrientation()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
 
@@ -43,68 +54,69 @@ class SurfaceBottomNavigationTest {
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+        ScreenManagerProvider.getScreenManager().clear()
+        resetOrientation()
         screenInfoListener.resetScreenInfoCounter()
     }
 
     @Test
     fun testDisplayPositionFromLayout() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
     fun testDisplayPositionStart() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(DisplayPosition.START)
     }
 
     @Test
     fun testDisplayPositionEnd() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
 
     @Test
     fun testDisplayPositionDual() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit0_5() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     fun testButtonSplit1_4() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(1, 4, DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit2_3() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(2, 3, DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit5_0() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     fun testButtonSplit_invalid() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(5, 0, DisplayPosition.START)
         arrangeButtonsAndCheckPosition(5, 5, DisplayPosition.START)
     }
 
     @Test
     fun testSwipeLeft() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
 
@@ -116,7 +128,7 @@ class SurfaceBottomNavigationTest {
 
     @Test
     fun testSwipeRight() {
-        spanApplication()
+        switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
         screenInfoListener.resetScreenInfoCounter()
 
@@ -128,7 +140,7 @@ class SurfaceBottomNavigationTest {
 
     @Test
     fun testMultipleSwipes() {
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -150,7 +162,7 @@ class SurfaceBottomNavigationTest {
 
     @Test
     fun testTransparentBackground() {
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.nav_view)).check(matches(Matchers.not(hasHalfTransparentBackground())))
@@ -166,7 +178,7 @@ class SurfaceBottomNavigationTest {
     fun testOrientationChanges() {
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
-        spanApplication()
+        switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
