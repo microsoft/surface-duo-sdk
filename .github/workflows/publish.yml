@@ -81,7 +81,7 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :screenmanager:dm:bintrayUpload
+        run: ./gradlew :screenmanager:dm:library:bintrayUpload
 
   publish-screenmanager-windowmanager:
     needs: build-test-check
@@ -99,7 +99,7 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :screenmanager:wm:bintrayUpload
+        run: ./gradlew :screenmanager:wm:library:bintrayUpload
 
   publish-screenmanager-utils:
     needs: build-test-check
@@ -135,7 +135,7 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :layouts:bintrayUpload
+        run: ./gradlew :layouts:layouts-library:bintrayUpload
 
   publish-fragmentshandler:
     needs: build-test-check
@@ -153,7 +153,7 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :fragmentshandler:bintrayUpload
+        run: ./gradlew :fragmentshandler:fragmentshandler-library:bintrayUpload
 
   publish-bottomnavigation:
     needs: build-test-check
@@ -171,7 +171,7 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :bottomnavigation:bintrayUpload
+        run: ./gradlew :bottomnavigation:bottomnavigation-library:bintrayUpload
 
   publish-tabs:
     needs: build-test-check
@@ -189,7 +189,7 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :tabs:bintrayUpload
+        run: ./gradlew :tabs:tabs-library:bintrayUpload
 
   publish-recyclerview:
     needs: build-test-check
@@ -207,4 +207,4 @@ jobs:
           BINTRAY_USER: ${{secrets.BINTRAY_USER}}
           BINTRAY_KEY: ${{secrets.BINTRAY_KEY}}
           BINTRAY_ORG: ${{secrets.BINTRAY_ORG}}
-        run: ./gradlew :recyclerview:bintrayUpload
+        run: ./gradlew :recyclerview:recyclerview-library:bintrayUpload
