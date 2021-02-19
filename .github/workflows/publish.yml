@@ -8,7 +8,7 @@ name: publish
 # individually in Github Actions view.
 
 on:
-  create:
+  push:
     tags:
       - '*'
   workflow_dispatch:
