@@ -10,6 +10,13 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
+    PUBLISH_ARTIFACT_ID = 'tabs'
+    LIBRARY_DESCRIPTION = 'Extension of the TabsLayout that handles different foldable configurations easily'
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion

@@ -10,6 +10,13 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
+    PUBLISH_ARTIFACT_ID = 'screenmanager-windowmanager'
+    LIBRARY_DESCRIPTION = 'Jetpack WindowManager implementation of the screenmanager-core library'
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion

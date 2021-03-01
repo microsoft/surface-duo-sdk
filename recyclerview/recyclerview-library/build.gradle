@@ -10,6 +10,13 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
+    PUBLISH_ARTIFACT_ID = 'recyclerview'
+    LIBRARY_DESCRIPTION = 'Set of custom components that help you to use a recyclerview on a foldable device handle its different configurations'
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
