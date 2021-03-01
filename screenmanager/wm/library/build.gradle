@@ -8,8 +8,6 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id 'maven-publish'
-    id 'com.jfrog.bintray'
 }
 
 android {
@@ -19,7 +17,6 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-
         versionCode rootProject.ext.screenManagerWMVersionCode
         versionName rootProject.ext.screenManagerWMVersionName
 
@@ -48,58 +45,4 @@ dependencies {
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-}
-
-// ---- Artifact publication -----
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            MicrosoftSurfaceDuo(MavenPublication) {
-                from components.release
-                groupId 'com.microsoft.device.dualscreen'
-                artifactId 'screenmanager-windowmanager'
-                version android.defaultConfig.versionName
-                artifact(sourceJar)
-            }
-        }
-
-        //Private: This is used to upload the artifact to internal repository for testing purposes
-        //You can use it by doing: ./gradlew :module:publishMicrosoftSurfaceDuoPublicationToADORepository
-        //being :module the specific module you want to create the artifact from
-        repositories {
-            maven {
-                name 'ADO'
-                url getPropertyValue("ADO_URL")
-                credentials {
-                    username getPropertyValue("ADO_USER")
-                    password getPropertyValue("ADO_PASSWD")
-                }
-            }
-        }
-    }
-}
-
-//Public: This is used to upload the artifact to Bintray/JCenter
-//You can use it by doing: ./gradlew :module:bintrayUpload
-//being :module the specific module you want to create the artifact from
-bintray {
-    user = getPropertyValue("BINTRAY_USER")
-    key = getPropertyValue("BINTRAY_KEY")
-    publications = ['MicrosoftSurfaceDuo']
-    publish = false
-    pkg {
-        repo = 'screenmanager'
-        name = 'windowmanager'
-        userOrg = getPropertyValue("BINTRAY_ORG")
-        licenses = ['MIT']
-        version {
-            name = android.defaultConfig.versionName
-            vcsTag = android.defaultConfig.versionName
-        }
-    }
 }
