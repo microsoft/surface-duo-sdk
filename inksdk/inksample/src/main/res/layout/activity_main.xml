@@ -91,6 +91,17 @@
         app:layout_constraintTop_toTopOf="@+id/btnClear" />
 
     <ImageView
+        android:id="@+id/yellowColorPick"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:background="#FFFF00"
+        android:onClick="setYellow"
+        InkView:srcCompat="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/blueColorPick"
+        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+
+    <ImageView
         android:id="@+id/blackColorPick"
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
@@ -98,7 +109,7 @@
         android:background="#000000"
         android:onClick="setBlack"
         InkView:srcCompat="@android:drawable/ic_menu_edit"
-        app:layout_constraintStart_toEndOf="@+id/blueColorPick"
+        app:layout_constraintStart_toEndOf="@+id/yellowColorPick"
         app:layout_constraintTop_toTopOf="@+id/btnClear" />
 
     <Switch

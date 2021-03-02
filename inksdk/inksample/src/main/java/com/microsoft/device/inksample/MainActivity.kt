@@ -63,6 +63,10 @@ class MainActivity : AppCompatActivity() {
         inkView.color = Color.BLACK
     }
 
+    fun setYellow(@Suppress("UNUSED_PARAMETER")view: View) {
+        inkView.color = Color.YELLOW
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     fun copyImage(view: View) {
         val image = view as ImageView
@@ -116,4 +120,5 @@ class MainActivity : AppCompatActivity() {
             this.webView.visibility = View.INVISIBLE
         }
     }
+
 }
