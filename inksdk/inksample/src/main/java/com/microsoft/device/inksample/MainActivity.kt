@@ -47,22 +47,27 @@ class MainActivity : AppCompatActivity() {
         inkView.clearInk()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun setRed(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.RED
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun setGreen(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.GREEN
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun setBlue(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.BLUE
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun setBlack(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.BLACK
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun setYellow(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.YELLOW
     }
