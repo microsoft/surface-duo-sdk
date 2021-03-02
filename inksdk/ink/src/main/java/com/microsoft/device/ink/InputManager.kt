@@ -63,9 +63,9 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
                     orientation = event.orientation,
                     tilt = event.getAxisValue(MotionEvent.AXIS_TILT),
                     primaryButtonState = ((event.buttonState and MotionEvent.BUTTON_PRIMARY) > 0)
-                            or ((event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) > 0),
+                        or ((event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) > 0),
                     secondaryButtonState = ((event.buttonState and MotionEvent.BUTTON_SECONDARY) > 0)
-                            or ((event.buttonState and MotionEvent.BUTTON_STYLUS_SECONDARY) > 0)
+                        or ((event.buttonState and MotionEvent.BUTTON_STYLUS_SECONDARY) > 0)
                 )
             }
         }
@@ -98,7 +98,7 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
 
         fun reset() {
             builder = Ink.Stroke.builder()
-            lastPointReferenced=0
+            lastPointReferenced = 0
             penInfos.clear()
         }
     }

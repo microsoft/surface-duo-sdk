@@ -17,7 +17,6 @@ import android.widget.ImageView
 import android.widget.Switch
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.alpha
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -39,7 +38,6 @@ class MainActivity : AppCompatActivity() {
         webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
-
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -78,9 +76,10 @@ class MainActivity : AppCompatActivity() {
         image.setImageBitmap(inkView.saveBitmap())
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun fancySwitchChanged(view: View) {
         var switch = view as Switch
-        if (switch.isChecked ){
+        if (switch.isChecked) {
             inkView.dynamicPaintHandler = FancyPaintHandler()
         } else {
             inkView.dynamicPaintHandler = null
@@ -88,11 +87,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class FancyPaintHandler : DynamicPaintHandler {
-        @RequiresApi(Build.VERSION_CODES.O)
+        @RequiresApi(Build.VERSION_CODES.Q)
         override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
             var paint = Paint()
             val a = penInfo.pressure * 255
-
 
             paint.color = Color.argb(
                 a.toInt(),
@@ -109,21 +107,18 @@ class MainActivity : AppCompatActivity() {
             )
             paint.style = Paint.Style.STROKE
             paint.strokeJoin = Paint.Join.ROUND
-            paint.strokeCap = Paint.Cap.ROUND;
+            paint.strokeCap = Paint.Cap.ROUND
 
-            return paint;
+            return paint
         }
     }
 
     fun webSwitchChanged(view: View) {
         var switch = view as Switch
-        if (switch.isChecked ){
+        if (switch.isChecked) {
             this.webView.visibility = View.VISIBLE
-
-
         } else {
             this.webView.visibility = View.INVISIBLE
         }
     }
-
 }
