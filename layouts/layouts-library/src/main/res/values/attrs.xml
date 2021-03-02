@@ -29,9 +29,4 @@
             <enum name="dual_screen" value="1" />
         </attr>
     </declare-styleable>
-
-    <declare-styleable name="SurfaceDuoFrameLayout">
-        <attr name="display_position" />
-        <attr name="tools_application_mode" />
-    </declare-styleable>
 </resources>

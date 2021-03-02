@@ -33,24 +33,32 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation project(':screenmanager:utils')
-    implementation project(commonDependencies.screenManager)
+    compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.ktxCore
     implementation androidxDependencies.lifecycleViewmodel
 
+    testImplementation project(commonDependencies.screenManager)
     testImplementation testDependencies.junit
     testImplementation commonDependencies.googleTruth
+
+    androidTestImplementation project(':test-utils')
+    androidTestImplementation project(commonDependencies.screenManager)
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
-    androidTestImplementation project(':test-utils')
 }
