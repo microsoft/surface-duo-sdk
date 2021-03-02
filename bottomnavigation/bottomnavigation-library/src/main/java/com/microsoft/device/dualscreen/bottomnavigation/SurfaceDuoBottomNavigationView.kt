@@ -132,36 +132,36 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         val styledAttributes =
             context.theme.obtainStyledAttributes(
                 attrs,
-                R.styleable.SurfaceDuoBottomNavigationView,
+                R.styleable.ScreenManagerAttrs,
                 0,
                 0
             )
         try {
             screenMode = ScreenMode.fromId(
                 styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoBottomNavigationView_tools_application_mode,
+                    R.styleable.ScreenManagerAttrs_tools_application_mode,
                     ScreenMode.DUAL_SCREEN.ordinal
                 )
             )
             displayPosition = DisplayPosition.fromId(
                 styledAttributes.getInt(
-                    R.styleable.SurfaceDuoBottomNavigationView_display_position,
+                    R.styleable.ScreenManagerAttrs_display_position,
                     DisplayPosition.DUAL.ordinal
                 )
             )
             useAnimation =
                 styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoBottomNavigationView_useAnimation,
+                    R.styleable.ScreenManagerAttrs_useAnimation,
                     useAnimation
                 )
             allowFlingGesture =
                 styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoBottomNavigationView_allowFlingGesture,
+                    R.styleable.ScreenManagerAttrs_allowFlingGesture,
                     allowFlingGesture
                 )
             useTransparentBackground =
                 styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoBottomNavigationView_useTransparentBackground,
+                    R.styleable.ScreenManagerAttrs_useTransparentBackground,
                     useTransparentBackground
                 )
         } finally {

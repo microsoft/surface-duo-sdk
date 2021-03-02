@@ -16,13 +16,13 @@ import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.DisplayPosition
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.tabs.test.R
-import com.microsoft.device.dualscreen.tabs.utils.ScreenInfoListenerImpl
 import com.microsoft.device.dualscreen.tabs.utils.SimpleTabActivity
 import com.microsoft.device.dualscreen.tabs.utils.areTabsOnScreen
 import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
 import com.microsoft.device.dualscreen.test.utils.resetOrientation
 import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
 import com.microsoft.device.dualscreen.test.utils.setOrientationRight

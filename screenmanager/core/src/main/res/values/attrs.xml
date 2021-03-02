@@ -5,7 +5,7 @@
   -->
 
 <resources>
-    <declare-styleable name="GlobalAttributes">
+    <declare-styleable name="ScreenManagerAttrs">
         <attr name="tools_application_mode" format="enum">
             <enum name="single_screen" value="0" />
             <enum name="dual_screen" value="1" />

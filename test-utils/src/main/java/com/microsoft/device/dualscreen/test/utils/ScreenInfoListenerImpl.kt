@@ -46,7 +46,7 @@ class ScreenInfoListenerImpl : ScreenInfoListener {
      */
     fun waitForScreenInfoChanges(): Boolean {
         return try {
-            val result = screenInfoLatch.await(10, TimeUnit.SECONDS) ?: false
+            val result = screenInfoLatch.await(10, TimeUnit.SECONDS)
             result
         } catch (e: InterruptedException) {
             false

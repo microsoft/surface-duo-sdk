@@ -70,17 +70,17 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {
         val styledAttributes =
-            context.theme.obtainStyledAttributes(attrs, R.styleable.SurfaceDuoFrameLayout, 0, 0)
+            context.theme.obtainStyledAttributes(attrs, R.styleable.ScreenManagerAttrs, 0, 0)
         try {
             displayPosition = DisplayPosition.fromId(
                 styledAttributes.getInt(
-                    R.styleable.SurfaceDuoFrameLayout_display_position,
+                    R.styleable.ScreenManagerAttrs_display_position,
                     DisplayPosition.DUAL.ordinal
                 )
             )
             screenMode = ScreenMode.fromId(
                 styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoFrameLayout_tools_application_mode,
+                    R.styleable.ScreenManagerAttrs_tools_application_mode,
                     ScreenMode.DUAL_SCREEN.ordinal
                 )
             )
@@ -128,7 +128,8 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
                 paddingTop + paddingBottom,
                 child.layoutParams.height
             )
-            val childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
+            val childWidthMeasureSpec =
+                MeasureSpec.makeMeasureSpec(desiredLength, MeasureSpec.EXACTLY)
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec)
             val params = child.layoutParams as LayoutParams
             params.gravity = gravity
