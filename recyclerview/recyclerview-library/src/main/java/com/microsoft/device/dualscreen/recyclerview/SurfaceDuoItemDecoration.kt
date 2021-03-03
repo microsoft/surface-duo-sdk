@@ -21,8 +21,13 @@ class SurfaceDuoItemDecoration(private val screenInfo: ScreenInfo) : RecyclerVie
         END_SCREEN(1)
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        if (!isSurfaceDuoInDualMode(screenInfo)) {
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        if (!isSurfaceDuoInDualMode(screenInfo) || !screenInfo.isDeviceInLandscape()) {
             return
         }
 

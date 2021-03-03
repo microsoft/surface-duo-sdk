@@ -12,8 +12,8 @@ import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.SampleActivity
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.isSurfaceDuoInDualMode
-import com.microsoft.device.dualscreen.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test

@@ -12,16 +12,16 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.microsoft.device.dualscreen.utils.DUAL_SCREEN_HINGE_RECT
-import com.microsoft.device.dualscreen.utils.DUAL_SCREEN_WINDOW_RECT
-import com.microsoft.device.dualscreen.utils.END_SCREEN_RECT
-import com.microsoft.device.dualscreen.utils.START_SCREEN_RECT
-import com.microsoft.device.dualscreen.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.utils.any
-import com.microsoft.device.dualscreen.utils.setOrientationLeft
-import com.microsoft.device.dualscreen.utils.setOrientationRight
-import com.microsoft.device.dualscreen.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.test.utils.DUAL_SCREEN_HINGE_RECT
+import com.microsoft.device.dualscreen.test.utils.DUAL_SCREEN_WINDOW_RECT
+import com.microsoft.device.dualscreen.test.utils.END_SCREEN_RECT
+import com.microsoft.device.dualscreen.test.utils.START_SCREEN_RECT
+import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.test.utils.any
+import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
+import com.microsoft.device.dualscreen.test.utils.setOrientationRight
+import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
 import org.junit.After
 import org.junit.FixMethodOrder
 import org.junit.Rule
@@ -44,8 +44,7 @@ class ScreenManagerOnDualScreenTest {
 
     @After
     fun tearDown() {
-        val screenManager = ScreenManagerProvider.getScreenManager()
-        screenManager.removeScreenInfoListener(screenInfoListener)
+        ScreenManagerProvider.getScreenManager().clear()
         screenInfoListener.resetScreenInfo()
     }
 

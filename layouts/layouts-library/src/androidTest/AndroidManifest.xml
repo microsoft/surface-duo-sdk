@@ -21,7 +21,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
-        android:name=".SampleApp"
+        android:name=".utils.SampleApp"
         android:label="Android TestCase"
         android:maxRecents="1"
         android:multiArch="true"
@@ -47,7 +47,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SimpleDuoFrameLayoutActivity"
+            android:name=".utils.SimpleDuoFrameLayoutActivity"
             android:label="SimpleDuoFrameLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,7 +55,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SimpleDuoLayoutActivity"
+            android:name=".utils.SimpleDuoLayoutActivity"
             android:label="SimpleDuoLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,8 +63,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SimpleDualLayoutActivity"
+            android:name=".utils.SimpleDualLayoutActivity"
             android:label="SimpleDualLayoutActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".utils.SimpleStartActivity"
+            android:label="SimpleStartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />

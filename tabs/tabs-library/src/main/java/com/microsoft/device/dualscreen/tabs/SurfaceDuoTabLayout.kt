@@ -116,31 +116,31 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
         val styledAttributes =
             context.theme.obtainStyledAttributes(
                 attrs,
-                R.styleable.SurfaceDuoTabLayout,
+                R.styleable.ScreenManagerAttrs,
                 0,
                 0
             )
         try {
             screenMode = ScreenMode.fromId(
                 styledAttributes.getResourceId(
-                    R.styleable.SurfaceDuoTabLayout_tools_application_mode,
+                    R.styleable.ScreenManagerAttrs_tools_application_mode,
                     ScreenMode.DUAL_SCREEN.ordinal
                 )
             )
             displayPosition = DisplayPosition.fromId(
                 styledAttributes.getInt(
-                    R.styleable.SurfaceDuoTabLayout_display_position,
+                    R.styleable.ScreenManagerAttrs_display_position,
                     DisplayPosition.DUAL.ordinal
                 )
             )
             allowFlingGesture =
                 styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoTabLayout_allowFlingGesture,
+                    R.styleable.ScreenManagerAttrs_allowFlingGesture,
                     allowFlingGesture
                 )
             useTransparentBackground =
                 styledAttributes.getBoolean(
-                    R.styleable.SurfaceDuoTabLayout_useTransparentBackground,
+                    R.styleable.ScreenManagerAttrs_useTransparentBackground,
                     useTransparentBackground
                 )
         } finally {

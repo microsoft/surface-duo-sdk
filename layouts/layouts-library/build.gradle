@@ -1,14 +1,16 @@
 /*
- *
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License.
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'maven-publish'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'maven-publish'
+    id 'com.jfrog.bintray'
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -17,8 +19,9 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+
+        versionCode rootProject.ext.layoutsVersionCode
+        versionName rootProject.ext.layoutsVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
@@ -33,34 +36,6 @@ android {
     }
 }
 
-// PUBLISHING CODE
-//task sourceJar(type: Jar) {
-//    from android.sourceSets.main.java.srcDirs
-//    classifier "sources"
-//}
-//
-//afterEvaluate {
-//    publishing {
-//        publications {
-//            mylibrary(MavenPublication) {
-//                from components.release
-//                groupId 'com.microsoft.device.dualscreen'
-//                artifactId 'layouts'
-//                version '1.0.0-alpha02'
-//                artifact(sourceJar)
-//            }
-//        }
-//        repositories {
-//            maven {
-//                url REPO_URL
-//                credentials {
-//                    username USERNAME
-//                    password PASSWORD
-//                }
-//            }
-//        }
-//    }
-//}
 dependencies {
     api project(':screenmanager:utils')
     compileOnly project(commonDependencies.screenManager)
@@ -75,9 +50,63 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation instrumentationTestDependencies.testRunner
-    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':test-utils')
+}
+
+// ---- Artifact publication -----
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            MicrosoftSurfaceDuo(MavenPublication) {
+                from components.release
+                groupId 'com.microsoft.device.dualscreen'
+                artifactId 'layouts'
+                version android.defaultConfig.versionName
+                artifact(sourceJar)
+            }
+        }
+
+        //Private: This is used to upload the artifact to internal repository for testing purposes
+        //You can use it by doing: ./gradlew :module:publishMicrosoftSurfaceDuoPublicationToADORepository
+        //being :module the specific module you want to create the artifact from
+        repositories {
+            maven {
+                name 'ADO'
+                url getPropertyValue("ADO_URL")
+                credentials {
+                    username getPropertyValue("ADO_USER")
+                    password getPropertyValue("ADO_PASSWD")
+                }
+            }
+        }
+    }
+}
+
+//Public: This is used to upload the artifact to Bintray/JCenter
+//You can use it by doing: ./gradlew :module:bintrayUpload
+//being :module the specific module you want to create the artifact from
+bintray {
+    user = getPropertyValue("BINTRAY_USER")
+    key = getPropertyValue("BINTRAY_KEY")
+    publications = ['MicrosoftSurfaceDuo']
+    publish = false
+    pkg {
+        repo = 'components'
+        name = 'layouts'
+        userOrg = getPropertyValue("BINTRAY_ORG")
+        licenses = ['MIT']
+        version {
+            name = android.defaultConfig.versionName
+            vcsTag = android.defaultConfig.versionName
+        }
+    }
 }
