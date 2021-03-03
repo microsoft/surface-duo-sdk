@@ -2,9 +2,8 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: publish-dualscreenSDK-mavencentral
-# This workflow builds and publishes the different artifacts the project has..
-# Every library publication has its own job, so if one fails the other can run, and we can see them all
-# individually in Github Actions view.
+# This workflow builds and publishes in Maven Central the DualScreen SDK artifacts (all of them).
+# Although the final publishing step has to be done manually in Sonatype site.
 
 on:
   push:
@@ -75,7 +74,7 @@ jobs:
       - name: Source jar
         run: ./gradlew :${{matrix.projects}}:androidSourcesJar
 
-        # Runs upload, and then closes & releases the repository
+        # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
       - name: Publish to MavenCentral
         run: ./gradlew  :${{matrix.projects}}:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1
         env:

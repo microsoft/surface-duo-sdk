@@ -2,7 +2,8 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: publish-inkSDK-mavencentral
-# This workflow builds and publishes the different artifacts the project has..
+# This workflow builds and publishes in Maven Central the Ink SDK artifact.
+# Although the final publishing step has to be done manually in Sonatype site.
 
 on:
   push:
@@ -57,7 +58,7 @@ jobs:
       - name: Source jar
         run: ./gradlew :inksdk:ink:androidSourcesJar
 
-        # Runs upload, and then closes & releases the repository
+        # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
       - name: Publish to MavenCentral
         run: ./gradlew  :inksdk:ink:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1
         env:
