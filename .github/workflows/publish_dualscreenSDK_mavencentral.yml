@@ -25,15 +25,15 @@ jobs:
     strategy:
       matrix:
         projects: [
-          screenmanager:core,
-          screenmanager:dm:library,
-          screenmanager:wm:library,
-          screenmanager:utils,
-          layouts:layouts-library,
-          fragmentshandler:fragmentshandler-library,
-          bottomnavigation:bottomnavigation-library,
-          tabs:tabs-library,
-          recyclerview:recyclerview-library
+          "screenmanager:core",
+          "screenmanager:dm:library",
+          "screenmanager:wm:library",
+          "screenmanager:utils",
+          "layouts:layouts-library",
+          "fragmentshandler:fragmentshandler-library",
+          "bottomnavigation:bottomnavigation-library",
+          "tabs:tabs-library",
+          "recyclerview:recyclerview-library"
         ]
       fail-fast: false
 
