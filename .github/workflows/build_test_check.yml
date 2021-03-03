@@ -46,7 +46,7 @@ jobs:
       - name: unit tests
         run: ./gradlew testDebugUnitTest
       - name: build instrumentation tests
-          run: ./gradlew assembleAndroidTest
+        run: ./gradlew assembleAndroidTest
       - name: lint
         run: ./gradlew lintDebug
       - name: ktlint
