@@ -1,0 +1,69 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: publish-inkSDK-mavencentral
+# This workflow builds and publishes the different artifacts the project has..
+
+on:
+  push:
+    tags:
+      - 'ink*'
+
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Manual publication to MavenCentral - inkSDK'
+      home:
+        description: 'location'
+        required: false
+
+jobs:
+  publish-inkSDK:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      # Base64 decodes and pipes the GPG key content into the secret file
+      - name: Prepare environment
+        env:
+          SIGNING_SECRET_KEY: ${{ secrets.SIGNING_SECRET_KEY }}
+          SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
+        run: |
+          git fetch --unshallow
+          sudo bash -c "echo '$SIGNING_SECRET_KEY' | base64 -d > '$SIGNING_SECRET_FILE'"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: clean
+        run: ./gradlew :inksdk:ink:clean
+
+        # Builds the release artifacts of the library
+      - name: Release build
+        run: ./gradlew :inksdk:ink:assembleRelease
+
+        # Generates other artifacts
+      - name: Source jar
+        run: ./gradlew :inksdk:ink:androidSourcesJar
+
+        # Runs upload, and then closes & releases the repository
+      - name: Publish to MavenCentral
+        run: ./gradlew  :inksdk:ink:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1
+        env:
+          MAVEN_USER: ${{ secrets.MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
+
