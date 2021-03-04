@@ -8,9 +8,10 @@ package com.microsoft.device.ink
 import android.view.MotionEvent
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when` as whenz
 
-class ExampleUnitTest {
+class PenInfoTest {
     @Test
     fun testPenInfoCreate() {
         val x = 200.toFloat()
@@ -19,14 +20,14 @@ class ExampleUnitTest {
         val tilt = 0.5.toFloat()
         val orientation = 10.toFloat()
 
-        val motionEvent = Mockito.mock(MotionEvent::class.java)
-        Mockito.`when`(motionEvent.x).thenReturn(x)
-        Mockito.`when`(motionEvent.y).thenReturn(y)
-        Mockito.`when`(motionEvent.getToolType(0)).thenReturn(MotionEvent.TOOL_TYPE_MOUSE)
-        Mockito.`when`(motionEvent.pressure).thenReturn(pressure)
-        Mockito.`when`(motionEvent.getAxisValue(MotionEvent.AXIS_TILT)).thenReturn(tilt)
-        Mockito.`when`(motionEvent.orientation).thenReturn(orientation)
-        Mockito.`when`(motionEvent.buttonState).thenReturn(MotionEvent.BUTTON_PRIMARY)
+        val motionEvent = mock(MotionEvent::class.java)
+        whenz(motionEvent.x).thenReturn(x)
+        whenz(motionEvent.y).thenReturn(y)
+        whenz(motionEvent.getToolType(0)).thenReturn(MotionEvent.TOOL_TYPE_MOUSE)
+        whenz(motionEvent.pressure).thenReturn(pressure)
+        whenz(motionEvent.getAxisValue(MotionEvent.AXIS_TILT)).thenReturn(tilt)
+        whenz(motionEvent.orientation).thenReturn(orientation)
+        whenz(motionEvent.buttonState).thenReturn(MotionEvent.BUTTON_PRIMARY)
 
         val penInfo = InputManager.PenInfo.createFromEvent(motionEvent)
         assertEquals(x, penInfo.x)
