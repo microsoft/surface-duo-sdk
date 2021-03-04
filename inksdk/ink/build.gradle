@@ -13,10 +13,10 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion inkSDK.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.inkSDKVersionCode
+        versionName rootProject.ext.inkSDKVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
         consumerProguardFiles "consumer-rules.pro"

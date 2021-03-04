@@ -12,22 +12,21 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.SurfaceTexture
-import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Surface
 import android.view.TextureView
-import androidx.annotation.RequiresApi
 
-@RequiresApi(Build.VERSION_CODES.Q)
+// constants
+const val minPointsForValidStroke = 2
+
 class InkView constructor(
     context: Context,
     attributeSet: AttributeSet
 ) :
     TextureView(context, attributeSet), TextureView.SurfaceTextureListener {
 
-    private var mSurface: Surface? = null
-    private var mSurfaceTexture: SurfaceTexture? = null
+    private var surface: Surface? = null
     private var inputManager: InputManager
     private lateinit var canvasBitmap: Bitmap
     private lateinit var drawCanvas: Canvas
@@ -48,18 +47,13 @@ class InkView constructor(
             currentStrokePaint.color = value
         }
 
-    private var _dynamicPaintHandler: DynamicPaintHandler? = null
-    var dynamicPaintHandler = _dynamicPaintHandler
-        set(value) {
-            _dynamicPaintHandler = value
-            field = value
-        }
+    var dynamicPaintHandler: DynamicPaintHandler? = null
+
     interface DynamicPaintHandler {
         fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint
     }
 
     init {
-        isOpaque = false // mae the texture view transparent!
         // handle attributes
         context.theme.obtainStyledAttributes(
             attributeSet,
@@ -75,16 +69,24 @@ class InkView constructor(
                 recycle()
             }
         }
+        isOpaque = false // make the texture view transparent!
         this.surfaceTextureListener = this
+
+        // setup blend modes
         overridePaint = Paint()
         overridePaint.blendMode = BlendMode.SRC
         clearPaint = Paint()
         clearPaint.blendMode = BlendMode.CLEAR
 
-        inputManager = InputManager(
+        inputManager = createInputManager()
+
+        initCurrentStrokePaint()
+    }
+
+    private fun createInputManager(): InputManager {
+        return InputManager(
             this,
             object : InputManager.PenInputHandler {
-                @RequiresApi(Build.VERSION_CODES.Q)
                 override fun strokeStarted(
                     penInfo: InputManager.PenInfo,
                     stroke: InputManager.ExtendedStroke
@@ -92,7 +94,6 @@ class InkView constructor(
                     redrawTexture()
                 }
 
-                @RequiresApi(Build.VERSION_CODES.Q)
                 override fun strokeUpdated(
                     penInfo: InputManager.PenInfo,
                     stroke: InputManager.ExtendedStroke
@@ -100,7 +101,6 @@ class InkView constructor(
                     redrawTexture()
                 }
 
-                @RequiresApi(Build.VERSION_CODES.Q)
                 override fun strokeCompleted(
                     penInfo: InputManager.PenInfo,
                     stroke: InputManager.ExtendedStroke
@@ -110,7 +110,9 @@ class InkView constructor(
                 }
             }
         )
+    }
 
+    private fun initCurrentStrokePaint() {
         currentStrokePaint.color = color
         currentStrokePaint.isAntiAlias = true
         // Set stroke width based on display density.
@@ -125,7 +127,6 @@ class InkView constructor(
         currentStrokePaint.strokeCap = Paint.Cap.ROUND
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun clearInk() {
         drawCanvas.drawColor(Color.TRANSPARENT, BlendMode.CLEAR)
         strokeList.clear()
@@ -133,7 +134,6 @@ class InkView constructor(
         redrawTexture()
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun saveBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         drawIt(Canvas(bitmap))
@@ -148,7 +148,6 @@ class InkView constructor(
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         canvasBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -156,9 +155,8 @@ class InkView constructor(
         redrawTexture()
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun redrawTexture() {
-        val canvas: Canvas = mSurface?.lockCanvas(null) ?: return
+        val canvas: Canvas = surface?.lockCanvas(null) ?: return
         try {
             drawIt(canvas)
         } finally {
@@ -168,20 +166,18 @@ class InkView constructor(
             //
             // If the SurfaceTexture has been destroyed, this will throw an exception.
             try {
-                mSurface?.unlockCanvasAndPost(canvas)
+                surface?.unlockCanvasAndPost(canvas)
             } catch (iae: IllegalArgumentException) {
                 return
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun drawIt(canvas: Canvas) {
         val stroke = inputManager.currentStroke
         drawStroke(canvas, stroke)
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun drawStroke(canvas: Canvas, stroke: InputManager.ExtendedStroke) {
 
         val points = stroke.getPoints()
@@ -191,7 +187,7 @@ class InkView constructor(
             return
         }
 
-        if (points.size < 2) {
+        if (points.size < minPointsForValidStroke) {
             return
         }
 
@@ -205,9 +201,17 @@ class InkView constructor(
                     penInfo.pointerType == InputManager.PointerType.PEN_ERASER -> {
                         drawCanvas.drawCircle(penInfo.x, penInfo.y, 30f, clearPaint)
                     }
-                    _dynamicPaintHandler != null -> {
-                        val paint = _dynamicPaintHandler!!.generatePaintFromPenInfo(penInfo)
-                        drawCanvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, paint)
+                    dynamicPaintHandler != null -> {
+                        dynamicPaintHandler?.let { paintHandler ->
+                            val paint = paintHandler.generatePaintFromPenInfo(penInfo)
+                            drawCanvas.drawLine(
+                                startPoint.x,
+                                startPoint.y,
+                                penInfo.x,
+                                penInfo.y,
+                                paint
+                            )
+                        }
                     }
                     enablePressure -> {
                         updateStrokeWidth(penInfo.pressure)
@@ -232,12 +236,11 @@ class InkView constructor(
      * @param height The height of the surface
      */
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
-        mSurfaceTexture = surface
         if (surface != null) {
-            mSurface = Surface(surface)
+            this.surface = Surface(surface)
         } else {
-            mSurface?.release()
-            mSurface = null
+            this.surface?.release()
+            this.surface = null
         }
     }
 
@@ -261,8 +264,7 @@ class InkView constructor(
      * @param surface The surface about to be destroyed
      */
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
-        mSurfaceTexture = null
-        mSurface?.release()
+        this.surface?.release()
         return true
     }
 

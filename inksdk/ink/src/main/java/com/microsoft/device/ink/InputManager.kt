@@ -10,14 +10,12 @@ import android.view.MotionEvent
 import android.view.View
 import com.google.mlkit.vision.digitalink.Ink
 
-class InputManager(view: View, penInputHandler: PenInputHandler) {
+class InputManager(view: View, private val penInputHandler: PenInputHandler) {
 
-    private val inputHandler: PenInputHandler
     val currentStroke = ExtendedStroke()
 
     init {
         setupInputEvents(view)
-        inputHandler = penInputHandler
         currentStroke.reset()
     }
 
@@ -113,15 +111,15 @@ class InputManager(view: View, penInputHandler: PenInputHandler) {
                 MotionEvent.ACTION_DOWN -> {
                     currentStroke.reset()
                     currentStroke.addPoint(penInfo)
-                    inputHandler.strokeStarted(penInfo, currentStroke)
+                    penInputHandler.strokeStarted(penInfo, currentStroke)
                 }
                 MotionEvent.ACTION_MOVE -> {
                     currentStroke.addPoint(penInfo)
-                    inputHandler.strokeUpdated(penInfo, currentStroke)
+                    penInputHandler.strokeUpdated(penInfo, currentStroke)
                 }
                 MotionEvent.ACTION_UP -> {
                     currentStroke.addPoint(penInfo)
-                    inputHandler.strokeCompleted(penInfo, currentStroke)
+                    penInputHandler.strokeCompleted(penInfo, currentStroke)
                 }
                 else -> consumed = false
             }

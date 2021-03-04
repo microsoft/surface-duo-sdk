@@ -7,7 +7,6 @@ package com.microsoft.device.inksample
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -15,11 +14,11 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.Switch
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.core.view.isVisible
 import com.microsoft.device.ink.InkView
 import com.microsoft.device.ink.InkView.DynamicPaintHandler
 import com.microsoft.device.ink.InputManager
@@ -40,43 +39,35 @@ class MainActivity : AppCompatActivity() {
         webSettings.javaScriptEnabled = true
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun clickClear(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.clearInk()
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun setRed(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.RED
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun setGreen(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.GREEN
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun setBlue(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.BLUE
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun setBlack(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.BLACK
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun setYellow(@Suppress("UNUSED_PARAMETER")view: View) {
         inkView.color = Color.YELLOW
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun copyImage(view: View) {
         val image = view as ImageView
         image.setImageBitmap(inkView.saveBitmap())
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun fancySwitchChanged(view: View) {
         var switch = view as Switch
         if (switch.isChecked) {
@@ -87,13 +78,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class FancyPaintHandler : DynamicPaintHandler {
-        @RequiresApi(Build.VERSION_CODES.Q)
         override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
             var paint = Paint()
-            val a = penInfo.pressure * 255
+            val alpha = penInfo.pressure * 255
 
             paint.color = Color.argb(
-                a.toInt(),
+                alpha.toInt(),
                 inkView.color.red,
                 inkView.color.green,
                 inkView.color.blue
@@ -115,10 +105,6 @@ class MainActivity : AppCompatActivity() {
 
     fun webSwitchChanged(view: View) {
         var switch = view as Switch
-        if (switch.isChecked) {
-            this.webView.visibility = View.VISIBLE
-        } else {
-            this.webView.visibility = View.INVISIBLE
-        }
+        this.webView.isVisible = switch.isChecked
     }
 }
