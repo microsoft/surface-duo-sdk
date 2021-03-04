@@ -17,13 +17,12 @@
         android:id="@+id/frameLayout"
         android:layout_width="400dp"
         android:layout_height="200dp"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="400dp"
-        android:layout_marginEnd="100dp"
         android:layout_marginBottom="100dp"
         android:background="@drawable/border"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -43,7 +42,6 @@
             InkView:ink_color="@color/black"
             InkView:max_stroke_width="8"
             InkView:min_stroke_width="3" />
-
 
 
     </FrameLayout>
@@ -140,10 +138,10 @@
         android:id="@+id/imageCopy"
         android:layout_width="202dp"
         android:layout_height="189dp"
+        android:layout_marginStart="160dp"
         android:background="#7E7E7E"
         android:onClick="copyImage"
         InkView:srcCompat="@android:drawable/ic_menu_gallery"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -38,6 +38,7 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
 }
 
 dependencies {
@@ -53,3 +54,10 @@ dependencies {
     testImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
 }
+
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device'
+    PUBLISH_ARTIFACT_ID = 'ink'
+    LIBRARY_DESCRIPTION = 'ink SDK enabled android users to use pen and inking'
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
