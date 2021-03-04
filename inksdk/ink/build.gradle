@@ -8,6 +8,13 @@ plugins {
     id 'kotlin-android'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device'
+    PUBLISH_ARTIFACT_ID = 'ink'
+    LIBRARY_DESCRIPTION = 'ink SDK enabled android users to use pen and inking'
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -54,10 +61,3 @@ dependencies {
     testImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
 }
-
-ext {
-    PUBLISH_GROUP_ID = 'com.microsoft.device'
-    PUBLISH_ARTIFACT_ID = 'ink'
-    LIBRARY_DESCRIPTION = 'ink SDK enabled android users to use pen and inking'
-}
-apply from: "${rootProject.projectDir}/publishing.gradle"
