@@ -215,7 +215,16 @@ class InkView constructor(
                     }
                     enablePressure -> {
                         updateStrokeWidth(penInfo.pressure)
-                        drawCanvas.drawLine(startPoint.x, startPoint.y, penInfo.x, penInfo.y, currentStrokePaint)
+                        drawCanvas.drawLine(
+                            startPoint.x, startPoint.y, penInfo.x, penInfo.y,
+                            currentStrokePaint
+                        )
+                    }
+                    else -> {
+                        drawCanvas.drawLine(
+                            startPoint.x, startPoint.y, penInfo.x, penInfo.y,
+                            currentStrokePaint
+                        )
                     }
                 }
 
