@@ -3,7 +3,7 @@ apply plugin: 'signing'
 
 //Every module defines its own values
 group = PUBLISH_GROUP_ID
-version = rootProject.ext.screenManagerWMVersionName
+version = LIBRARY_VERSION
 description = LIBRARY_DESCRIPTION
 
 //Maven central key-value pairs
