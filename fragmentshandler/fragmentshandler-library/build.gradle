@@ -14,6 +14,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'fragmentshandler'
     LIBRARY_DESCRIPTION = 'Library that will help you to handle fragments lifecycle when spanning and unspanning an app in a foldable device'
+    LIBRARY_VERSION = rootProject.ext.fragmentsHandlerVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 

@@ -14,6 +14,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'screenmanager-utils'
     LIBRARY_DESCRIPTION = 'Library that contains useful extension functions and code that can be shared between libraries'
+    LIBRARY_VERSION = rootProject.ext.screenManagerUtilsVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 

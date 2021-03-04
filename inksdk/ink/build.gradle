@@ -1,20 +1,18 @@
 /*
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License.
- *
+ *  Licensed under the MIT License.
  */
 
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
 }
 
 ext {
-    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
-    PUBLISH_ARTIFACT_ID = 'tabs'
-    LIBRARY_DESCRIPTION = 'Extension of the TabsLayout that handles different foldable configurations easily'
-    LIBRARY_VERSION = rootProject.ext.tabsVersionName
+    PUBLISH_GROUP_ID = 'com.microsoft.device'
+    PUBLISH_ARTIFACT_ID = 'ink'
+    LIBRARY_DESCRIPTION = 'ink SDK enabled android users to use pen and inking'
+    LIBRARY_VERSION = rootProject.ext.inkSDKVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
@@ -23,14 +21,15 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion inkSDK.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-
-        versionCode rootProject.ext.tabsVersionCode
-        versionName rootProject.ext.tabsVersionName
+        versionCode rootProject.ext.inkSDKVersionCode
+        versionName rootProject.ext.inkSDKVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+        consumerProguardFiles "consumer-rules.pro"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -41,21 +40,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
 }
 
 dependencies {
-    api project(':screenmanager:utils')
-    compileOnly project(commonDependencies.screenManager)
-
     implementation kotlinDependencies.kotlinStdlib
-    api materialDependencies.material
+    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.appCompat
+    implementation materialDependencies.material
+    implementation mlKitDependencies.digitalInk
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.testRules
+    testImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
-    androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation project(commonDependencies.screenManager)
-    androidTestImplementation project(':test-utils')
 }

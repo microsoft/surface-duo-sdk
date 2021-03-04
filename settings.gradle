@@ -29,4 +29,7 @@ include ':layouts:surfaceduoframelayout-sample'
 include ':tabs:tabs-library'
 include ':tabs:sample'
 
+include ':inksdk:ink'
+include ':inksdk:inksample'
+
 rootProject.name='DuoSDK'
