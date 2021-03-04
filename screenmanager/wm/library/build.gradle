@@ -14,6 +14,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'screenmanager-windowmanager'
     LIBRARY_DESCRIPTION = 'Jetpack WindowManager implementation of the screenmanager-core library'
+    LIBRARY_VERSION = rootProject.ext.screenManagerWMVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 

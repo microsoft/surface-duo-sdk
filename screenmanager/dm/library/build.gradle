@@ -14,6 +14,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'screenmanager-displaymask'
     LIBRARY_DESCRIPTION = 'Implementation of the screenmanager-core using displaymask'
+    LIBRARY_VERSION = rootProject.ext.screenManagerDMVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 

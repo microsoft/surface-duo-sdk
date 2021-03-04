@@ -14,6 +14,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'screenmanager-core'
     LIBRARY_DESCRIPTION = 'Core library that contains the interfaces and base functionality that the display mask and windowmanager implementations will use.'
+    LIBRARY_VERSION = rootProject.ext.screenManagerCoreVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 

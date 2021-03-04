@@ -14,6 +14,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'tabs'
     LIBRARY_DESCRIPTION = 'Extension of the TabsLayout that handles different foldable configurations easily'
+    LIBRARY_VERSION = rootProject.ext.tabsVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 

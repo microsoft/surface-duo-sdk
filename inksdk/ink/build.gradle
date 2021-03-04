@@ -12,6 +12,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device'
     PUBLISH_ARTIFACT_ID = 'ink'
     LIBRARY_DESCRIPTION = 'ink SDK enabled android users to use pen and inking'
+    LIBRARY_VERSION = rootProject.ext.inkSDKVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
