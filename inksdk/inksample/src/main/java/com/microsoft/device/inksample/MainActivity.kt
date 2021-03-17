@@ -7,6 +7,7 @@ package com.microsoft.device.inksample
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -27,12 +28,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var inkView: InkView
     private lateinit var webView: WebView
+    private lateinit var fancySwitch: Switch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         inkView = findViewById(R.id.inkView)
         webView = findViewById<WebView>(R.id.webView)
+        fancySwitch = findViewById<Switch>(R.id.fancySwitch)
         webView.webViewClient = WebViewClient()
         webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
         val webSettings = webView.settings
@@ -44,23 +47,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setRed(@Suppress("UNUSED_PARAMETER")view: View) {
+        resetPaintHandler()
         inkView.color = Color.RED
     }
 
     fun setGreen(@Suppress("UNUSED_PARAMETER")view: View) {
+        resetPaintHandler()
         inkView.color = Color.GREEN
     }
 
     fun setBlue(@Suppress("UNUSED_PARAMETER")view: View) {
+        resetPaintHandler()
         inkView.color = Color.BLUE
     }
 
     fun setBlack(@Suppress("UNUSED_PARAMETER")view: View) {
+        resetPaintHandler()
         inkView.color = Color.BLACK
     }
 
     fun setYellow(@Suppress("UNUSED_PARAMETER")view: View) {
+        resetPaintHandler()
         inkView.color = Color.YELLOW
+    }
+
+    fun setRainbow(@Suppress("UNUSED_PARAMETER")view: View) {
+        inkView.dynamicPaintHandler = RainbowPaintHandler()
+        fancySwitch.isChecked = false
+    }
+    /**
+     * Required because some colors are set on the InkView, but
+     * rainbow ink is controlled via a paint handler (which is also
+     * how the pressure handler works, but it modifies color)
+     */
+    fun resetPaintHandler()
+    {
+        if (fancySwitch.isChecked){
+            inkView.dynamicPaintHandler = FancyPaintHandler()
+        } else {
+            inkView.dynamicPaintHandler = null
+        }
     }
 
     fun copyImage(view: View) {
@@ -71,9 +97,8 @@ class MainActivity : AppCompatActivity() {
     fun fancySwitchChanged(view: View) {
         var switch = view as Switch
         if (switch.isChecked) {
-            //inkView.dynamicPaintHandler = FancyPaintHandler()
-            inkView.dynamicPaintHandler = HighlighterPaintHandler()
-            //inkView.dynamicPaintHandler = RainbowPaintHandler()
+            inkView.dynamicPaintHandler = FancyPaintHandler()
+            //inkView.dynamicPaintHandler = HighlighterPaintHandler()
         } else {
             inkView.dynamicPaintHandler = null
         }
@@ -143,13 +168,14 @@ class MainActivity : AppCompatActivity() {
      * with a rainbow effect (similar to Microsoft Whiteboard)
      */
     inner class RainbowPaintHandler : DynamicPaintHandler {
-
+        // frequency = 2*Math.PI/steps
         var frequency = .3
-        var i = 0 // TODO: fix overflow
-
+        var steps = 20
+        var i = 0
         override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
             var paint = Paint()
-            i++
+
+            if (i > steps) i = 0 else i++
             paint.color = Color.argb(
                     255,
                     (Math.sin(frequency*i + 0) * 127 + 128).toInt(),
