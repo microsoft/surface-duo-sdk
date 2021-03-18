@@ -52,19 +52,20 @@
         android:layout_height="@android:dimen/app_icon_size"
         android:onClick="clickClear"
         android:text="Clear"
-        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
-        app:layout_constraintStart_toStartOf="@+id/frameLayout" />
+        app:layout_constraintBottom_toTopOf="@+id/redColorPick"
+        app:layout_constraintStart_toStartOf="@+id/redColorPick" />
 
     <ImageView
         android:id="@+id/redColorPick"
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
         android:background="#FF0000"
         android:onClick="setRed"
         InkView:srcCompat="@android:drawable/ic_menu_edit"
-        app:layout_constraintStart_toEndOf="@+id/btnClear"
-        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintStart_toStartOf="@+id/frameLayout" />
 
     <ImageView
         android:id="@+id/greenColorPick"
@@ -75,7 +76,7 @@
         android:onClick="setGreen"
         InkView:srcCompat="@android:drawable/ic_menu_edit"
         app:layout_constraintStart_toEndOf="@+id/redColorPick"
-        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+        app:layout_constraintTop_toTopOf="@+id/redColorPick" />
 
     <ImageView
         android:id="@+id/blueColorPick"
@@ -86,7 +87,7 @@
         android:onClick="setBlue"
         InkView:srcCompat="@android:drawable/ic_menu_edit"
         app:layout_constraintStart_toEndOf="@+id/greenColorPick"
-        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+        app:layout_constraintTop_toTopOf="@+id/redColorPick" />
 
     <ImageView
         android:id="@+id/yellowColorPick"
@@ -97,7 +98,7 @@
         android:onClick="setYellow"
         InkView:srcCompat="@android:drawable/ic_menu_edit"
         app:layout_constraintStart_toEndOf="@+id/blueColorPick"
-        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+        app:layout_constraintTop_toTopOf="@+id/redColorPick" />
 
     <ImageView
         android:id="@+id/blackColorPick"
@@ -108,7 +109,18 @@
         android:onClick="setBlack"
         InkView:srcCompat="@android:drawable/ic_menu_edit"
         app:layout_constraintStart_toEndOf="@+id/yellowColorPick"
-        app:layout_constraintTop_toTopOf="@+id/btnClear" />
+        app:layout_constraintTop_toTopOf="@+id/redColorPick" />
+
+    <ImageView
+        android:id="@+id/rainbowColorPick"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/rainbow"
+        android:onClick="setRainbow"
+        InkView:srcCompat="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/blackColorPick"
+        app:layout_constraintTop_toTopOf="@+id/redColorPick" />
 
     <Switch
         android:id="@+id/fancySwitch"
@@ -117,8 +129,9 @@
         android:layout_marginStart="10dp"
         android:checked="false"
         android:onClick="fancySwitchChanged"
-        app:layout_constraintStart_toEndOf="@+id/blackColorPick"
-        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        android:text="Pressure ink"
+        app:layout_constraintStart_toEndOf="@+id/webSwitch"
+        app:layout_constraintTop_toTopOf="@+id/webSwitch"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Switch
@@ -129,7 +142,7 @@
         android:layout_marginTop="10dp"
         android:checked="false"
         android:onClick="webSwitchChanged"
-        android:text="Web View"
+        android:text="Show web view"
         app:layout_constraintStart_toStartOf="@+id/frameLayout"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
