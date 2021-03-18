@@ -7,7 +7,6 @@ package com.microsoft.device.inksample
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -80,9 +79,8 @@ class MainActivity : AppCompatActivity() {
      * rainbow ink is controlled via a paint handler (which is also
      * how the pressure handler works, but it modifies color)
      */
-    fun resetPaintHandler()
-    {
-        if (fancySwitch.isChecked){
+    fun resetPaintHandler() {
+        if (fancySwitch.isChecked) {
             inkView.dynamicPaintHandler = FancyPaintHandler()
         } else {
             inkView.dynamicPaintHandler = null
@@ -98,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         var switch = view as Switch
         if (switch.isChecked) {
             inkView.dynamicPaintHandler = FancyPaintHandler()
-            //inkView.dynamicPaintHandler = HighlighterPaintHandler()
+            // inkView.dynamicPaintHandler = HighlighterPaintHandler()
         } else {
             inkView.dynamicPaintHandler = null
         }
@@ -143,17 +141,17 @@ class MainActivity : AppCompatActivity() {
             val alpha = 80
 
             paint.color = Color.argb(
-                    alpha.toInt(),
-                    Color.YELLOW.red,
-                    Color.YELLOW.green,
-                    Color.YELLOW.blue
+                alpha.toInt(),
+                Color.YELLOW.red,
+                Color.YELLOW.green,
+                Color.YELLOW.blue
             )
             paint.isAntiAlias = true
             // Set stroke width based on display density.
             paint.strokeWidth = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    penInfo.pressure * 10 + 5,
-                    resources.displayMetrics
+                TypedValue.COMPLEX_UNIT_DIP,
+                penInfo.pressure * 10 + 5,
+                resources.displayMetrics
             )
             paint.style = Paint.Style.STROKE
             paint.strokeJoin = Paint.Join.BEVEL
@@ -177,17 +175,17 @@ class MainActivity : AppCompatActivity() {
 
             if (i > steps) i = 0 else i++
             paint.color = Color.argb(
-                    255,
-                    (Math.sin(frequency*i + 0) * 127 + 128).toInt(),
-                    (Math.sin(frequency*i + 2) * 127 + 128).toInt(),
-                    (Math.sin(frequency*i + 4) * 127 + 128).toInt()
+                255,
+                (Math.sin(frequency * i + 0) * 127 + 128).toInt(),
+                (Math.sin(frequency * i + 2) * 127 + 128).toInt(),
+                (Math.sin(frequency * i + 4) * 127 + 128).toInt()
             )
             paint.isAntiAlias = true
             // Set stroke width based on display density.
             paint.strokeWidth = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    penInfo.pressure * 10 + 5,
-                    resources.displayMetrics
+                TypedValue.COMPLEX_UNIT_DIP,
+                penInfo.pressure * 10 + 5,
+                resources.displayMetrics
             )
             paint.style = Paint.Style.STROKE
             paint.strokeJoin = Paint.Join.ROUND
