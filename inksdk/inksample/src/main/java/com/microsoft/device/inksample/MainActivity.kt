@@ -96,7 +96,6 @@ class MainActivity : AppCompatActivity() {
         var switch = view as Switch
         if (switch.isChecked) {
             inkView.dynamicPaintHandler = FancyPaintHandler()
-            // inkView.dynamicPaintHandler = HighlighterPaintHandler()
         } else {
             inkView.dynamicPaintHandler = null
         }
