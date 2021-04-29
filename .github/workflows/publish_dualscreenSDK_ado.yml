@@ -2,8 +2,7 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
 name: publish-dualscreenSDK-ado
-# This workflow builds and publishes in Maven Central the DualScreen SDK artifacts (all of them).
-# Although the final publishing step has to be done manually in Sonatype site.
+# This workflow builds and publishes in ADO the DualScreen SDK artifacts (all of them).
 
 on:
   push:

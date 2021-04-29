@@ -74,7 +74,7 @@ publishing {
             }
         }
     }
-    // Public: This is used to ipload the artifact to the public repository.
+    // Public: This is used to upload the artifact to the public repository.
     //You can use it by doing: ./gradlew :module:publishSurfaceDuoSDKToMavenCentralRepository
     //being :module the specific module you want to create the artifact from
     repositories {
@@ -90,8 +90,9 @@ publishing {
         }
     }
 
-    //Private: This is used to upload the artifact to internal repository for testing purposes
-    //You can use it by doing: ./gradlew :module:publishSurfaceDuoSDKPublicationToADORepository
+    // Public/and for test purposes: This is used to upload the artifact to internal repository
+    // for testing purposes You can use it by doing:
+    // ./gradlew :module:publishSurfaceDuoSDKPublicationToADORepository
     //being :module the specific module you want to create the artifact from
     repositories {
         maven {
