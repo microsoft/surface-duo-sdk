@@ -1,9 +1,8 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: publish-inkSDK-mavencentral
-# This workflow builds and publishes in Maven Central the Ink SDK artifact.
-# Although the final publishing step has to be done manually in Sonatype site.
+name: publish-inkSDK-ado
+# This workflow builds and publishes in ADO the Ink SDK artifact.
 
 on:
   push:
@@ -13,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: 'Triggers publication to MavenCentral - inkSDK'
+        description: 'Triggers publication to ADO - inkSDK'
       home:
         description: 'location'
         required: false
@@ -35,15 +34,6 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
-      # Base64 decodes and pipes the GPG key content into the secret file
-      - name: Prepare environment
-        env:
-          SIGNING_SECRET_KEY: ${{ secrets.SIGNING_SECRET_KEY }}
-          SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
-        run: |
-          git fetch --unshallow
-          sudo bash -c "echo '$SIGNING_SECRET_KEY' | base64 -d > '$SIGNING_SECRET_FILE'"
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -58,13 +48,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :inksdk:ink:androidSourcesJar
 
-        # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
-      - name: Publish to MavenCentral
-        run: ./gradlew  :inksdk:ink:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1
+        # Runs upload to ADO
+      - name: Publish to ADO
+        run: ./gradlew  :inksdk:ink:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
         env:
-          MAVEN_USER: ${{ secrets.MAVEN_USER }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-          SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
-
+          ADO_URL: ${{ secrets.ADO_URL }}
+          ADO_USER: ${{ secrets.ADO_USER }}
+          ADO_PASSWD: ${{ secrets.ADO_PASSWD }}
