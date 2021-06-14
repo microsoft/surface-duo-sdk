@@ -8,9 +8,12 @@ package com.microsoft.device.ink
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
-import com.google.mlkit.vision.digitalink.Ink
+//import com.google.mlkit.vision.digitalink.Ink
 
 class InputManager(view: View, private val penInputHandler: PenInputHandler) {
+
+
+
 
     val currentStroke = ExtendedStroke()
 
@@ -18,6 +21,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
         setupInputEvents(view)
         currentStroke.reset()
     }
+
 
     interface PenInputHandler {
         fun strokeStarted(penInfo: PenInfo, stroke: ExtendedStroke)
@@ -31,6 +35,13 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
         PEN_TIP,
         PEN_ERASER,
         UNKNOWN
+    }
+
+    data class Point(
+        val x:  Float,
+        val y:  Float
+    ){
+
     }
 
     data class PenInfo(
@@ -70,7 +81,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
     }
 
     class ExtendedStroke {
-        private var builder = Ink.Stroke.builder()
+        private var builder = mutableListOf<Point>()
         private var penInfos = HashMap<Int, PenInfo>()
 
         private var _lastPointReferenced = 0
@@ -81,21 +92,21 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
             }
 
         fun addPoint(penInfo: PenInfo) {
-            val point = Ink.Point.create(penInfo.x, penInfo.y)
-            builder.addPoint(point)
+            val point = Point(penInfo.x, penInfo.y)
+            builder.add(point)
             penInfos[point.hashCode()] = penInfo
         }
 
-        fun getPoints(): List<Ink.Point> {
-            return builder.build().points
+        fun getPoints(): List<Point> {
+            return builder
         }
 
-        fun getPenInfo(point: Ink.Point): PenInfo? {
+        fun getPenInfo(point: Point): PenInfo? {
             return penInfos[point.hashCode()]
         }
 
         fun reset() {
-            builder = Ink.Stroke.builder()
+            builder.clear()
             lastPointReferenced = 0
             penInfos.clear()
         }

@@ -32,7 +32,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -54,7 +54,6 @@ dependencies {
     implementation androidxDependencies.ktxCore
     implementation androidxDependencies.appCompat
     implementation materialDependencies.material
-    implementation mlKitDependencies.digitalInk
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
