@@ -136,7 +136,9 @@ class InkView constructor(
 
     fun saveBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        drawStroke(Canvas(bitmap))
+        val saveCanvas = Canvas(bitmap)
+        drawStroke()
+        saveCanvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
         return bitmap
     }
 
@@ -156,9 +158,11 @@ class InkView constructor(
     }
 
     fun redrawTexture() {
+        drawStroke()
         val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
         try {
-            drawStroke(canvas)
+            // Copy image to the canvas
+            canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
         } finally {
             // Publish the frame.  If we overrun the consumer, frames will be dropped,
             // so on a sufficiently fast device the animation will run at faster than
@@ -173,13 +177,12 @@ class InkView constructor(
         }
     }
 
-    private fun drawStroke(canvas: Canvas) {
+    private fun drawStroke() {
 
         val stroke = inputManager.currentStroke
         val points = stroke.getPoints()
 
         if (strokeList.isEmpty() && points.isEmpty()) {
-            canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
             return
         }
 
@@ -227,8 +230,6 @@ class InkView constructor(
             }
         }
         stroke.lastPointReferenced = points.size - 1
-        // Copy image to the canvas
-        canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
     }
 
     /**
