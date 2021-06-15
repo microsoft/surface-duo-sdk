@@ -16,9 +16,9 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="400dp"
-        android:layout_height="200dp"
+        android:layout_height="400dp"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="200dp"
         android:layout_marginBottom="100dp"
         android:background="@drawable/border"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -149,9 +149,9 @@
 
     <ImageView
         android:id="@+id/imageCopy"
-        android:layout_width="202dp"
-        android:layout_height="189dp"
-        android:layout_marginStart="160dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="360dp"
         android:background="#7E7E7E"
         android:onClick="copyImage"
         InkView:srcCompat="@android:drawable/ic_menu_gallery"

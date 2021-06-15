@@ -10,6 +10,7 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -36,9 +37,12 @@ class MainActivity : AppCompatActivity() {
         webView = findViewById<WebView>(R.id.webView)
         fancySwitch = findViewById<Switch>(R.id.fancySwitch)
         webView.webViewClient = WebViewClient()
-        webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
+        webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
+
+        webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
+
     }
 
     fun clickClear(@Suppress("UNUSED_PARAMETER")view: View) {

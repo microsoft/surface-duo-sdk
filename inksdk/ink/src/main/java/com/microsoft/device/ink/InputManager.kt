@@ -147,7 +147,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
                     for (i in 0 until event.historySize) {
                         currentStroke.addPoint(PenInfo.createFromHistoryEvent(event, i))
                     }
-
+                    currentStroke.addPoint(penInfo)
                     penInputHandler.strokeUpdated(penInfo, currentStroke)
                 }
                 MotionEvent.ACTION_UP -> {
