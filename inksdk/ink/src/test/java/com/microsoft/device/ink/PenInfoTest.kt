@@ -6,7 +6,6 @@
 package com.microsoft.device.ink
 
 import android.view.MotionEvent
-import com.google.mlkit.vision.digitalink.Ink
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -74,7 +73,7 @@ class PenInfoTest {
         val points = stroke.getPoints()
         assertEquals(0, points.count())
 
-        val point = Ink.Point.create(x, y)
+        val point = InputManager.Point(x, y)
         val penInfo = stroke.getPenInfo(point)
         assertNull(penInfo)
     }

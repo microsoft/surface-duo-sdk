@@ -3,7 +3,6 @@
   ~ Copyright (c) Microsoft Corporation. All rights reserved.
   ~  Licensed under the MIT License.
   -->
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:InkView="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -22,7 +21,6 @@
         android:layout_marginBottom="100dp"
         android:background="@drawable/border"
         app:layout_constraintBottom_toBottomOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -30,22 +28,17 @@
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:visibility="invisible" />
 
         <com.microsoft.device.ink.InkView
             android:id="@+id/inkView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             InkView:enable_pressure="true"
             InkView:ink_color="@color/black"
             InkView:max_stroke_width="25"
             InkView:min_stroke_width="10" />
-
-
     </FrameLayout>
-
     <Button
         android:id="@+id/btnClear"
         android:layout_width="wrap_content"
@@ -156,26 +149,25 @@
         app:layout_constraintTop_toTopOf="@+id/seekBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/circle" />
+
     <ImageView
         android:id="@+id/imageCopy"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginStart="360dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="#7E7E7E"
         android:onClick="copyImage"
         InkView:srcCompat="@android:drawable/ic_menu_gallery"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="400dp"
         android:layout_height="27dp"
-
-
         android:layout_marginTop="8dp"
         android:max="50"
-
         android:min="10"
         android:progress="25"
         android:rotation="0"

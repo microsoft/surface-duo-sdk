@@ -35,8 +35,6 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
     class Point(
         val x: Float,
         val y: Float,
-        var dx: Float,
-        var dy: Float
     )
 
     data class PenInfo(
@@ -110,7 +108,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
             }
 
         fun addPoint(penInfo: PenInfo) {
-            val point = Point(penInfo.x, penInfo.y, 0f, 0f)
+            val point = Point(penInfo.x, penInfo.y)
             builder.add(point)
             penInfos[point.hashCode()] = penInfo
         }
