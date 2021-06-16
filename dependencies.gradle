@@ -137,6 +137,6 @@ ext {
     ]
 
     inkSDK = [
-            minSdkVersion : 29
+            minSdkVersion : 23
     ]
 }

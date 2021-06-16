@@ -7,10 +7,11 @@ package com.microsoft.device.ink
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BlendMode
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.SurfaceTexture
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -47,6 +48,30 @@ class InkView constructor(
             currentStrokePaint.color = value
         }
 
+    var strokeWidth: Float
+        get() {
+            return minStrokeWidth
+        }
+        set(value) {
+            minStrokeWidth = value
+        }
+
+    var strokeWidthMax: Float
+        get() {
+            return maxStrokeWidth
+        }
+        set(value) {
+            maxStrokeWidth = value
+        }
+
+    var pressureEnabled: Boolean
+        get() {
+            return enablePressure
+        }
+        set(value) {
+            enablePressure = value
+        }
+
     var dynamicPaintHandler: DynamicPaintHandler? = null
 
     interface DynamicPaintHandler {
@@ -74,9 +99,9 @@ class InkView constructor(
 
         // setup blend modes
         overridePaint = Paint()
-        overridePaint.blendMode = BlendMode.SRC
+        overridePaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
         clearPaint = Paint()
-        clearPaint.blendMode = BlendMode.CLEAR
+        clearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 
         inputManager = createInputManager()
 
@@ -128,7 +153,7 @@ class InkView constructor(
     }
 
     fun clearInk() {
-        drawCanvas.drawColor(Color.TRANSPARENT, BlendMode.CLEAR)
+        drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
         inputManager.currentStroke.reset()
         redrawTexture()
