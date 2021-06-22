@@ -8,7 +8,6 @@ package com.microsoft.device.ink
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
-import com.google.mlkit.vision.digitalink.Ink
 
 class InputManager(view: View, private val penInputHandler: PenInputHandler) {
 
@@ -32,6 +31,11 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
         PEN_ERASER,
         UNKNOWN
     }
+
+    class Point(
+        val x: Float,
+        val y: Float,
+    )
 
     data class PenInfo(
         val pointerType: PointerType,
@@ -66,11 +70,34 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
                         or ((event.buttonState and MotionEvent.BUTTON_STYLUS_SECONDARY) > 0)
                 )
             }
+
+            fun createFromHistoryEvent(event: MotionEvent, pos: Int): PenInfo {
+                val pointerType: PointerType = when (event.getToolType(0)) {
+                    MotionEvent.TOOL_TYPE_FINGER -> PointerType.FINGER
+                    MotionEvent.TOOL_TYPE_MOUSE -> PointerType.MOUSE
+                    MotionEvent.TOOL_TYPE_STYLUS -> PointerType.PEN_TIP
+                    MotionEvent.TOOL_TYPE_ERASER -> PointerType.PEN_ERASER
+                    else -> PointerType.UNKNOWN
+                }
+
+                return PenInfo(
+                    pointerType = pointerType,
+                    x = event.getHistoricalX(pos),
+                    y = event.getHistoricalY(pos),
+                    pressure = event.getHistoricalPressure(pos),
+                    orientation = event.getHistoricalOrientation(pos),
+                    tilt = event.getHistoricalAxisValue(MotionEvent.AXIS_TILT, pos),
+                    primaryButtonState = ((event.buttonState and MotionEvent.BUTTON_PRIMARY) > 0)
+                        or ((event.buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY) > 0),
+                    secondaryButtonState = ((event.buttonState and MotionEvent.BUTTON_SECONDARY) > 0)
+                        or ((event.buttonState and MotionEvent.BUTTON_STYLUS_SECONDARY) > 0)
+                )
+            }
         }
     }
 
     class ExtendedStroke {
-        private var builder = Ink.Stroke.builder()
+        private var builder = mutableListOf<Point>()
         private var penInfos = HashMap<Int, PenInfo>()
 
         private var _lastPointReferenced = 0
@@ -81,21 +108,21 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
             }
 
         fun addPoint(penInfo: PenInfo) {
-            val point = Ink.Point.create(penInfo.x, penInfo.y)
-            builder.addPoint(point)
+            val point = Point(penInfo.x, penInfo.y)
+            builder.add(point)
             penInfos[point.hashCode()] = penInfo
         }
 
-        fun getPoints(): List<Ink.Point> {
-            return builder.build().points
+        fun getPoints(): List<Point> {
+            return builder
         }
 
-        fun getPenInfo(point: Ink.Point): PenInfo? {
+        fun getPenInfo(point: Point): PenInfo? {
             return penInfos[point.hashCode()]
         }
 
         fun reset() {
-            builder = Ink.Stroke.builder()
+            builder.clear()
             lastPointReferenced = 0
             penInfos.clear()
         }
@@ -114,6 +141,10 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
                     penInputHandler.strokeStarted(penInfo, currentStroke)
                 }
                 MotionEvent.ACTION_MOVE -> {
+
+                    for (i in 0 until event.historySize) {
+                        currentStroke.addPoint(PenInfo.createFromHistoryEvent(event, i))
+                    }
                     currentStroke.addPoint(penInfo)
                     penInputHandler.strokeUpdated(penInfo, currentStroke)
                 }

@@ -7,10 +7,11 @@ package com.microsoft.device.ink
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BlendMode
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.graphics.SurfaceTexture
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -47,6 +48,30 @@ class InkView constructor(
             currentStrokePaint.color = value
         }
 
+    var strokeWidth: Float
+        get() {
+            return minStrokeWidth
+        }
+        set(value) {
+            minStrokeWidth = value
+        }
+
+    var strokeWidthMax: Float
+        get() {
+            return maxStrokeWidth
+        }
+        set(value) {
+            maxStrokeWidth = value
+        }
+
+    var pressureEnabled: Boolean
+        get() {
+            return enablePressure
+        }
+        set(value) {
+            enablePressure = value
+        }
+
     var dynamicPaintHandler: DynamicPaintHandler? = null
 
     interface DynamicPaintHandler {
@@ -74,9 +99,9 @@ class InkView constructor(
 
         // setup blend modes
         overridePaint = Paint()
-        overridePaint.blendMode = BlendMode.SRC
+        overridePaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
         clearPaint = Paint()
-        clearPaint.blendMode = BlendMode.CLEAR
+        clearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 
         inputManager = createInputManager()
 
@@ -128,7 +153,7 @@ class InkView constructor(
     }
 
     fun clearInk() {
-        drawCanvas.drawColor(Color.TRANSPARENT, BlendMode.CLEAR)
+        drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
         inputManager.currentStroke.reset()
         redrawTexture()
@@ -136,7 +161,9 @@ class InkView constructor(
 
     fun saveBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        drawIt(Canvas(bitmap))
+        val saveCanvas = Canvas(bitmap)
+        drawStroke()
+        saveCanvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
         return bitmap
     }
 
@@ -156,9 +183,11 @@ class InkView constructor(
     }
 
     fun redrawTexture() {
-        val canvas: Canvas = surface?.lockCanvas(null) ?: return
+        drawStroke()
+        val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
         try {
-            drawIt(canvas)
+            // Copy image to the canvas
+            canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
         } finally {
             // Publish the frame.  If we overrun the consumer, frames will be dropped,
             // so on a sufficiently fast device the animation will run at faster than
@@ -173,17 +202,12 @@ class InkView constructor(
         }
     }
 
-    fun drawIt(canvas: Canvas) {
+    private fun drawStroke() {
+
         val stroke = inputManager.currentStroke
-        drawStroke(canvas, stroke)
-    }
-
-    private fun drawStroke(canvas: Canvas, stroke: InputManager.ExtendedStroke) {
-
         val points = stroke.getPoints()
 
         if (strokeList.isEmpty() && points.isEmpty()) {
-            canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
             return
         }
 
@@ -196,7 +220,6 @@ class InkView constructor(
         for (i in stroke.lastPointReferenced + 1 until points.size) {
             val penInfo = stroke.getPenInfo(points[i])
             if (penInfo != null) {
-
                 when {
                     penInfo.pointerType == InputManager.PointerType.PEN_ERASER -> {
                         drawCanvas.drawCircle(penInfo.x, penInfo.y, 30f, clearPaint)
@@ -232,8 +255,6 @@ class InkView constructor(
             }
         }
         stroke.lastPointReferenced = points.size - 1
-        // Copy image to the canvas
-        canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
     }
 
     /**
