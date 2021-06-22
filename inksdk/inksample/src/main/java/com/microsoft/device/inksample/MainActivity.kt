@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity() {
         this.webView.isVisible = switch.isChecked
     }
 
-    companion object{
+    companion object {
         const val STROKE_MAX_MIN_RATIO = 10f
     }
 }
