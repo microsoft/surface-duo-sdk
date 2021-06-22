@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         circleView.layoutParams = layoutParams
 
         if (inkView.pressureEnabled) {
-            inkView.strokeWidth = seekBar.progress / 10f
+            inkView.strokeWidth = seekBar.progress / STROKE_MAX_MIN_RATIO
             inkView.strokeWidthMax = seekBar.progress.toFloat()
         } else {
             inkView.strokeWidth = seekBar.progress.toFloat()
@@ -238,5 +238,9 @@ class MainActivity : AppCompatActivity() {
     fun webSwitchChanged(view: View) {
         val switch = view as SwitchCompat
         this.webView.isVisible = switch.isChecked
+    }
+
+    companion object{
+        const val STROKE_MAX_MIN_RATIO = 10f
     }
 }
