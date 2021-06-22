@@ -42,10 +42,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         inkView = findViewById(R.id.inkView)
-        webView = findViewById<WebView>(R.id.webView)
-        fancySwitch = findViewById<SwitchCompat>(R.id.fancySwitch)
-        seekBar = findViewById<SeekBar>(R.id.seekBar)
-        circleView = findViewById<ImageView>(R.id.circleView)
+        webView = findViewById(R.id.webView)
+        fancySwitch = findViewById(R.id.fancySwitch)
+        seekBar = findViewById(R.id.seekBar)
+        circleView = findViewById(R.id.circleView)
 
         webView.webViewClient = WebViewClient()
         val webSettings = webView.settings
@@ -207,18 +207,24 @@ class MainActivity : AppCompatActivity() {
      */
     inner class RainbowPaintHandler : DynamicPaintHandler {
         // frequency = 2*Math.PI/steps
-        private var frequency = .3
-        private var steps = 20
+        private val frequency = .0375
+        private val steps = 160
         private var i = 0
+        private val amplitude = 127
+        private val volume = 128
+        private val rPhase = 0
+        private val gPhase = 2
+        private val bPhase = 4
+
         override fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint {
             val paint = Paint()
 
             if (i > steps) i = 0 else i++
             paint.color = Color.argb(
                 255,
-                (sin(frequency * i + 0) * 127 + 128).toInt(),
-                (sin(frequency * i + 2) * 127 + 128).toInt(),
-                (sin(frequency * i + 4) * 127 + 128).toInt()
+                (sin(frequency * i + rPhase) * amplitude + volume).toInt(),
+                (sin(frequency * i + gPhase) * amplitude + volume).toInt(),
+                (sin(frequency * i + bPhase) * amplitude + volume).toInt()
             )
             paint.isAntiAlias = true
             // Set stroke width based on display density.
