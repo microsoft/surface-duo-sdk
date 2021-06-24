@@ -124,7 +124,10 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
     }
 
     private fun detectSpanningMode(activity: Activity) {
-        val screenInfo = ScreenInfoProvider.getScreenInfo(activity)
+        val screenInfo = ScreenInfoProvider.getScreenInfo(activity).apply {
+            updateHingeIfNull()
+            updateScreenModeIfNull()
+        }
         val nextSpanningMode = screenInfo.screenMode
         screenModeWasChanged = currentSpanningMode != nextSpanningMode
         if (screenModeWasChanged) {

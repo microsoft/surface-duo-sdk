@@ -29,7 +29,7 @@ dependencies {
     implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
     implementation androidxDependencies.lifecycleViewmodel

@@ -12,6 +12,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
+import com.microsoft.device.dualscreen.screenmanager.tests.utils.SampleActivity
 import com.microsoft.device.dualscreen.test.utils.SINGLE_SCREEN_HINGE_RECT
 import com.microsoft.device.dualscreen.test.utils.SINGLE_SCREEN_WINDOW_RECT
 import com.microsoft.device.dualscreen.test.utils.START_SCREEN_RECT

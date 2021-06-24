@@ -7,6 +7,12 @@ package com.microsoft.device.dualscreen
 
 import android.graphics.Rect
 
+/**
+ * Computes the screen rectangles using the hinge rectangle and entire screen rectangle.
+ *
+ * @return a list containing a single rectangle, if the device is in single screen mode,
+ * or two rectangles, if the device is in dual screen mode
+ */
 fun getScreenRectangles(hingeRect: Rect?, windowRect: Rect): List<Rect>? {
     val startScreenRect = Rect()
     val endScreenRect = Rect()

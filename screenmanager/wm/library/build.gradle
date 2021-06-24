@@ -48,7 +48,7 @@ dependencies {
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.window
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit

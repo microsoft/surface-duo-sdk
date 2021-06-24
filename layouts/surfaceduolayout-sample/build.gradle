@@ -30,7 +30,7 @@ dependencies {
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
     implementation androidxDependencies.lifecycleViewmodel
 
     testImplementation testDependencies.junit

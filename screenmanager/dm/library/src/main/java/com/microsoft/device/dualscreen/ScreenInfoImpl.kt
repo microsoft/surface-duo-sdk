@@ -25,8 +25,7 @@ internal class ScreenInfoImpl(context: Context) : AbstractScreenInfo(context) {
         val hinge = getHinge()
         val windowRect = getWindowRect()
 
-        return if (hinge != null && windowRect.width() > 0 && windowRect.height() > 0) {
-            // The windowRect doesn't intersect hinge
+        return if (hinge != null && !windowRect.isEmpty) {
             hinge.intersect(windowRect)
         } else false
     }

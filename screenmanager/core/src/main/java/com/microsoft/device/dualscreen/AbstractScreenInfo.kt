@@ -6,7 +6,6 @@
 package com.microsoft.device.dualscreen
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Rect
 
 /**
@@ -72,9 +71,7 @@ abstract class AbstractScreenInfo(val context: Context) : ScreenInfo {
      * @return [true] if the device is SurfaceDuo, false otherwise
      */
     override fun isSurfaceDuoDevice(): Boolean {
-        val feature = "com.microsoft.device.display.displaymask"
-        val packageManager: PackageManager = context.packageManager
-        return packageManager.hasSystemFeature(feature)
+        return context.isSurfaceDuoDevice()
     }
 
     /**

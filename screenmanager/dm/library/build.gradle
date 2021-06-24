@@ -43,7 +43,7 @@ dependencies {
     api project(path: ':screenmanager:core')
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit

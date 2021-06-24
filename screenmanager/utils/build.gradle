@@ -44,7 +44,7 @@ dependencies {
     compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit

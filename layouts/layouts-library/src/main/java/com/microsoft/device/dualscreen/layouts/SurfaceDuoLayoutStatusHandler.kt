@@ -21,6 +21,7 @@ import android.widget.LinearLayout.HORIZONTAL
 import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout.VERTICAL
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnNextLayout
 import com.microsoft.device.dualscreen.ScreenMode
 
 /**
@@ -230,16 +231,14 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         surfaceDuoLayout.orientation = VERTICAL
 
         // Find StartLayoutContainer and add new width and height
-        val start = surfaceDuoLayout.findViewById<FrameLayout>(R.id.first_container_id)
-        start.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, 0).apply {
-            weight = 1F
-        }
+        val startContainer = surfaceDuoLayout.findViewById<FrameLayout>(R.id.first_container_id)
+        val location = rootView.locationOnScreen
+        val startContainerHeight = (state?.hingeRect?.top ?: 0) - location.y
+        startContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, startContainerHeight)
 
-        state?.screenRectangles?.let { screenRectList ->
-            // Find EndLayoutContainer and add new width and height
-            val end = surfaceDuoLayout.findViewById<FrameLayout>(R.id.second_container_id)
-            end.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, screenRectList[1].height())
-        }
+        // Find EndLayoutContainer and add new width and height
+        val end = surfaceDuoLayout.findViewById<FrameLayout>(R.id.second_container_id)
+        end.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
 
     /**
@@ -417,10 +416,15 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     ) {
         if (linearLayoutOrientation == VERTICAL) {
             // DUAL_LANDSCAPE
-            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, 0).apply {
-                weight = 1F
+            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+
+            rootView.doOnNextLayout {
+                val location = rootView.locationOnScreen
+                val dualScreenStartContainerHeight = (state?.hingeRect?.top ?: 0) - location.y
+                dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, dualScreenStartContainerHeight)
+                dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             }
-            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, screenRectEnd.height())
         } else {
             // DUAL_PORTRAIT
             dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(screenRectStart.width(), MATCH_PARENT)

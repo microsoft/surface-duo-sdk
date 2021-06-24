@@ -9,9 +9,9 @@ import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.microsoft.device.dualscreen.SampleActivity
 import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.isSurfaceDuoInDualMode
+import com.microsoft.device.dualscreen.screenmanager.tests.utils.SampleActivity
 import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
 import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
 import org.junit.After

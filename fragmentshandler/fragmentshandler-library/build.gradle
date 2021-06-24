@@ -55,12 +55,11 @@ dependencies {
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
 
-    testImplementation testDependencies.junit
-    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junitKtx
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.googleTruth
-    androidTestImplementation androidxDependencies.ktxCore
+    androidTestImplementation androidxDependencies.coreKtx
     androidTestImplementation androidxDependencies.lifecycleViewmodel
     androidTestImplementation project(':screenmanager:utils')
     androidTestImplementation project(':layouts:layouts-library')
