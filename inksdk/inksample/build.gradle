@@ -39,10 +39,9 @@ android {
 }
 
 dependencies {
-
     implementation androidxDependencies.constraintLayout
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
     implementation androidxDependencies.appCompat
     implementation materialDependencies.material
     testImplementation testDependencies.junit

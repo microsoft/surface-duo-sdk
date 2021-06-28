@@ -3,18 +3,25 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.sample_surfaceduo_layout
+package com.microsoft.device.dualscreen.screenmanager.tests.utils
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.microsoft.device.dualscreen.ScreenManagerProvider
+import com.microsoft.device.dualscreen.screenmanager.tests.R
 
-class MainActivity : AppCompatActivity() {
+/**
+ * Simple activity used for testing purpose.
+ */
+class SampleActivity : AppCompatActivity() {
+    val containerView: View
+        get() = findViewById(R.id.simple_view)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setContentView(R.layout.activity_sample)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

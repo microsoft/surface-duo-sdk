@@ -13,7 +13,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.microsoft.device.surfaceduo.tests"
+        applicationId "com.microsoft.device.dualscreen.screenmanager.tests"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -46,19 +46,22 @@ dependencies {
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
-    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.coreKtx
     implementation androidxDependencies.lifecycleViewmodel
+    implementation androidxDependencies.constraintLayout
 
     testImplementation project(commonDependencies.screenManager)
     testImplementation testDependencies.junit
     testImplementation commonDependencies.googleTruth
 
-    androidTestImplementation project(':test-utils')
-    androidTestImplementation project(commonDependencies.screenManager)
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.testRunner
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation androidxDependencies.appCompat
+    androidTestImplementation project(':test-utils')
+    androidTestImplementation project(commonDependencies.screenManager)
 }

@@ -17,15 +17,19 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      * [ActivityLifecycle] object used to get the current screen info when a new activity is created.
      */
     private val activityLifecycle = object : ActivityLifecycle() {
-        override fun onActivityStarted(activity: Activity) {
-            super.onActivityStarted(activity)
-            currentActivity = activity
-            this@SurfaceDuoScreenManagerImpl.onActivityStarted(activity)
+        override fun onActivityResumed(activity: Activity) {
+            super.onActivityResumed(activity)
+            if (activity.isTopActivity) {
+                currentActivity = activity
+                this@SurfaceDuoScreenManagerImpl.onActivityResumed(activity)
+            }
         }
 
-        override fun onActivityDestroyed(activity: Activity) {
-            super.onActivityDestroyed(activity)
-            currentActivity = null
+        override fun onActivityPaused(activity: Activity) {
+            super.onActivityPaused(activity)
+            if (currentActivity == activity) {
+                currentActivity = null
+            }
         }
     }
 
@@ -49,16 +53,16 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
     }
 
     /**
-     * Called when an activity was started.
+     * Called when an activity was resumed.
      * @param activity the current activity
      */
-    private fun onActivityStarted(activity: Activity) {
-        currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity).also { screenInfo ->
-            notifyObservers(screenInfo)
-
-            currentActivity?.doOnAttach {
-                screenInfo.updateHingeIfNull()
-                screenInfo.updateScreenModeIfNull()
+    private fun onActivityResumed(activity: Activity) {
+        activity.doOnAttach {
+            currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity).apply {
+                updateHingeIfNull()
+                updateScreenModeIfNull()
+            }.also { screenInfo ->
+                notifyObservers(screenInfo)
             }
         }
     }
@@ -72,11 +76,13 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      */
     override fun addScreenInfoListener(listener: ScreenInfoListener?) {
         listener?.let {
-            screenInfoListeners.add(listener)
+            screenInfoListeners.add(it)
         }
 
-        currentScreenInfo?.let {
-            listener?.onScreenInfoChanged(it)
+        if (currentActivity?.isAttachedToWindow == true) {
+            currentScreenInfo?.let {
+                listener?.onScreenInfoChanged(it)
+            }
         }
     }
 
@@ -93,10 +99,15 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      * android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
      */
     override fun onConfigurationChanged() {
-        val rootView = currentActivity?.window?.decorView?.rootView
-        rootView?.doOnNextLayout {
-            currentScreenInfo?.let {
-                notifyObservers(it)
+        currentActivity?.let { activity ->
+            val rootView = activity.window?.decorView?.rootView
+            rootView?.doOnNextLayout {
+                currentScreenInfo = ScreenInfoProvider.getScreenInfo(activity).apply {
+                    updateHingeIfNull()
+                    updateScreenModeIfNull()
+                }.also { screenInfo ->
+                    notifyObservers(screenInfo)
+                }
             }
         }
     }
@@ -106,7 +117,9 @@ internal class SurfaceDuoScreenManagerImpl constructor(app: Application) : Surfa
      * @param screenInfo the current screen information
      */
     private fun notifyObservers(screenInfo: ScreenInfo) {
-        screenInfoListeners.forEach { it.onScreenInfoChanged(screenInfo) }
+        screenInfoListeners.forEach {
+            it.onScreenInfoChanged(screenInfo)
+        }
     }
 
     /**

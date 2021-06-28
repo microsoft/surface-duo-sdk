@@ -6,6 +6,7 @@
 package com.microsoft.device.dualscreen
 
 import com.google.common.truth.Truth.assertThat
+import com.microsoft.device.dualscreen.screenmanager.tests.utils.SampleApplication
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters

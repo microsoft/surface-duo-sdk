@@ -17,18 +17,21 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
+/**
+ * Test class for FragmentHandler library using AppCompat version 1.3.0
+ */
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class FragmentManagerStateWrapperTest {
+class FragmentManagerStateWrapperTestForNewAppCompatLibrary {
     private val fragmentManagerState = FragmentManagerStateWrapper()
-    private val singleScreenFragmentState = FragmentManagerState()
-    private val dualScreenFragmentState = FragmentManagerState()
+    private val singleScreenFragmentState = bundleOf("android:support:fragments" to FragmentManagerState())
+    private val dualScreenFragmentState = bundleOf("android:support:fragments" to FragmentManagerState())
 
     @Test
     fun testSwap() {
         // Launch on single screen
-        val bundle = bundleOf(FragmentManagerStateWrapper.FM_STATE_KEY to singleScreenFragmentState)
+        val bundle = bundleOf(FragmentManagerStateWrapper.BUNDLE_SAVED_STATE_REGISTRY_KEY to singleScreenFragmentState)
 
         // Switch to dual screen
         fragmentManagerState.swapSingleToDual(bundle)
@@ -37,7 +40,7 @@ class FragmentManagerStateWrapperTest {
         assertThat(bundle.fragmentManagerState).isEqualTo(null)
 
         // Switch to single screen
-        bundle.putParcelable(FragmentManagerStateWrapper.FM_STATE_KEY, dualScreenFragmentState)
+        bundle.putParcelable(FragmentManagerStateWrapper.BUNDLE_SAVED_STATE_REGISTRY_KEY, dualScreenFragmentState)
         fragmentManagerState.swapDualToSingle(bundle)
         assertThat(fragmentManagerState.singleScreenFragmentManagerState).isEqualTo(singleScreenFragmentState)
         assertThat(fragmentManagerState.dualScreenFragmentManagerState).isEqualTo(dualScreenFragmentState)
@@ -57,5 +60,5 @@ class FragmentManagerStateWrapperTest {
     }
 }
 
-private val Bundle.fragmentManagerState: FragmentManagerState?
-    get() = getParcelable(FragmentManagerStateWrapper.FM_STATE_KEY) as? FragmentManagerState
+private val Bundle.fragmentManagerState: Bundle?
+    get() = getBundle(FragmentManagerStateWrapper.BUNDLE_SAVED_STATE_REGISTRY_KEY)

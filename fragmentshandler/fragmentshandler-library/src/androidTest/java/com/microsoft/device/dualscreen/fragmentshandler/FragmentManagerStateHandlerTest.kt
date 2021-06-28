@@ -148,4 +148,4 @@ private val ActivityTestRule<SampleActivity>.lastSavedInstanceState: Bundle?
     get() = activity.lastSavedInstanceState
 
 private val ActivityTestRule<SampleActivity>.fragmentManagerState: Parcelable?
-    get() = activity.lastSavedInstanceState?.getParcelable(FragmentManagerStateWrapper.FM_STATE_KEY)
+    get() = activity.lastSavedInstanceState?.getParcelable(FragmentManagerStateWrapper.BUNDLE_SAVED_STATE_REGISTRY_KEY)
