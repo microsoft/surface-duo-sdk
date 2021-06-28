@@ -12,7 +12,7 @@ Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelin
     allprojects {
         repositories {
             google()
-            jcenter()
+            mavenCentral()
          }
     }
     ```
@@ -24,58 +24,58 @@ Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelin
     If you want to choose the version that uses Display Mask API, then you should add the following lines to your gradle file.
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
     or if you want to choose the version that uses Window Manager API, then you should add the following lines.
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
     ```
 
     **Bottom navigation**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta1"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
     // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta2"
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
     **Fragments handler**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta1"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta3"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
     // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta2"
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
     **Layouts**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta2"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
     // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta2"
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
     **Tabs**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-beta1"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
     // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta2"
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
     **RecyclerView**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta2"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta2"
+    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta3"
+    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
     // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta2"
+    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
 ### Useful links
