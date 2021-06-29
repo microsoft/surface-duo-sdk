@@ -24,7 +24,7 @@ ext {
     bottomNavigationVersionCode = 1
     tabsVersionCode = 1
     recyclerviewVersionCode = 2
-    inkSDKVersionCode = 4
+    inkSDKVersionCode = 5
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -37,7 +37,7 @@ ext {
     bottomNavigationVersionName = '1.0.0-beta1'
     tabsVersionName = '1.0.0-beta1'
     recyclerviewVersionName = '1.0.0-beta2'
-    inkSDKVersionName = "1.0.0-alpha3.2"
+    inkSDKVersionName = "1.0.0-alpha3.3"
     // ----------------------------------
 
     //Config Android sdk, plugins and libraries version
