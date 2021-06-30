@@ -9,7 +9,7 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 
-class InputManager(view: View, private val penInputHandler: PenInputHandler) {
+class InputManager(view: View, private val penInputHandler: PenInputHandler, private val penHoverHandler: PenHoverHandler? = null) {
 
     val currentStroke = ExtendedStroke()
 
@@ -22,6 +22,12 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
         fun strokeStarted(penInfo: PenInfo, stroke: ExtendedStroke)
         fun strokeUpdated(penInfo: PenInfo, stroke: ExtendedStroke)
         fun strokeCompleted(penInfo: PenInfo, stroke: ExtendedStroke)
+    }
+
+    interface PenHoverHandler {
+        fun hoverStarted(penInfo: PenInfo)
+        fun hoverMoved(penInfo: PenInfo)
+        fun hoverEnded(penInfo: PenInfo)
     }
 
     enum class PointerType {
@@ -130,6 +136,32 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler) {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupInputEvents(view: View) {
+
+        view.setOnGenericMotionListener { _: View, event: MotionEvent ->
+            var consumed = true
+            if (penHoverHandler == null) {
+                consumed = false
+            } else {
+                val penInfo = PenInfo.createFromEvent(event)
+
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_HOVER_MOVE -> {
+                        for (i in 0 until event.historySize) {
+                            penHoverHandler.hoverMoved(PenInfo.createFromHistoryEvent(event, i))
+                        }
+                        penHoverHandler.hoverMoved(penInfo)
+                    }
+                    MotionEvent.ACTION_HOVER_ENTER -> {
+                        penHoverHandler.hoverStarted(penInfo)
+                    }
+                    MotionEvent.ACTION_HOVER_EXIT -> {
+                        penHoverHandler.hoverEnded(penInfo)
+                    }
+                    else -> consumed = false
+                }
+            }
+            consumed
+        }
         view.setOnTouchListener { _: View, event: MotionEvent ->
             var consumed = true
             val penInfo = PenInfo.createFromEvent(event)
