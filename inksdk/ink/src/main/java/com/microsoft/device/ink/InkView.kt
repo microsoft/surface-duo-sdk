@@ -58,6 +58,9 @@ class InkView constructor(
         }
         set(value) {
             minStrokeWidth = value
+            // cache eraser hover radius
+            val radius = (maxStrokeWidth - minStrokeWidth) / 2
+            hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
         }
 
     var strokeWidthMax: Float
@@ -66,6 +69,9 @@ class InkView constructor(
         }
         set(value) {
             maxStrokeWidth = value
+            // cache eraser hover radius
+            val radius = (maxStrokeWidth - minStrokeWidth) / 2
+            hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
         }
 
     var pressureEnabled: Boolean
@@ -234,8 +240,6 @@ class InkView constructor(
             // Copy image to the canvas
             canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
             if (pointerType == InputManager.PointerType.PEN_ERASER) {
-                // allocates :( maybe just use grey? or draw three arcs?
-                hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
                 canvas.drawCircle(cx, cy, radius, hoverEraserPaint)
             } else {
                 canvas.drawCircle(cx, cy, radius, hoverPaint)
