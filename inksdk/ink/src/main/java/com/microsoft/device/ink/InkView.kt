@@ -21,6 +21,7 @@ import android.view.TextureView
 
 // constants
 const val minPointsForValidStroke = 2
+const val defaultHoverStrokeWidth = 5f
 
 class InkView constructor(
     context: Context,
@@ -182,7 +183,7 @@ class InkView constructor(
         // Set stroke width based on display density.
         hoverPaint.strokeWidth = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            5f,
+            defaultHoverStrokeWidth,
             resources.displayMetrics
         )
 
@@ -195,7 +196,7 @@ class InkView constructor(
         hoverEraserPaint.isAntiAlias = true
         hoverEraserPaint.strokeWidth = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            5f,
+            defaultHoverStrokeWidth,
             resources.displayMetrics
         )
         hoverEraserPaint.style = Paint.Style.STROKE
