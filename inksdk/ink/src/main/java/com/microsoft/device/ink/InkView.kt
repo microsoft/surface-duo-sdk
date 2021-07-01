@@ -35,6 +35,7 @@ class InkView constructor(
     private val strokeList = mutableListOf<InputManager.ExtendedStroke>()
     private val overridePaint: Paint
     private val clearPaint: Paint
+    private val hoverPaint = Paint()
 
     // attributes
     private var enablePressure = false
@@ -46,6 +47,7 @@ class InkView constructor(
         set(value) {
             field = value
             currentStrokePaint.color = value
+            hoverPaint.color = currentStrokePaint.color
         }
 
     var strokeWidth: Float
@@ -106,6 +108,7 @@ class InkView constructor(
         inputManager = createInputManager()
 
         initCurrentStrokePaint()
+        initHoverPaint()
     }
 
     private fun createInputManager(): InputManager {
@@ -133,6 +136,19 @@ class InkView constructor(
                     redrawTexture()
                     strokeList += stroke
                 }
+            },
+            object : InputManager.PenHoverHandler {
+                override fun hoverStarted(penInfo: InputManager.PenInfo) {
+                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2)
+                }
+
+                override fun hoverMoved(penInfo: InputManager.PenInfo) {
+                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2)
+                }
+
+                override fun hoverEnded(penInfo: InputManager.PenInfo) {
+                    redrawTexture()
+                }
             }
         )
     }
@@ -150,6 +166,21 @@ class InkView constructor(
         currentStrokePaint.style = Paint.Style.STROKE
         currentStrokePaint.strokeJoin = Paint.Join.ROUND
         currentStrokePaint.strokeCap = Paint.Cap.ROUND
+    }
+
+    private fun initHoverPaint() {
+        hoverPaint.color = currentStrokePaint.color
+        hoverPaint.isAntiAlias = true
+        // Set stroke width based on display density.
+        hoverPaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            5f,
+            resources.displayMetrics
+        )
+
+        hoverPaint.style = Paint.Style.STROKE
+        hoverPaint.strokeJoin = Paint.Join.ROUND
+        hoverPaint.strokeCap = Paint.Cap.ROUND
     }
 
     fun clearInk() {
@@ -180,6 +211,27 @@ class InkView constructor(
         canvasBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         drawCanvas = Canvas(canvasBitmap)
         redrawTexture()
+    }
+
+    fun drawHover(cx: Float, cy: Float, radius: Float) {
+
+        val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
+        try {
+            // Copy image to the canvas
+            canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
+            canvas.drawCircle(cx, cy, radius, hoverPaint)
+        } finally {
+            // Publish the frame.  If we overrun the consumer, frames will be dropped,
+            // so on a sufficiently fast device the animation will run at faster than
+            // the display refresh rate.
+            //
+            // If the SurfaceTexture has been destroyed, this will throw an exception.
+            try {
+                surface?.unlockCanvasAndPost(canvas)
+            } catch (iae: IllegalArgumentException) {
+                return
+            }
+        }
     }
 
     fun redrawTexture() {
@@ -227,6 +279,7 @@ class InkView constructor(
                     dynamicPaintHandler != null -> {
                         dynamicPaintHandler?.let { paintHandler ->
                             val paint = paintHandler.generatePaintFromPenInfo(penInfo)
+                            hoverPaint.color = paint.color
                             drawCanvas.drawLine(
                                 startPoint.x,
                                 startPoint.y,
