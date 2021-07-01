@@ -9,6 +9,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -20,6 +21,7 @@ import android.view.TextureView
 
 // constants
 const val minPointsForValidStroke = 2
+const val defaultHoverStrokeWidth = 5f
 
 class InkView constructor(
     context: Context,
@@ -36,6 +38,7 @@ class InkView constructor(
     private val overridePaint: Paint
     private val clearPaint: Paint
     private val hoverPaint = Paint()
+    private val hoverEraserPaint = Paint()
 
     // attributes
     private var enablePressure = false
@@ -56,6 +59,9 @@ class InkView constructor(
         }
         set(value) {
             minStrokeWidth = value
+            // cache eraser hover radius
+            val radius = (maxStrokeWidth - minStrokeWidth) / 2
+            hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
         }
 
     var strokeWidthMax: Float
@@ -64,6 +70,9 @@ class InkView constructor(
         }
         set(value) {
             maxStrokeWidth = value
+            // cache eraser hover radius
+            val radius = (maxStrokeWidth - minStrokeWidth) / 2
+            hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
         }
 
     var pressureEnabled: Boolean
@@ -139,11 +148,11 @@ class InkView constructor(
             },
             object : InputManager.PenHoverHandler {
                 override fun hoverStarted(penInfo: InputManager.PenInfo) {
-                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2)
+                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2, penInfo.pointerType)
                 }
 
                 override fun hoverMoved(penInfo: InputManager.PenInfo) {
-                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2)
+                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2, penInfo.pointerType)
                 }
 
                 override fun hoverEnded(penInfo: InputManager.PenInfo) {
@@ -174,13 +183,25 @@ class InkView constructor(
         // Set stroke width based on display density.
         hoverPaint.strokeWidth = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            5f,
+            defaultHoverStrokeWidth,
             resources.displayMetrics
         )
 
         hoverPaint.style = Paint.Style.STROKE
         hoverPaint.strokeJoin = Paint.Join.ROUND
         hoverPaint.strokeCap = Paint.Cap.ROUND
+
+        // Eraser hover indicator
+        hoverEraserPaint.color = Color.LTGRAY
+        hoverEraserPaint.isAntiAlias = true
+        hoverEraserPaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            defaultHoverStrokeWidth,
+            resources.displayMetrics
+        )
+        hoverEraserPaint.style = Paint.Style.STROKE
+        hoverEraserPaint.strokeJoin = Paint.Join.ROUND
+        hoverEraserPaint.strokeCap = Paint.Cap.ROUND
     }
 
     fun clearInk() {
@@ -213,13 +234,17 @@ class InkView constructor(
         redrawTexture()
     }
 
-    fun drawHover(cx: Float, cy: Float, radius: Float) {
+    fun drawHover(cx: Float, cy: Float, radius: Float, pointerType: InputManager.PointerType = InputManager.PointerType.UNKNOWN) {
 
         val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
         try {
             // Copy image to the canvas
             canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
-            canvas.drawCircle(cx, cy, radius, hoverPaint)
+            if (pointerType == InputManager.PointerType.PEN_ERASER) {
+                canvas.drawCircle(cx, cy, radius, hoverEraserPaint)
+            } else {
+                canvas.drawCircle(cx, cy, radius, hoverPaint)
+            }
         } finally {
             // Publish the frame.  If we overrun the consumer, frames will be dropped,
             // so on a sufficiently fast device the animation will run at faster than
