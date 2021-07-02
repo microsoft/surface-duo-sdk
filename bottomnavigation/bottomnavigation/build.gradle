@@ -12,9 +12,9 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
-    PUBLISH_ARTIFACT_ID = 'fragmentshandler'
-    LIBRARY_DESCRIPTION = 'Library that will help you to handle fragments lifecycle when spanning and unspanning an app in a foldable device'
-    LIBRARY_VERSION = rootProject.ext.fragmentsHandlerVersionName
+    PUBLISH_ARTIFACT_ID = 'bottomnavigation'
+    LIBRARY_DESCRIPTION = 'Library that extends the BottomNavigation component and adapts automatically to the different foldable configurations'
+    LIBRARY_VERSION = rootProject.ext.bottomNavigationVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
@@ -26,8 +26,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode rootProject.ext.fragmentsHandlerVersionCode
-        versionName rootProject.ext.fragmentsHandlerVersionName
+        versionCode rootProject.ext.bottomNavigationVersionCode
+        versionName rootProject.ext.bottomNavigationVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
@@ -38,10 +38,6 @@ android {
         }
     }
 
-    configurations.all {
-        resolutionStrategy.force androidxDependencies.lifecycleViewmodel
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -49,20 +45,18 @@ android {
 }
 
 dependencies {
-    api project(':screenmanager:utils')
+    api project(':screenmanager:screenmanager-utils')
     compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.appCompat
+    api materialDependencies.material
 
-    androidTestImplementation instrumentationTestDependencies.junitKtx
+    testImplementation testDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
-    androidTestImplementation commonDependencies.googleTruth
-    androidTestImplementation androidxDependencies.coreKtx
-    androidTestImplementation androidxDependencies.lifecycleViewmodel
-    androidTestImplementation project(':screenmanager:utils')
-    androidTestImplementation project(':layouts:layouts-library')
+    androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation project(commonDependencies.screenManager)
     androidTestImplementation project(':test-utils')
 }

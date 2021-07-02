@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation project(':screenmanager:dm:library')
+    implementation project(':screenmanager:dm:screenmanager-displaymask')
     
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat

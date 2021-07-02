@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    implementation project(':layouts:layouts-library')
+    implementation project(':layouts:layouts')
     implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib

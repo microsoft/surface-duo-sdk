@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation project(':tabs:tabs-library')
+    implementation project(':tabs:tabs')
     implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib

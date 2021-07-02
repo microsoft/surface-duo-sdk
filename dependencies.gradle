@@ -86,13 +86,13 @@ ext {
     googleTruthVersion = "1.1.2"
     mockitoVersion = "3.3.3"
     mockitoDexMakerVersion = "2.28.0"
-    screenManagerVersion = "wm"
+    screenManagerVersion = "wm:screenmanager-windowmanager"
 
     commonDependencies = [
             googleTruth    : "com.google.truth:truth:$googleTruthVersion",
             mockitoCore    : "org.mockito:mockito-core:$mockitoVersion",
             mockitoDexMaker: "com.linkedin.dexmaker:dexmaker-mockito:$mockitoDexMakerVersion",
-            screenManager  : ":screenmanager:$screenManagerVersion:library"
+            screenManager  : ":screenmanager:$screenManagerVersion"
     ]
 
     // Navigation version

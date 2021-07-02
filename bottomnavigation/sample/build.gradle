@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':bottomnavigation:bottomnavigation-library')
+    implementation project(path: ':bottomnavigation:bottomnavigation')
     implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
