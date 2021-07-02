@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation project(':recyclerview:recyclerview-library')
+    implementation project(':recyclerview:recyclerview')
     implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib

@@ -12,9 +12,9 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
-    PUBLISH_ARTIFACT_ID = 'screenmanager-displaymask'
-    LIBRARY_DESCRIPTION = 'Implementation of the screenmanager-core using displaymask'
-    LIBRARY_VERSION = rootProject.ext.screenManagerDMVersionName
+    PUBLISH_ARTIFACT_ID = 'recyclerview'
+    LIBRARY_DESCRIPTION = 'Set of custom components that help you to use a recyclerview on a foldable device handle its different configurations'
+    LIBRARY_VERSION = rootProject.ext.recyclerviewVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
@@ -26,8 +26,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode rootProject.ext.screenManagerDMVersionCode
-        versionName rootProject.ext.screenManagerDMVersionName
+        versionCode rootProject.ext.recyclerviewVersionCode
+        versionName rootProject.ext.recyclerviewVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
@@ -37,15 +37,27 @@ android {
             minifyEnabled false
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    api project(path: ':screenmanager:core')
+    api project(':screenmanager:screenmanager-utils')
+    compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.coreKtx
+    api androidxDependencies.recycleView
+
+    implementation materialDependencies.material
 
     testImplementation testDependencies.junit
+
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':test-utils')
 }

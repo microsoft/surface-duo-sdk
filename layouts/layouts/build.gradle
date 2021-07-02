@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    api project(':screenmanager:utils')
+    api project(':screenmanager:screenmanager-utils')
     compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib

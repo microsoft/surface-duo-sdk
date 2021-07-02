@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation project(':screenmanager:wm:library')
+    implementation project(':screenmanager:wm:screenmanager-windowmanager')
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat

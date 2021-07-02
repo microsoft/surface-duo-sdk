@@ -28,8 +28,8 @@ android {
 }
 
 dependencies {
-    implementation project(':fragmentshandler:fragmentshandler-library')
-    implementation project(':layouts:layouts-library')
+    implementation project(':fragmentshandler:fragmentshandler')
+    implementation project(':layouts:layouts')
     implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib

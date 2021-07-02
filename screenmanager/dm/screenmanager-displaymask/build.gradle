@@ -12,9 +12,9 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
-    PUBLISH_ARTIFACT_ID = 'tabs'
-    LIBRARY_DESCRIPTION = 'Extension of the TabsLayout that handles different foldable configurations easily'
-    LIBRARY_VERSION = rootProject.ext.tabsVersionName
+    PUBLISH_ARTIFACT_ID = 'screenmanager-displaymask'
+    LIBRARY_DESCRIPTION = 'Implementation of the screenmanager-core using displaymask'
+    LIBRARY_VERSION = rootProject.ext.screenManagerDMVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
@@ -26,36 +26,26 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode rootProject.ext.tabsVersionCode
-        versionName rootProject.ext.tabsVersionName
+        versionCode rootProject.ext.screenManagerDMVersionCode
+        versionName rootProject.ext.screenManagerDMVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
+
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    api project(':screenmanager:utils')
-    compileOnly project(commonDependencies.screenManager)
+    api project(path: ':screenmanager:screenmanager-core')
 
     implementation kotlinDependencies.kotlinStdlib
-    api materialDependencies.material
+    implementation androidxDependencies.coreKtx
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.testRules
-    androidTestImplementation commonDependencies.mockitoDexMaker
-    androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation project(commonDependencies.screenManager)
-    androidTestImplementation project(':test-utils')
 }

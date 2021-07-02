@@ -12,9 +12,9 @@ plugins {
 
 ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
-    PUBLISH_ARTIFACT_ID = 'bottomnavigation'
-    LIBRARY_DESCRIPTION = 'Library that extends the BottomNavigation component and adapts automatically to the different foldable configurations'
-    LIBRARY_VERSION = rootProject.ext.bottomNavigationVersionName
+    PUBLISH_ARTIFACT_ID = 'tabs'
+    LIBRARY_DESCRIPTION = 'Extension of the TabsLayout that handles different foldable configurations easily'
+    LIBRARY_VERSION = rootProject.ext.tabsVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
@@ -26,18 +26,17 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode rootProject.ext.bottomNavigationVersionCode
-        versionName rootProject.ext.bottomNavigationVersionName
+        versionCode rootProject.ext.tabsVersionCode
+        versionName rootProject.ext.tabsVersionName
 
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
-
     buildTypes {
         release {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -45,7 +44,7 @@ android {
 }
 
 dependencies {
-    api project(':screenmanager:utils')
+    api project(':screenmanager:screenmanager-utils')
     compileOnly project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
@@ -57,6 +56,6 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation project(':screenmanager:wm:screenmanager-windowmanager')
     androidTestImplementation project(':test-utils')
 }

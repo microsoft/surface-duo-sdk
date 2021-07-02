@@ -4,29 +4,29 @@
  */
 include ':test-utils'
 include ':screenmanager:tests'
-include ':screenmanager:utils'
-include ':screenmanager:core'
+include ':screenmanager:screenmanager-utils'
+include ':screenmanager:screenmanager-core'
 
-include ':screenmanager:dm:library'
+include ':screenmanager:dm:screenmanager-displaymask'
 include ':screenmanager:dm:sample'
 
-include ':screenmanager:wm:library'
+include ':screenmanager:wm:screenmanager-windowmanager'
 include ':screenmanager:wm:sample'
 
-include ':recyclerview:recyclerview-library'
+include ':recyclerview:recyclerview'
 include ':recyclerview:sample'
 
-include ':bottomnavigation:bottomnavigation-library'
+include ':bottomnavigation:bottomnavigation'
 include ':bottomnavigation:sample'
 
-include ':fragmentshandler:fragmentshandler-library'
+include ':fragmentshandler:fragmentshandler'
 include ':fragmentshandler:sample'
 
-include ':layouts:layouts-library'
+include ':layouts:layouts'
 include ':layouts:surfaceduolayout-sample'
 include ':layouts:surfaceduoframelayout-sample'
 
-include ':tabs:tabs-library'
+include ':tabs:tabs'
 include ':tabs:sample'
 
 include ':inksdk:ink'
