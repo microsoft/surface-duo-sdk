@@ -15,12 +15,12 @@ ext {
 
     // SurfaceDuo SDK libraries version code.
     // If you want to publish a new version, bump in one (1) the specific line(s)
-    screenManagerCoreVersionCode = 3
-    screenManagerDMVersionCode = 3
-    screenManagerWMVersionCode = 3
-    screenManagerUtilsVersionCode = 3
-    layoutsVersionCode = 3
-    fragmentsHandlerVersionCode = 2
+    screenManagerCoreVersionCode = 4
+    screenManagerDMVersionCode = 4
+    screenManagerWMVersionCode = 4
+    screenManagerUtilsVersionCode = 4
+    layoutsVersionCode = 4
+    fragmentsHandlerVersionCode = 3
     bottomNavigationVersionCode = 1
     tabsVersionCode = 1
     recyclerviewVersionCode = 2
@@ -28,12 +28,12 @@ ext {
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
-    screenManagerCoreVersionName = '1.0.0-beta3'
-    screenManagerDMVersionName = '1.0.0-beta3'
-    screenManagerWMVersionName = '1.0.0-beta3'
-    screenManagerUtilsVersionName = '1.0.0-beta3'
-    layoutsVersionName = '1.0.0-beta3'
-    fragmentsHandlerVersionName = '1.0.0-beta2'
+    screenManagerCoreVersionName = '1.0.0-beta4'
+    screenManagerDMVersionName = '1.0.0-beta4'
+    screenManagerWMVersionName = '1.0.0-beta4'
+    screenManagerUtilsVersionName = '1.0.0-beta4'
+    layoutsVersionName = '1.0.0-beta4'
+    fragmentsHandlerVersionName = '1.0.0-beta3'
     bottomNavigationVersionName = '1.0.0-beta1'
     tabsVersionName = '1.0.0-beta1'
     recyclerviewVersionName = '1.0.0-beta2'
