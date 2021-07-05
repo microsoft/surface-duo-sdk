@@ -6,7 +6,7 @@ Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelin
 
 ## Add to your project
 
-1. Make sure you have **jcenter()** repository in your top level **build.gradle** file:
+1. Make sure you have **mavenCentral()** repository in your top level **build.gradle** file:
 
     ```gradle
     allprojects {
