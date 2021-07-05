@@ -21,9 +21,9 @@ ext {
     screenManagerUtilsVersionCode = 4
     layoutsVersionCode = 4
     fragmentsHandlerVersionCode = 3
-    bottomNavigationVersionCode = 1
-    tabsVersionCode = 1
-    recyclerviewVersionCode = 2
+    bottomNavigationVersionCode = 2
+    tabsVersionCode = 2
+    recyclerviewVersionCode = 3
     inkSDKVersionCode = 6
 
     // SurfaceDuo SDK libraries version name:
@@ -34,9 +34,9 @@ ext {
     screenManagerUtilsVersionName = '1.0.0-beta4'
     layoutsVersionName = '1.0.0-beta4'
     fragmentsHandlerVersionName = '1.0.0-beta3'
-    bottomNavigationVersionName = '1.0.0-beta1'
-    tabsVersionName = '1.0.0-beta1'
-    recyclerviewVersionName = '1.0.0-beta2'
+    bottomNavigationVersionName = '1.0.0-beta2'
+    tabsVersionName = '1.0.0-beta2'
+    recyclerviewVersionName = '1.0.0-beta3'
     inkSDKVersionName = "1.0.0-alpha4"
     // ----------------------------------
 
