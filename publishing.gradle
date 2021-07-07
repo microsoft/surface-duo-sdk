@@ -6,10 +6,12 @@ group = PUBLISH_GROUP_ID
 version = LIBRARY_VERSION
 description = LIBRARY_DESCRIPTION
 
-//Maven central key-value pairs
+//Signing key-value pairs (used for the publication no matter the target)
 ext["signing.keyId"] = getPropertyValue("SIGNING_KEY_ID")
 ext["signing.password"] = getPropertyValue("SIGNING_PASSWORD")
 ext["signing.secretKeyRingFile"] = getPropertyValue("SIGNING_SECRET_FILE")
+
+//Maven central key-value pairs
 ext["mavenUser"] = getPropertyValue("MAVEN_USER")
 ext["mavenPassword"] = getPropertyValue("MAVEN_PASSWORD")
 

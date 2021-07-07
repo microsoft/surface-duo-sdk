@@ -71,3 +71,6 @@ jobs:
           ADO_URL: ${{ secrets.ADO_URL }}
           ADO_USER: ${{ secrets.ADO_USER }}
           ADO_PASSWD: ${{ secrets.ADO_PASSWD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
