@@ -50,6 +50,15 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
 
+      # Base64 decodes and pipes the GPG key content into the secret file
+      - name: Prepare environment
+        env:
+          SIGNING_SECRET_KEY: ${{ secrets.SIGNING_SECRET_KEY }}
+          SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
+        run: |
+          git fetch --unshallow
+          sudo bash -c "echo '$SIGNING_SECRET_KEY' | base64 -d > '$SIGNING_SECRET_FILE'"
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
