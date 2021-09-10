@@ -102,6 +102,7 @@ class InkView constructor(
                 color = getColor(R.styleable.InkView_ink_color, color)
                 minStrokeWidth = getFloat(R.styleable.InkView_min_stroke_width, minStrokeWidth)
                 maxStrokeWidth = getFloat(R.styleable.InkView_max_stroke_width, maxStrokeWidth)
+                renderGPU = getBoolean(R.styleable.InkView_render_gpu, renderGPU)
             } finally {
                 recycle()
             }

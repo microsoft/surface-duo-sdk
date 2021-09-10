@@ -10,6 +10,7 @@
         <attr name="ink_color" format="color" />
         <attr name="min_stroke_width" format="float" />
         <attr name="max_stroke_width" format="float" />
+        <attr name="render_gpu" format="boolean" />
 
     </declare-styleable>
 </resources>
