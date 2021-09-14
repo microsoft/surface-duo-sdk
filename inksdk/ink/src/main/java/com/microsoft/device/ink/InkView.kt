@@ -42,6 +42,7 @@ class InkView constructor(
 
     // attributes
     private var enablePressure = false
+    private var renderGPU = true
     private var minStrokeWidth = 1f
     private var maxStrokeWidth = 10f
 
@@ -101,6 +102,7 @@ class InkView constructor(
                 color = getColor(R.styleable.InkView_ink_color, color)
                 minStrokeWidth = getFloat(R.styleable.InkView_min_stroke_width, minStrokeWidth)
                 maxStrokeWidth = getFloat(R.styleable.InkView_max_stroke_width, maxStrokeWidth)
+                renderGPU = getBoolean(R.styleable.InkView_render_gpu, renderGPU)
             } finally {
                 recycle()
             }
@@ -236,7 +238,7 @@ class InkView constructor(
 
     fun drawHover(cx: Float, cy: Float, radius: Float, pointerType: InputManager.PointerType = InputManager.PointerType.UNKNOWN) {
 
-        val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
+        val canvas: Canvas = if (renderGPU) surface?.lockHardwareCanvas() ?: return else surface?.lockCanvas(null) ?: return
         try {
             // Copy image to the canvas
             canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
@@ -261,7 +263,7 @@ class InkView constructor(
 
     fun redrawTexture() {
         drawStroke()
-        val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
+        val canvas: Canvas = if (renderGPU) surface?.lockHardwareCanvas() ?: return else surface?.lockCanvas(null) ?: return
         try {
             // Copy image to the canvas
             canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
