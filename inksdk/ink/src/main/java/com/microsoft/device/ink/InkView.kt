@@ -34,24 +34,29 @@ class InkView constructor(
     private lateinit var canvasBitmap: Bitmap
     private lateinit var drawCanvas: Canvas
     private val currentStrokePaint = Paint()
-    private val strokeList = mutableListOf<InputManager.ExtendedStroke>()
     private val overridePaint: Paint
     private val clearPaint: Paint
     private val hoverPaint = Paint()
     private val hoverEraserPaint = Paint()
+    private val hoverHighlightPaint = Paint()
 
     // attributes
     private var enablePressure = false
+    private var enableInking = false
     private var renderGPU = true
     private var minStrokeWidth = 1f
     private var maxStrokeWidth = 10f
+
+    private val strokeList = mutableListOf<InputManager.ExtendedStroke>()
+    private val inkingList = mutableListOf<DynamicPaintHandler?>()
 
     // properties
     var color = Color.GRAY
         set(value) {
             field = value
             currentStrokePaint.color = value
-            hoverPaint.color = currentStrokePaint.color
+            hoverPaint.color = value
+            hoverHighlightPaint.color = value
         }
 
     var strokeWidth: Float
@@ -84,10 +89,19 @@ class InkView constructor(
             enablePressure = value
         }
 
+    var inkingEnabled: Boolean
+        get() {
+            return enableInking
+        }
+        set(value) {
+            enableInking = value
+        }
+
     var dynamicPaintHandler: DynamicPaintHandler? = null
 
     interface DynamicPaintHandler {
         fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint
+        fun selectInkingMode(): InputManager.InkingType
     }
 
     init {
@@ -130,35 +144,61 @@ class InkView constructor(
                     penInfo: InputManager.PenInfo,
                     stroke: InputManager.ExtendedStroke
                 ) {
-                    redrawTexture()
+                    if (enableInking) {
+                        stroke.color = color
+                        stroke.width = strokeWidth
+                        stroke.widthMax = strokeWidthMax
+                        redrawTexture()
+                    }
                 }
 
                 override fun strokeUpdated(
                     penInfo: InputManager.PenInfo,
                     stroke: InputManager.ExtendedStroke
                 ) {
-                    redrawTexture()
+                    if (enableInking) {
+                        redrawTexture()
+                    }
                 }
 
                 override fun strokeCompleted(
                     penInfo: InputManager.PenInfo,
                     stroke: InputManager.ExtendedStroke
                 ) {
-                    redrawTexture()
-                    strokeList += stroke
+                    if (enableInking) {
+                        redrawTexture()
+                        strokeList += stroke
+                        inkingList += dynamicPaintHandler
+                    }
                 }
             },
             object : InputManager.PenHoverHandler {
                 override fun hoverStarted(penInfo: InputManager.PenInfo) {
-                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2, penInfo.pointerType)
+                    if (enableInking) {
+                        drawHover(
+                            penInfo.x,
+                            penInfo.y,
+                            (minStrokeWidth + maxStrokeWidth) / 2,
+                            penInfo.pointerType
+                        )
+                    }
                 }
 
                 override fun hoverMoved(penInfo: InputManager.PenInfo) {
-                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2, penInfo.pointerType)
+                    if (enableInking) {
+                        drawHover(
+                            penInfo.x,
+                            penInfo.y,
+                            (minStrokeWidth + maxStrokeWidth) / 2,
+                            penInfo.pointerType
+                        )
+                    }
                 }
 
                 override fun hoverEnded(penInfo: InputManager.PenInfo) {
-                    redrawTexture()
+                    if (enableInking) {
+                        redrawTexture()
+                    }
                 }
             }
         )
@@ -204,6 +244,18 @@ class InkView constructor(
         hoverEraserPaint.style = Paint.Style.STROKE
         hoverEraserPaint.strokeJoin = Paint.Join.ROUND
         hoverEraserPaint.strokeCap = Paint.Cap.ROUND
+
+        // Highlight hover indicator
+        hoverHighlightPaint.color = currentStrokePaint.color
+        hoverHighlightPaint.isAntiAlias = true
+        hoverHighlightPaint.strokeWidth = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            defaultHoverStrokeWidth,
+            resources.displayMetrics
+        )
+        hoverHighlightPaint.style = Paint.Style.STROKE
+        hoverHighlightPaint.strokeJoin = Paint.Join.BEVEL
+        hoverHighlightPaint.strokeCap = Paint.Cap.BUTT
     }
 
     fun clearInk() {
@@ -221,8 +273,57 @@ class InkView constructor(
         return bitmap
     }
 
-    private fun updateStrokeWidth(pressure: Float) {
-        currentStrokePaint.strokeWidth = TypedValue.applyDimension(
+    fun getDrawing(): List<InputManager.ExtendedStroke> {
+        return strokeList
+    }
+
+    fun loadDrawing(strokes: List<InputManager.ExtendedStroke>, inks: List<DynamicPaintHandler?>) {
+        if (strokes.size != inks.size)
+            return
+
+        strokeList.clear()
+        inkingList.clear()
+
+        strokeList.addAll(strokes.toCollection(mutableListOf()))
+        inkingList.addAll(inks.toCollection(mutableListOf()))
+    }
+
+    private fun drawStrokeList() {
+        if (strokeList.size != inkingList.size)
+            return
+
+        val defaultStroke = createDefaultStroke()
+        val defaultPaintHandler = dynamicPaintHandler
+
+        for (i in strokeList.indices) {
+            val stroke = strokeList[i]
+            stroke.lastPointReferenced = 0
+
+            inputManager.currentStroke = stroke
+            loadStrokeValues(stroke, inkingList[i])
+            redrawTexture()
+        }
+
+        loadStrokeValues(defaultStroke, defaultPaintHandler)
+    }
+
+    private fun createDefaultStroke(): InputManager.ExtendedStroke {
+        val defaultStroke = InputManager.ExtendedStroke()
+        defaultStroke.color = color
+        defaultStroke.width = strokeWidth
+        defaultStroke.widthMax = strokeWidthMax
+        return defaultStroke
+    }
+
+    private fun loadStrokeValues(stroke: InputManager.ExtendedStroke, paintHandler: DynamicPaintHandler?) {
+        color = stroke.color
+        strokeWidth = stroke.width
+        strokeWidthMax = stroke.widthMax
+        dynamicPaintHandler = paintHandler
+    }
+
+    private fun updateStrokeWidth(pressure: Float, paint: Paint) {
+        paint.strokeWidth = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             minStrokeWidth + ((maxStrokeWidth - minStrokeWidth) * pressure),
             resources.displayMetrics
@@ -233,19 +334,26 @@ class InkView constructor(
         super.onSizeChanged(w, h, oldw, oldh)
         canvasBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         drawCanvas = Canvas(canvasBitmap)
-        redrawTexture()
     }
 
     fun drawHover(cx: Float, cy: Float, radius: Float, pointerType: InputManager.PointerType = InputManager.PointerType.UNKNOWN) {
-
         val canvas: Canvas = if (renderGPU) surface?.lockHardwareCanvas() ?: return else surface?.lockCanvas(null) ?: return
+
         try {
             // Copy image to the canvas
             canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
-            if (pointerType == InputManager.PointerType.PEN_ERASER) {
-                canvas.drawCircle(cx, cy, radius, hoverEraserPaint)
+
+            // Draw hover
+            if (dynamicPaintHandler?.selectInkingMode() == InputManager.InkingType.HIGHLIGHTING) {
+                // use linear shape for highlighter
+                canvas.drawLine(cx, cy - radius, cx, cy + radius, hoverHighlightPaint)
             } else {
-                canvas.drawCircle(cx, cy, radius, hoverPaint)
+                // use circular shape for pen/eraser
+                val hover = when (pointerType) {
+                    InputManager.PointerType.PEN_ERASER -> hoverEraserPaint
+                    else -> hoverPaint
+                }
+                canvas.drawCircle(cx, cy, radius, hover)
             }
         } finally {
             // Publish the frame.  If we overrun the consumer, frames will be dropped,
@@ -264,6 +372,7 @@ class InkView constructor(
     fun redrawTexture() {
         drawStroke()
         val canvas: Canvas = if (renderGPU) surface?.lockHardwareCanvas() ?: return else surface?.lockCanvas(null) ?: return
+
         try {
             // Copy image to the canvas
             canvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
@@ -282,7 +391,6 @@ class InkView constructor(
     }
 
     private fun drawStroke() {
-
         val stroke = inputManager.currentStroke
         val points = stroke.getPoints()
 
@@ -297,16 +405,24 @@ class InkView constructor(
         // update the drawCanvas with the latest stroke data
         var startPoint = points[stroke.lastPointReferenced]
         for (i in stroke.lastPointReferenced + 1 until points.size) {
-            val penInfo = stroke.getPenInfo(points[i])
+            val penInfo = stroke.getPenInfo(i)
             if (penInfo != null) {
                 when {
                     penInfo.pointerType == InputManager.PointerType.PEN_ERASER -> {
-                        drawCanvas.drawCircle(penInfo.x, penInfo.y, 30f, clearPaint)
+                        updateStrokeWidth(penInfo.pressure, clearPaint)
+                        drawCanvas.drawCircle(
+                            penInfo.x,
+                            penInfo.y,
+                            (minStrokeWidth + maxStrokeWidth) / 2,
+                            clearPaint
+                        )
+                        stroke.inkingMode = InputManager.InkingType.ERASING
                     }
                     dynamicPaintHandler != null -> {
                         dynamicPaintHandler?.let { paintHandler ->
                             val paint = paintHandler.generatePaintFromPenInfo(penInfo)
                             hoverPaint.color = paint.color
+                            hoverHighlightPaint.color = paint.color
                             drawCanvas.drawLine(
                                 startPoint.x,
                                 startPoint.y,
@@ -314,19 +430,20 @@ class InkView constructor(
                                 penInfo.y,
                                 paint
                             )
+                            stroke.inkingMode = paintHandler.selectInkingMode()
                         }
                     }
-                    enablePressure -> {
-                        updateStrokeWidth(penInfo.pressure)
-                        drawCanvas.drawLine(
-                            startPoint.x, startPoint.y, penInfo.x, penInfo.y,
-                            currentStrokePaint
-                        )
-                    }
                     else -> {
+                        val paint = when (stroke.inkingMode) {
+                            InputManager.InkingType.ERASING -> clearPaint
+                            else -> currentStrokePaint
+                        }
+                        if (enablePressure)
+                            updateStrokeWidth(penInfo.pressure, paint)
+
                         drawCanvas.drawLine(
                             startPoint.x, startPoint.y, penInfo.x, penInfo.y,
-                            currentStrokePaint
+                            paint
                         )
                     }
                 }
@@ -338,6 +455,21 @@ class InkView constructor(
     }
 
     /**
+     * Erase last stroke and redraw all other strokes
+     */
+    fun undo() {
+        drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        if (strokeList.isNotEmpty() && inkingList.isNotEmpty()) {
+            strokeList.removeLast()
+            inkingList.removeLast()
+        }
+        drawStrokeList()
+        if (strokeList.isEmpty()) {
+            redrawTexture()
+        }
+    }
+
+    /**
      * Invoked when a [TextureView]'s SurfaceTexture is ready for use.
      *
      * @param surface The surface returned by
@@ -345,13 +477,10 @@ class InkView constructor(
      * @param width The width of the surface
      * @param height The height of the surface
      */
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
-        if (surface != null) {
-            this.surface = Surface(surface)
-        } else {
-            this.surface?.release()
-            this.surface = null
-        }
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        this.surface = Surface(surface)
+        redrawTexture()
+        drawStrokeList()
     }
 
     /**
@@ -362,7 +491,7 @@ class InkView constructor(
      * @param width The new width of the surface
      * @param height The new height of the surface
      */
-    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
     }
 
     /**
@@ -373,7 +502,7 @@ class InkView constructor(
      *
      * @param surface The surface about to be destroyed
      */
-    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         this.surface?.release()
         return true
     }
@@ -384,6 +513,6 @@ class InkView constructor(
      *
      * @param surface The surface just updated
      */
-    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
     }
 }
