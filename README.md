@@ -4,6 +4,10 @@ This repo contains the source code for the Microsoft Surface Duo SDK.
 
 Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelines](CONTRIBUTING.md).
 
+> [!TIP]
+> When importing the code into Android Studio, use the **surface-duo-sdk** folder as the base directory of the project.
+> This lets you access the sdk source code and run the sdk samples from within the same project.
+
 ## Add to your project
 
 1. Make sure you have **mavenCentral()** repository in your top level **build.gradle** file:
