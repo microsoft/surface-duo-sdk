@@ -82,6 +82,12 @@ Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelin
     // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
     ```
 
+    **Ink**
+
+    ```gradle
+    implementation "com.microsoft.device:ink:1.0.0-alpha4"
+    ```
+
 ### Useful links
 
 - Documentation for these libraries at [dual-screen library](https://docs.microsoft.com/dual-screen/android/api-reference/dualscreen-library/)
