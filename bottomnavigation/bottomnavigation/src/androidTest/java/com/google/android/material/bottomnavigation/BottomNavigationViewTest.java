@@ -40,7 +40,7 @@ import androidx.test.runner.AndroidJUnit4;
 import com.google.android.material.bottomnavigation.compatibility.activities.BottomNavigationViewActivity;
 import com.google.android.material.bottomnavigation.compatibility.testutils.TestDrawable;
 import com.google.android.material.bottomnavigation.compatibility.testutils.TestUtilsMatchers;
-import com.microsoft.device.dualscreen.bottomnavigation.SurfaceDuoBottomNavigationView;
+import com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView;
 import com.microsoft.device.dualscreen.bottomnavigation.test.R;
 
 import org.junit.Before;
@@ -90,7 +90,7 @@ public class BottomNavigationViewTest {
     };
     private Map<Integer, String> menuStringContent;
 
-    private SurfaceDuoBottomNavigationView bottomNavigation;
+    private BottomNavigationView bottomNavigation;
 
     @Before
     public void setUp() throws Exception {
@@ -109,7 +109,7 @@ public class BottomNavigationViewTest {
     @Test
     @SmallTest
     public void testAddItemsWithoutMenuInflation() {
-        SurfaceDuoBottomNavigationView navigation = new SurfaceDuoBottomNavigationView(activityTestRule.getActivity());
+        BottomNavigationView navigation = new BottomNavigationView(activityTestRule.getActivity());
         activityTestRule.getActivity().setContentView(navigation);
         navigation.getMenu().add("Item1");
         navigation.getMenu().add("Item2");
@@ -135,8 +135,8 @@ public class BottomNavigationViewTest {
     @Test
     @LargeTest
     public void testNavigationSelectionListener() {
-        SurfaceDuoBottomNavigationView.OnNavigationItemSelectedListener mockedListener =
-                mock(SurfaceDuoBottomNavigationView.OnNavigationItemSelectedListener.class);
+        BottomNavigationView.OnNavigationItemSelectedListener mockedListener =
+                mock(BottomNavigationView.OnNavigationItemSelectedListener.class);
         bottomNavigation.setOnNavigationItemSelectedListener(mockedListener);
 
         // Make the listener return true to allow selecting the item.
@@ -202,8 +202,8 @@ public class BottomNavigationViewTest {
     @Test
     @SmallTest
     public void testSetSelectedItemId() {
-        SurfaceDuoBottomNavigationView.OnNavigationItemSelectedListener mockedListener =
-                mock(SurfaceDuoBottomNavigationView.OnNavigationItemSelectedListener.class);
+        BottomNavigationView.OnNavigationItemSelectedListener mockedListener =
+                mock(BottomNavigationView.OnNavigationItemSelectedListener.class);
         bottomNavigation.setOnNavigationItemSelectedListener(mockedListener);
 
         // Make the listener return true to allow selecting the item.
@@ -251,8 +251,8 @@ public class BottomNavigationViewTest {
     @SmallTest
     public void testNavigationReselectionListener() {
         // Add an OnNavigationItemReselectedListener
-        SurfaceDuoBottomNavigationView.OnNavigationItemReselectedListener reselectedListener =
-                mock(SurfaceDuoBottomNavigationView.OnNavigationItemReselectedListener.class);
+        BottomNavigationView.OnNavigationItemReselectedListener reselectedListener =
+                mock(BottomNavigationView.OnNavigationItemReselectedListener.class);
         bottomNavigation.setOnNavigationItemReselectedListener(reselectedListener);
 
         // Select an item
@@ -281,8 +281,8 @@ public class BottomNavigationViewTest {
                 .onNavigationItemReselected(bottomNavigation.getMenu().findItem(R.id.destination_profile));
 
         // Add an OnNavigationItemSelectedListener
-        SurfaceDuoBottomNavigationView.OnNavigationItemSelectedListener selectedListener =
-                mock(SurfaceDuoBottomNavigationView.OnNavigationItemSelectedListener.class);
+        BottomNavigationView.OnNavigationItemSelectedListener selectedListener =
+                mock(BottomNavigationView.OnNavigationItemSelectedListener.class);
         bottomNavigation.setOnNavigationItemSelectedListener(selectedListener);
         // Make the listener return true to allow selecting the item.
         when(selectedListener.onNavigationItemSelected(any(MenuItem.class))).thenReturn(true);
@@ -649,13 +649,13 @@ public class BottomNavigationViewTest {
         // Restore the state into a fresh BottomNavigationView
         activityTestRule.runOnUiThread(
                 () -> {
-                    SurfaceDuoBottomNavigationView testView = new SurfaceDuoBottomNavigationView(activityTestRule.getActivity());
+                    BottomNavigationView testView = new BottomNavigationView(activityTestRule.getActivity());
                     testView.setId(R.id.bottom_navigation);
                     testView.inflateMenu(R.menu.bottom_navigation_view_content);
                     testView.restoreHierarchyState(container);
                     assertTrue(testView.getMenu().findItem(R.id.destination_profile).isChecked());
 
-                    assertTrue(((BottomNavigationView) testView).menuView.findItemView(R.id.destination_home).getBadge().isVisible());
+                    assertTrue((( com.google.android.material.bottomnavigation.BottomNavigationView) testView).menuView.findItemView(R.id.destination_home).getBadge().isVisible());
 
                     assertTrue(testView.getBadge(R.id.destination_home).isVisible());
                     assertEquals(75, testView.getBadge(R.id.destination_home).getNumber());

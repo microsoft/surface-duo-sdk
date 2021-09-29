@@ -4,6 +4,7 @@
   ~  Licensed under the MIT License.
   ~
   -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
@@ -11,13 +12,13 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <com.microsoft.device.dualscreen.bottomnavigation.SurfaceDuoBottomNavigationView
+    <com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@android:color/holo_blue_light"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_navigation_view_surface_duo"
+        app:menu="@menu/bottom_navigation_view"
         app:useTransparentBackground="true" />
 </FrameLayout>

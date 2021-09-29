@@ -6,6 +6,7 @@
 package com.microsoft.device.dualscreen.bottomnavigation
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -16,18 +17,33 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.BaseInterpolator
+import androidx.core.content.ContextCompat
+import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.customview.view.AbsSavedState
+import androidx.transition.ChangeBounds
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoRepository
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.OnSwipeListener
-import com.microsoft.device.dualscreen.ScreenInfo
-import com.microsoft.device.dualscreen.ScreenInfoListener
-import com.microsoft.device.dualscreen.ScreenManagerProvider
-import com.microsoft.device.dualscreen.ScreenMode
-import com.microsoft.device.dualscreen.createHalfTransparentBackground
-import com.microsoft.device.dualscreen.isPortrait
-import com.microsoft.device.dualscreen.isSpannedInDualScreen
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import com.microsoft.device.dualscreen.utils.wm.OnSwipeListener
+import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import com.microsoft.device.dualscreen.utils.wm.areScreensSideBySide
+import com.microsoft.device.dualscreen.utils.wm.createHalfTransparentBackground
+import com.microsoft.device.dualscreen.utils.wm.getHinge
+import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import com.microsoft.device.dualscreen.utils.wm.isSpanned
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 
 /**
  * A sub class of the Bottom Navigation View that can position its children in different ways when the application is spanned on both screens.
@@ -35,57 +51,98 @@ import com.microsoft.device.dualscreen.isSpannedInDualScreen
  * Animation can be used when changing the arrangement of the buttons on the two screen.
  * If one of the screens doesn't contain any button, its background can be made transparent.
  */
-open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : BottomNavigationView(context, attrs, defStyleAttr) {
+open class BottomNavigationView : BottomNavigationView {
+    constructor(context: Context) : super(context) {
+        initFoldingObs()
+    }
 
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        initFoldingObs()
+        extractAttributes(context, attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        initFoldingObs()
+        extractAttributes(context, attrs)
+    }
+
+    private var job: Job? = null
     private var singleScreenWidth = -1
     private var totalScreenWidth = -1
     private var hingeWidth = -1
 
     private var screenMode = ScreenMode.DUAL_SCREEN
-    private var currentScreenInfo: ScreenInfo? = null
+    private var foldingFeature: FoldingFeature? = null
 
     private var initialBackground: Drawable? = null
     private var startBtnCount: Int = -1
     private var endBtnCount: Int = -1
     private var defaultChildWidth = -1
 
-    private var onSwipeListener: OnSwipeListener = object : OnSwipeListener(context) {
-        override fun onSwipeLeft() {
-            super.onSwipeLeft()
-            if (allowFlingGesture) {
-                displayPosition = DisplayPosition.START
-            }
-        }
-
-        override fun onSwipeRight() {
-            super.onSwipeRight()
-            if (allowFlingGesture) {
-                displayPosition = DisplayPosition.END
-            }
-        }
-    }
-
-    private val screenInfoListener = object : ScreenInfoListener {
-        override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
-            currentScreenInfo = screenInfo
-            setScreenParameters(screenInfo)
-            tryUpdateBackground()
+    private fun initFoldingObs() {
+        val executor = ContextCompat.getMainExecutor(context)
+        val windowInfoRepository: WindowInfoRepository =
+            (context as Activity).windowInfoRepository()
+        job?.cancel()
+        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
+            windowInfoRepository.windowLayoutInfo
+                .mapNotNull { info -> getFoldingFeature(info) }
+                .distinctUntilChanged()
+                .collect { nextFeature ->
+                    onFoldingFeatureChange(nextFeature)
+                }
         }
     }
+
+    private fun getFoldingFeature(windowLayoutInfo: WindowLayoutInfo): FoldingFeature? {
+        return windowLayoutInfo.displayFeatures
+            .firstOrNull { feature -> feature is FoldingFeature } as? FoldingFeature
+    }
+
+    open fun onFoldingFeatureChange(foldingFeature: FoldingFeature) {
+        this.foldingFeature = foldingFeature
+        setScreenParameters(foldingFeature)
+        tryUpdateBackground()
+
+        val changeBounds: Transition = ChangeBounds()
+        changeBounds.duration = 300L
+        changeBounds.interpolator = PathInterpolatorCompat.create(0.2f, 0f, 0f, 1f)
+        TransitionManager.beginDelayedTransition(this@BottomNavigationView, changeBounds)
+        requestLayout()
+    }
+
+    private var onSwipeListener: OnSwipeListener =
+        object : OnSwipeListener(context) {
+            override fun onSwipeLeft() {
+                super.onSwipeLeft()
+                if (allowFlingGesture) {
+                    displayPosition =
+                        DisplayPosition.START
+                }
+            }
+
+            override fun onSwipeRight() {
+                super.onSwipeRight()
+                if (allowFlingGesture) {
+                    displayPosition = DisplayPosition.END
+                }
+            }
+        }
 
     /**
      * Determines where to display the bottom navigation buttons when the application is spanned on both screens.
      * The options are [DisplayPosition.START], [DisplayPosition.END] or [DisplayPosition.DUAL]
      */
-    var displayPosition: DisplayPosition = DisplayPosition.DUAL
+    var displayPosition: DisplayPosition =
+        DisplayPosition.DUAL
         set(value) {
-            updateDisplayPosition(value)
-            field = value
-        }
+                updateDisplayPosition(value)
+                field = value
+            }
 
     /**
      * Use an animation to move the buttons when the [displayPosition] or [arrangeButtons] is called.
@@ -114,18 +171,7 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
 
     init {
-        extractAttributes(context, attrs)
         tryUpdateBackground()
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
     }
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {
@@ -143,7 +189,7 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
                     ScreenMode.DUAL_SCREEN.ordinal
                 )
             )
-            displayPosition = DisplayPosition.fromId(
+            displayPosition = DisplayPosition.fromResId(
                 styledAttributes.getInt(
                     R.styleable.ScreenManagerAttrs_display_position,
                     DisplayPosition.DUAL.ordinal
@@ -169,18 +215,22 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
     }
 
-    private fun setScreenParameters(screenInfo: ScreenInfo) {
-        screenInfo.getHinge()?.let {
+    private fun setScreenParameters(foldingFeature: FoldingFeature) {
+        foldingFeature.bounds.let {
             singleScreenWidth = it.left
         }
 
-        screenInfo.getWindowRect().let {
-            totalScreenWidth = it.right
+        context.getWindowRect().right.let {
+            totalScreenWidth = it
         }
 
-        screenInfo.getHinge()?.let {
+        foldingFeature.bounds.let {
             hingeWidth = it.right - it.left
         }
+    }
+
+    private fun shouldNotSplit(): Boolean {
+        return !foldingFeature.isSpanned() || !foldingFeature.areScreensSideBySide()
     }
 
     /**
@@ -188,7 +238,7 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
      */
     fun arrangeButtons(startBtnCount: Int, endBtnCount: Int) {
         val child = getChildAt(0) as BottomNavigationMenuView
-        if (!isSpanned() || isPortrait()) {
+        if (shouldNotSplit()) {
             if (child.doesChildCountMatch(startBtnCount, endBtnCount)) {
                 syncBtnCount(startBtnCount, endBtnCount)
             }
@@ -208,7 +258,7 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        if (!isSpanned() || isPortrait()) {
+        if (shouldNotSplit()) {
             return
         }
 
@@ -226,18 +276,24 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
 
     private fun BottomNavigationMenuView.arrangeOnScreen(firstBtnIndex: Int, secondBtnIndex: Int) {
         if (width != totalScreenWidth) {
-            layout(0, 0, totalScreenWidth, (parent as SurfaceDuoBottomNavigationView).height)
+            layout(
+                0,
+                0,
+                totalScreenWidth,
+                (parent as com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView).height
+            )
         }
 
         val buttonsCount = secondBtnIndex - firstBtnIndex + 1
         if (buttonsCount == 0) {
             return
         }
-        val startPoint = if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
-            singleScreenWidth + hingeWidth
-        } else {
-            0
-        }
+        val startPoint =
+            if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
+                singleScreenWidth + hingeWidth
+            } else {
+                0
+            }
 
         if (defaultChildWidth == -1) {
             defaultChildWidth = getChildAt(0).measuredWidth
@@ -294,7 +350,7 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
     }
 
     private fun updateDisplayPosition(newPosition: DisplayPosition) {
-        if (!isSpanned() || isPortrait()) {
+        if (shouldNotSplit()) {
             return
         }
 
@@ -331,12 +387,6 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         }
     }
 
-    private fun isSpanned(): Boolean {
-        return currentScreenInfo?.let {
-            isSpannedInDualScreen(screenMode, it)
-        } ?: kotlin.run { false }
-    }
-
     private fun hasButtonsOnBothScreens(): Boolean {
         return startBtnCount > 0 && endBtnCount > 0
     }
@@ -369,19 +419,19 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
     }
 
     private fun tryUpdateBackground() {
-        if (!isSpanned() || isPortrait() ||
+        if (shouldNotSplit() ||
             childCount != 1 || !useTransparentBackground || hasButtonsOnBothScreens()
         ) {
             if (background != initialBackground) {
                 background = initialBackground
             }
         } else {
-            if (displayPosition == DisplayPosition.DUAL) {
-                background = initialBackground
+            background = if (displayPosition == DisplayPosition.DUAL) {
+                initialBackground
             } else {
-                background = createHalfTransparentBackground(
+                createHalfTransparentBackground(
                     displayPosition,
-                    currentScreenInfo,
+                    foldingFeature?.getHinge(),
                     initialBackground
                 )
             }
@@ -425,7 +475,8 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
         var useAnimation: Boolean = true
         var allowFlingGesture: Boolean = true
         var useTransparentBackground: Boolean = true
-        var displayPosition: DisplayPosition = DisplayPosition.DUAL
+        var displayPosition: DisplayPosition =
+            DisplayPosition.DUAL
         var startBtnCount: Int = -1
         var endBtnCount: Int = -1
 
@@ -435,7 +486,8 @@ open class SurfaceDuoBottomNavigationView @JvmOverloads constructor(
             useAnimation = source.readInt() == 1
             allowFlingGesture = source.readInt() == 1
             useTransparentBackground = source.readInt() == 1
-            displayPosition = DisplayPosition.fromId(source.readInt())
+            displayPosition =
+                DisplayPosition.fromResId(source.readInt())
             startBtnCount = source.readInt()
             endBtnCount = source.readInt()
         }

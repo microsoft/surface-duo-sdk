@@ -12,8 +12,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.bottomnavigation.test.R
 import com.microsoft.device.dualscreen.bottomnavigation.utils.SimpleBottomNavigationActivity
 import com.microsoft.device.dualscreen.bottomnavigation.utils.areTabsOnScreen
@@ -22,12 +20,13 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.test.utils.resetOrientation
-import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
-import com.microsoft.device.dualscreen.test.utils.setOrientationRight
-import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.utils.test.TestSyncUtils
+import com.microsoft.device.dualscreen.utils.test.resetOrientation
+import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
+import com.microsoft.device.dualscreen.utils.test.setOrientationRight
+import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -37,26 +36,24 @@ import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class SurfaceBottomNavigationTest {
+class BottomNavigationTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleBottomNavigationActivity::class.java)
-    private var screenInfoListener = ScreenInfoListenerImpl()
+    private var testSyncUtils = TestSyncUtils()
 
     @Before
     fun before() {
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
+        testSyncUtils.waitForScreenInfoChanges()
+        testSyncUtils.resetScreenInfoCounter()
 
         onView(withId(R.id.nav_view)).perform(disableAnimation())
     }
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().clear()
         resetOrientation()
-        screenInfoListener.resetScreenInfoCounter()
+        testSyncUtils.resetScreenInfoCounter()
     }
 
     @Test
@@ -117,8 +114,8 @@ class SurfaceBottomNavigationTest {
     @Test
     fun testSwipeLeft() {
         switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
+        testSyncUtils.waitForScreenInfoChanges()
+        testSyncUtils.resetScreenInfoCounter()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -129,8 +126,8 @@ class SurfaceBottomNavigationTest {
     @Test
     fun testSwipeRight() {
         switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
+        testSyncUtils.waitForScreenInfoChanges()
+        testSyncUtils.resetScreenInfoCounter()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 

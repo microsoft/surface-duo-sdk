@@ -14,15 +14,14 @@
         android:id="@+id/fragment_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/fragment_name_margin_left"
+        android:layout_marginStart="@dimen/fragment_name_margin_left"
         android:layout_marginTop="@dimen/fragment_name_margin_top"
         android:textColor="@android:color/black"
         android:textSize="@dimen/fragment_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

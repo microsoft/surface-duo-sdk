@@ -5,71 +5,66 @@
 
 package com.microsoft.device.dualscreen.sample.bottomnavigation
 
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.util.Consumer
 import androidx.fragment.app.FragmentTransaction
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.ScreenInfo
-import com.microsoft.device.dualscreen.ScreenInfoListener
-import com.microsoft.device.dualscreen.ScreenManagerProvider
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowLayoutInfo
+import com.microsoft.device.dualscreen.sample.bottomnavigation.databinding.ActivityMainBinding
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import com.microsoft.device.dualscreen.utils.wm.isSpannedHorizontally
+import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
     companion object {
         const val SELECTED_NAV_ITEM = "selected_nav_item"
     }
 
+    private lateinit var binding: ActivityMainBinding
+
+    private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
+    private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
+    private lateinit var runOnUiThreadExecutor: Executor
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setListeners()
         setBadges()
 
-        nav_view.setOnNavigationItemSelectedListener { item: MenuItem ->
+        binding.navView.setOnNavigationItemSelectedListener { item: MenuItem ->
             changeFragment(item)
             return@setOnNavigationItemSelectedListener true
         }
 
-        nav_view.selectedItemId = getSavedNavItem(savedInstanceState)
-        nav_view.useTransparentBackground = true
-        nav_view.arrangeButtons(3, 2)
+        binding.navView.apply {
+            selectedItemId = getSavedNavItem(savedInstanceState)
+            useTransparentBackground = true
+            arrangeButtons(3, 2)
 
-        nav_view.useAnimation = true
-        nav_view.animationInterpolator = OvershootInterpolator()
-        nav_view.allowFlingGesture = true
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
-    }
-
-    private val screenInfoListener = object : ScreenInfoListener {
-        override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
-            setButtonsVisibility(screenInfo)
+            useAnimation = true
+            animationInterpolator = OvershootInterpolator()
+            allowFlingGesture = true
         }
-    }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        ScreenManagerProvider.getScreenManager().onConfigurationChanged()
+        initWindowLayoutInfo()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(SELECTED_NAV_ITEM, nav_view.selectedItemId)
+        outState.putInt(SELECTED_NAV_ITEM, binding.navView.selectedItemId)
         super.onSaveInstanceState(outState)
     }
 
@@ -77,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(
             R.id.fragment_container,
-            SelectedFragment.newInstance(item.title.toString())
+            NumbersFragment.newInstance(item.title.toString())
         )
         transaction.commit()
     }
@@ -90,37 +85,65 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setButtonsVisibility(screenInfo: ScreenInfo) {
-        val visibility = if (screenInfo.isDualMode()
-        ) {
-            View.VISIBLE
-        } else {
-            View.GONE
+    private fun initWindowLayoutInfo() {
+        adapter = WindowInfoRepositoryCallbackAdapter(windowInfoRepository())
+        runOnUiThreadExecutor = Executor { command: Runnable? ->
+            command?.let {
+                Handler(Looper.getMainLooper()).post(it)
+            }
         }
+        consumerWindowLayoutInfo = Consumer { windowLayoutInfo ->
+            setButtonsVisibility(windowLayoutInfo)
+        }
+    }
 
-        move_to_start.visibility = visibility
-        move_to_end.visibility = visibility
-        span_buttons.visibility = visibility
+    override fun onStart() {
+        super.onStart()
+        adapter.addWindowLayoutInfoListener(runOnUiThreadExecutor, consumerWindowLayoutInfo)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.removeWindowLayoutInfoListener(consumerWindowLayoutInfo)
+    }
+
+    private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
+        (windowLayoutInfo.displayFeatures.firstOrNull() as FoldingFeature?).let { foldingFeature ->
+            val visibility = if (foldingFeature.isSpannedHorizontally()
+            ) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            binding.apply {
+                moveToStart.visibility = visibility
+                moveToEnd.visibility = visibility
+                spanButtons.visibility = visibility
+            }
+        }
     }
 
     private fun setListeners() {
-        move_to_start.setOnClickListener {
-            moveNavigationView(DisplayPosition.START)
-        }
-        move_to_end.setOnClickListener {
-            moveNavigationView(DisplayPosition.END)
-        }
-        span_buttons.setOnClickListener {
-            nav_view.arrangeButtons(2, 3)
+        binding.apply {
+            moveToStart.setOnClickListener {
+                moveNavigationView(DisplayPosition.START)
+            }
+            moveToEnd.setOnClickListener {
+                moveNavigationView(DisplayPosition.END)
+            }
+            spanButtons.setOnClickListener {
+                navView.arrangeButtons(2, 3)
+            }
         }
     }
 
     private fun moveNavigationView(displayPosition: DisplayPosition) {
-        nav_view.displayPosition = displayPosition
+        binding.navView.displayPosition = displayPosition
     }
 
     private fun setBadges() {
-        val badge = nav_view.getOrCreateBadge(R.id.navigation_alerts)
+        val badge = binding.navView.getOrCreateBadge(R.id.navigation_alerts)
         badge.isVisible = true
         // set a random number
         badge.number = 20
