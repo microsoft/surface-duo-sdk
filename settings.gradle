@@ -32,4 +32,7 @@ include ':tabs:sample'
 include ':inksdk:ink'
 include ':inksdk:inksample'
 
+include ':utils:wm-utils'
+include ':utils:test-utils'
+
 rootProject.name='DuoSDK'
