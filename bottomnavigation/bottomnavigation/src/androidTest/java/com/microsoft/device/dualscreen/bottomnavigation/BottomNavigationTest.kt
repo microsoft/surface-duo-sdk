@@ -20,15 +20,12 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.utils.test.TestSyncUtils
-import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,20 +37,10 @@ class BottomNavigationTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleBottomNavigationActivity::class.java)
-    private var testSyncUtils = TestSyncUtils()
 
     @Before
     fun before() {
-        testSyncUtils.waitForScreenInfoChanges()
-        testSyncUtils.resetScreenInfoCounter()
-
         onView(withId(R.id.nav_view)).perform(disableAnimation())
-    }
-
-    @After
-    fun after() {
-        resetOrientation()
-        testSyncUtils.resetScreenInfoCounter()
     }
 
     @Test
@@ -114,8 +101,6 @@ class BottomNavigationTest {
     @Test
     fun testSwipeLeft() {
         switchFromSingleToDualScreen()
-        testSyncUtils.waitForScreenInfoChanges()
-        testSyncUtils.resetScreenInfoCounter()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -126,8 +111,6 @@ class BottomNavigationTest {
     @Test
     fun testSwipeRight() {
         switchFromSingleToDualScreen()
-        testSyncUtils.waitForScreenInfoChanges()
-        testSyncUtils.resetScreenInfoCounter()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 

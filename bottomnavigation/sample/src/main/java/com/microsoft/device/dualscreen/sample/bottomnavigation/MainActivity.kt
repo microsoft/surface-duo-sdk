@@ -17,12 +17,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.fragment.app.FragmentTransaction
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
-import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.sample.bottomnavigation.databinding.ActivityMainBinding
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
-import com.microsoft.device.dualscreen.utils.wm.isSpannedHorizontally
+import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
@@ -108,19 +107,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
-        (windowLayoutInfo.displayFeatures.firstOrNull() as FoldingFeature?).let { foldingFeature ->
-            val visibility = if (foldingFeature.isSpannedHorizontally()
-            ) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+        val visibility = if (windowLayoutInfo.isFoldingFeatureVertical()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
 
-            binding.apply {
-                moveToStart.visibility = visibility
-                moveToEnd.visibility = visibility
-                spanButtons.visibility = visibility
-            }
+        binding.apply {
+            moveToStart.visibility = visibility
+            moveToEnd.visibility = visibility
+            spanButtons.visibility = visibility
         }
     }
 

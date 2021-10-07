@@ -25,7 +25,7 @@ const val SCREEN_COUNT = 2
 const val DUAL_SCREEN_WIDTH = SINGLE_SCREEN_WIDTH * SCREEN_COUNT + HINGE_WIDTH
 
 /**
- * Switches application from single screen mode to dual screen mode
+ * Utility function that switches the  application from single screen mode to dual screen on Surface Duo devices.
  */
 fun switchFromSingleToDualScreen() {
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -37,7 +37,7 @@ fun switchFromSingleToDualScreen() {
 }
 
 /**
- * Switches application from dual screen mode to single screen
+ * Utility function that switches the  application from dual screen mode to single screen on Surface Duo devices.
  */
 fun switchFromDualToSingleScreen() {
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -46,50 +46,4 @@ fun switchFromDualToSingleScreen() {
         Surface.ROTATION_270 -> device.swipe(1780, 1500, 900, 650, 400)
         Surface.ROTATION_90 -> device.swipe(1780, 1250, 900, 1500, 400)
     }
-}
-
-/**
- * Re-enables the sensors and un-freezes the device rotation allowing its contents
- * to rotate with the device physical rotation. During a test execution, it is best to
- * keep the device frozen in a specific orientation until the test case execution has completed.
- */
-fun unfreezeRotation() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.unfreezeRotation()
-}
-
-/**
- * Simulates orienting the device to the left and also freezes rotation
- * by disabling the sensors.
- */
-fun setOrientationLeft() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.setOrientationLeft()
-}
-
-/**
- * Simulates orienting the device into its natural orientation and also freezes rotation
- * by disabling the sensors.
- */
-fun setOrientationNatural() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.setOrientationNatural()
-}
-
-/**
- * Simulates orienting the device to the right and also freezes rotation
- * by disabling the sensors.
- */
-fun setOrientationRight() {
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    device.setOrientationRight()
-}
-
-/**
- * Simulates orienting the device into its natural orientation,
- * re-enables the sensors and un-freezes the device rotation
- */
-fun resetOrientation() {
-    setOrientationNatural()
-    unfreezeRotation()
 }

@@ -21,7 +21,7 @@ fun Context.getWindowRect(): Rect {
 }
 
 /**
- *
+ * Casts a [Context] to an [Activity] if it is possible.
  */
 private fun Context.getActivityFromContext(): Activity? {
     var contextBuffer = this

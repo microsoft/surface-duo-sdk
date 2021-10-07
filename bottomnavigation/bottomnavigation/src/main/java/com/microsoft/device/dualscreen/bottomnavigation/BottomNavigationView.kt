@@ -32,18 +32,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.OnSwipeListener
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
-import com.microsoft.device.dualscreen.utils.wm.areScreensSideBySide
 import com.microsoft.device.dualscreen.utils.wm.createHalfTransparentBackground
-import com.microsoft.device.dualscreen.utils.wm.getHinge
+import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeature
+import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
-import com.microsoft.device.dualscreen.utils.wm.isSpanned
+import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
+import com.microsoft.device.dualscreen.utils.wm.isInDualMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+
+typealias FoldableBottomNavigationView = com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView
 
 /**
  * A sub class of the Bottom Navigation View that can position its children in different ways when the application is spanned on both screens.
@@ -53,11 +54,11 @@ import kotlinx.coroutines.launch
  */
 open class BottomNavigationView : BottomNavigationView {
     constructor(context: Context) : super(context) {
-        initFoldingObs()
+        this.registerWindowInfoFlow()
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initFoldingObs()
+        this.registerWindowInfoFlow()
         extractAttributes(context, attrs)
     }
 
@@ -66,7 +67,7 @@ open class BottomNavigationView : BottomNavigationView {
         attrs,
         defStyleAttr
     ) {
-        initFoldingObs()
+        this.registerWindowInfoFlow()
         extractAttributes(context, attrs)
     }
 
@@ -76,36 +77,32 @@ open class BottomNavigationView : BottomNavigationView {
     private var hingeWidth = -1
 
     private var screenMode = ScreenMode.DUAL_SCREEN
-    private var foldingFeature: FoldingFeature? = null
+    private var windowLayoutInfo: WindowLayoutInfo? = null
 
     private var initialBackground: Drawable? = null
     private var startBtnCount: Int = -1
     private var endBtnCount: Int = -1
     private var defaultChildWidth = -1
 
-    private fun initFoldingObs() {
+    private fun registerWindowInfoFlow() {
         val executor = ContextCompat.getMainExecutor(context)
         val windowInfoRepository: WindowInfoRepository =
             (context as Activity).windowInfoRepository()
         job?.cancel()
         job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
             windowInfoRepository.windowLayoutInfo
-                .mapNotNull { info -> getFoldingFeature(info) }
-                .distinctUntilChanged()
-                .collect { nextFeature ->
-                    onFoldingFeatureChange(nextFeature)
+                .collect { info ->
+                    windowLayoutInfo = info
+                    onInfoLayoutChanged(info)
                 }
         }
     }
 
-    private fun getFoldingFeature(windowLayoutInfo: WindowLayoutInfo): FoldingFeature? {
-        return windowLayoutInfo.displayFeatures
-            .firstOrNull { feature -> feature is FoldingFeature } as? FoldingFeature
-    }
+    private fun onInfoLayoutChanged(windowLayoutInfo: WindowLayoutInfo) {
+        getFoldingFeature(windowLayoutInfo)?.let {
+            setScreenParameters(it)
+        }
 
-    open fun onFoldingFeatureChange(foldingFeature: FoldingFeature) {
-        this.foldingFeature = foldingFeature
-        setScreenParameters(foldingFeature)
         tryUpdateBackground()
 
         val changeBounds: Transition = ChangeBounds()
@@ -216,21 +213,15 @@ open class BottomNavigationView : BottomNavigationView {
     }
 
     private fun setScreenParameters(foldingFeature: FoldingFeature) {
-        foldingFeature.bounds.let {
-            singleScreenWidth = it.left
-        }
-
-        context.getWindowRect().right.let {
-            totalScreenWidth = it
-        }
-
+        singleScreenWidth = foldingFeature.bounds.left
+        totalScreenWidth = context.getWindowRect().right
         foldingFeature.bounds.let {
             hingeWidth = it.right - it.left
         }
     }
 
-    private fun shouldNotSplit(): Boolean {
-        return !foldingFeature.isSpanned() || !foldingFeature.areScreensSideBySide()
+    private fun shouldSplit(): Boolean {
+        return windowLayoutInfo.isInDualMode() && windowLayoutInfo.isFoldingFeatureVertical()
     }
 
     /**
@@ -238,7 +229,7 @@ open class BottomNavigationView : BottomNavigationView {
      */
     fun arrangeButtons(startBtnCount: Int, endBtnCount: Int) {
         val child = getChildAt(0) as BottomNavigationMenuView
-        if (shouldNotSplit()) {
+        if (!shouldSplit()) {
             if (child.doesChildCountMatch(startBtnCount, endBtnCount)) {
                 syncBtnCount(startBtnCount, endBtnCount)
             }
@@ -258,7 +249,7 @@ open class BottomNavigationView : BottomNavigationView {
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        if (shouldNotSplit()) {
+        if (!shouldSplit()) {
             return
         }
 
@@ -280,7 +271,7 @@ open class BottomNavigationView : BottomNavigationView {
                 0,
                 0,
                 totalScreenWidth,
-                (parent as com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView).height
+                (parent as FoldableBottomNavigationView).height
             )
         }
 
@@ -350,7 +341,7 @@ open class BottomNavigationView : BottomNavigationView {
     }
 
     private fun updateDisplayPosition(newPosition: DisplayPosition) {
-        if (shouldNotSplit()) {
+        if (!shouldSplit()) {
             return
         }
 
@@ -395,6 +386,7 @@ open class BottomNavigationView : BottomNavigationView {
         if (!allowFlingGesture) {
             return super.onInterceptTouchEvent(ev)
         }
+
         onSwipeListener.onTouchEvent(ev)
 
         if (onSwipeListener.onInterceptTouchEvent(ev)) {
@@ -419,7 +411,7 @@ open class BottomNavigationView : BottomNavigationView {
     }
 
     private fun tryUpdateBackground() {
-        if (shouldNotSplit() ||
+        if (!shouldSplit() ||
             childCount != 1 || !useTransparentBackground || hasButtonsOnBothScreens()
         ) {
             if (background != initialBackground) {
@@ -431,7 +423,7 @@ open class BottomNavigationView : BottomNavigationView {
             } else {
                 createHalfTransparentBackground(
                     displayPosition,
-                    foldingFeature?.getHinge(),
+                    windowLayoutInfo.extractFoldingFeature(),
                     initialBackground
                 )
             }
@@ -475,8 +467,7 @@ open class BottomNavigationView : BottomNavigationView {
         var useAnimation: Boolean = true
         var allowFlingGesture: Boolean = true
         var useTransparentBackground: Boolean = true
-        var displayPosition: DisplayPosition =
-            DisplayPosition.DUAL
+        var displayPosition: DisplayPosition = DisplayPosition.DUAL
         var startBtnCount: Int = -1
         var endBtnCount: Int = -1
 
@@ -486,8 +477,7 @@ open class BottomNavigationView : BottomNavigationView {
             useAnimation = source.readInt() == 1
             allowFlingGesture = source.readInt() == 1
             useTransparentBackground = source.readInt() == 1
-            displayPosition =
-                DisplayPosition.fromResId(source.readInt())
+            displayPosition = DisplayPosition.fromResId(source.readInt())
             startBtnCount = source.readInt()
             endBtnCount = source.readInt()
         }
