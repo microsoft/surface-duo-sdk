@@ -57,14 +57,16 @@ class MainActivity : AppCompatActivity() {
 
         webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
 
-        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                setStrokeWidth()
-            }
+        seekBar.setOnSeekBarChangeListener(
+            object : OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    setStrokeWidth()
+                }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            },
+        )
 
         setStrokeWidth()
     }
@@ -131,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         inkView.dynamicPaintHandler = RainbowPaintHandler()
         fancySwitch.isChecked = false
     }
+
     /**
      * Required because some colors are set on the InkView, but
      * rainbow ink is controlled via a paint handler (which is also

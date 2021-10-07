@@ -61,7 +61,17 @@ class InkView constructor(
             minStrokeWidth = value
             // cache eraser hover radius
             val radius = (maxStrokeWidth - minStrokeWidth) / 2
-            hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
+            hoverEraserPaint.setPathEffect(
+                DashPathEffect(
+                    floatArrayOf(
+                        radius,
+                        radius,
+                        radius,
+                        radius
+                    ),
+                    0f
+                )
+            )
         }
 
     var strokeWidthMax: Float
@@ -72,7 +82,17 @@ class InkView constructor(
             maxStrokeWidth = value
             // cache eraser hover radius
             val radius = (maxStrokeWidth - minStrokeWidth) / 2
-            hoverEraserPaint.setPathEffect(DashPathEffect(floatArrayOf(radius, radius, radius, radius), 0f))
+            hoverEraserPaint.setPathEffect(
+                DashPathEffect(
+                    floatArrayOf(
+                        radius,
+                        radius,
+                        radius,
+                        radius
+                    ),
+                    0f
+                )
+            )
         }
 
     var pressureEnabled: Boolean
@@ -91,20 +111,17 @@ class InkView constructor(
 
     init {
         // handle attributes
-        context.theme.obtainStyledAttributes(
-            attributeSet,
-            R.styleable.InkView,
-            0, 0
-        ).apply {
-            try {
-                enablePressure = getBoolean(R.styleable.InkView_enable_pressure, enablePressure)
-                color = getColor(R.styleable.InkView_ink_color, color)
-                minStrokeWidth = getFloat(R.styleable.InkView_min_stroke_width, minStrokeWidth)
-                maxStrokeWidth = getFloat(R.styleable.InkView_max_stroke_width, maxStrokeWidth)
-            } finally {
-                recycle()
+        context.theme.obtainStyledAttributes(attributeSet, R.styleable.InkView, 0, 0)
+            .apply {
+                try {
+                    enablePressure = getBoolean(R.styleable.InkView_enable_pressure, enablePressure)
+                    color = getColor(R.styleable.InkView_ink_color, color)
+                    minStrokeWidth = getFloat(R.styleable.InkView_min_stroke_width, minStrokeWidth)
+                    maxStrokeWidth = getFloat(R.styleable.InkView_max_stroke_width, maxStrokeWidth)
+                } finally {
+                    recycle()
+                }
             }
-        }
         isOpaque = false // make the texture view transparent!
         this.surfaceTextureListener = this
 
@@ -148,11 +165,21 @@ class InkView constructor(
             },
             object : InputManager.PenHoverHandler {
                 override fun hoverStarted(penInfo: InputManager.PenInfo) {
-                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2, penInfo.pointerType)
+                    drawHover(
+                        penInfo.x,
+                        penInfo.y,
+                        (minStrokeWidth + maxStrokeWidth) / 2,
+                        penInfo.pointerType
+                    )
                 }
 
                 override fun hoverMoved(penInfo: InputManager.PenInfo) {
-                    drawHover(penInfo.x, penInfo.y, (minStrokeWidth + maxStrokeWidth) / 2, penInfo.pointerType)
+                    drawHover(
+                        penInfo.x,
+                        penInfo.y,
+                        (minStrokeWidth + maxStrokeWidth) / 2,
+                        penInfo.pointerType
+                    )
                 }
 
                 override fun hoverEnded(penInfo: InputManager.PenInfo) {
@@ -234,7 +261,12 @@ class InkView constructor(
         redrawTexture()
     }
 
-    fun drawHover(cx: Float, cy: Float, radius: Float, pointerType: InputManager.PointerType = InputManager.PointerType.UNKNOWN) {
+    fun drawHover(
+        cx: Float,
+        cy: Float,
+        radius: Float,
+        pointerType: InputManager.PointerType = InputManager.PointerType.UNKNOWN
+    ) {
 
         val canvas: Canvas = surface?.lockHardwareCanvas() ?: return
         try {
@@ -317,13 +349,19 @@ class InkView constructor(
                     enablePressure -> {
                         updateStrokeWidth(penInfo.pressure)
                         drawCanvas.drawLine(
-                            startPoint.x, startPoint.y, penInfo.x, penInfo.y,
+                            startPoint.x,
+                            startPoint.y,
+                            penInfo.x,
+                            penInfo.y,
                             currentStrokePaint
                         )
                     }
                     else -> {
                         drawCanvas.drawLine(
-                            startPoint.x, startPoint.y, penInfo.x, penInfo.y,
+                            startPoint.x,
+                            startPoint.y,
+                            penInfo.x,
+                            penInfo.y,
                             currentStrokePaint
                         )
                     }

@@ -82,14 +82,16 @@ class MainActivity : AppCompatActivity(), ScreenInfoListener {
         setupViewPager(viewpager)
         tab_layout.setupWithViewPager(viewpager)
 
-        tab_layout.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewpager.currentItem = tab.position
-            }
+        tab_layout.addOnTabSelectedListener(
+            object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    viewpager.currentItem = tab.position
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+                override fun onTabUnselected(tab: TabLayout.Tab) {}
+                override fun onTabReselected(tab: TabLayout.Tab) {}
+            },
+        )
     }
 
     private fun setupViewPager(viewPager: ViewPager) {

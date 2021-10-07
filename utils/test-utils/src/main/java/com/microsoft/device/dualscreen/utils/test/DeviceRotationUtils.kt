@@ -3,7 +3,6 @@ package com.microsoft.device.dualscreen.utils.test
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 
-
 /**
  * Re-enables the sensors and un-freezes the device rotation allowing its contents
  * to rotate with the device physical rotation. During a test execution, it is best to

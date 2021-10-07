@@ -11,7 +11,7 @@ plugins {
 ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'bottomnavigation'
-    LIBRARY_DESCRIPTION = 'Library that extends the BottomNavigation component and adapts aFoldingFeatureExtensions.ktutomatically to the different foldable configurations'
+    LIBRARY_DESCRIPTION = 'Library that extends the BottomNavigation component and adapts automatically to the different foldable configurations'
     LIBRARY_VERSION = rootProject.ext.bottomNavigationVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"

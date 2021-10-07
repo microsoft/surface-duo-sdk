@@ -12,7 +12,6 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when` as whenz
 
 class PenInfoTest {
     private lateinit var motionEvent: MotionEvent
@@ -26,13 +25,13 @@ class PenInfoTest {
     @Before
     fun setup() {
         motionEvent = mock(MotionEvent::class.java)
-        whenz(motionEvent.x).thenReturn(x)
-        whenz(motionEvent.y).thenReturn(y)
-        whenz(motionEvent.getToolType(0)).thenReturn(MotionEvent.TOOL_TYPE_MOUSE)
-        whenz(motionEvent.pressure).thenReturn(pressure)
-        whenz(motionEvent.getAxisValue(MotionEvent.AXIS_TILT)).thenReturn(tilt)
-        whenz(motionEvent.orientation).thenReturn(orientation)
-        whenz(motionEvent.buttonState).thenReturn(MotionEvent.BUTTON_PRIMARY)
+        org.mockito.Mockito.`when`(motionEvent.x).thenReturn(x)
+        org.mockito.Mockito.`when`(motionEvent.y).thenReturn(y)
+        org.mockito.Mockito.`when`(motionEvent.getToolType(0)).thenReturn(MotionEvent.TOOL_TYPE_MOUSE)
+        org.mockito.Mockito.`when`(motionEvent.pressure).thenReturn(pressure)
+        org.mockito.Mockito.`when`(motionEvent.getAxisValue(MotionEvent.AXIS_TILT)).thenReturn(tilt)
+        org.mockito.Mockito.`when`(motionEvent.orientation).thenReturn(orientation)
+        org.mockito.Mockito.`when`(motionEvent.buttonState).thenReturn(MotionEvent.BUTTON_PRIMARY)
     }
 
     @Test
