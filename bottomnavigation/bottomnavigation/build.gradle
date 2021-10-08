@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 30
+        targetSdkVersion 31
 
         versionCode rootProject.ext.bottomNavigationVersionCode
         versionName rootProject.ext.bottomNavigationVersionName

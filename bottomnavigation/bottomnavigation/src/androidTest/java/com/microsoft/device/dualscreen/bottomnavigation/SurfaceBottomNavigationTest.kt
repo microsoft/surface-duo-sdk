@@ -33,7 +33,7 @@ import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class BottomNavigationTest {
+class SurfaceBottomNavigationTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleBottomNavigationActivity::class.java)

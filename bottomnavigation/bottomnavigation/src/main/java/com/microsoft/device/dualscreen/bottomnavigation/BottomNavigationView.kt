@@ -117,8 +117,7 @@ open class BottomNavigationView : BottomNavigationView {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
                 if (allowFlingGesture) {
-                    displayPosition =
-                        DisplayPosition.START
+                    displayPosition = DisplayPosition.START
                 }
             }
 

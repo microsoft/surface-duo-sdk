@@ -23,15 +23,14 @@ class NumbersFragment : Fragment() {
         }
     }
 
-    private var _binding: FragmentNumbersBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentNumbersBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentNumbersBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentNumbersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
