@@ -64,7 +64,7 @@ ext {
     coreKtxVersion = "1.5.0"
     windowVersion = "1.0.0-alpha01"
     lifecycleVersion = "2.3.1"
-    recycleViewVersion = "1.2.0"
+    recyclerViewVersion = "1.2.0"
 
     androidxDependencies = [
             appCompat         : "androidx.appcompat:appcompat:$appCompatVersion",
@@ -72,7 +72,7 @@ ext {
             coreKtx           : "androidx.core:core-ktx:$coreKtxVersion",
             window            : "androidx.window:window:$windowVersion",
             lifecycleViewmodel: "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion",
-            recycleView       : "androidx.recyclerview:recyclerview:$recycleViewVersion"
+            recyclerView      : "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     ]
 
     //Material Design

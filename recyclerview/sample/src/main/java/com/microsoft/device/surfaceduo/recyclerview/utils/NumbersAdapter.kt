@@ -3,13 +3,13 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.recyclerview.utils
+package com.microsoft.device.surfaceduo.recyclerview.utils
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.microsoft.device.dualscreen.recyclerview.test.R
+import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
 
 class NumbersAdapter : RecyclerView.Adapter<NumbersAdapter.ViewHolder>() {
 

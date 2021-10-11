@@ -3,46 +3,63 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.recyclerview.activities
+package com.microsoft.device.surfaceduo.recyclerview
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
-import com.microsoft.device.dualscreen.recyclerview.FoldableItemDecoration
-import com.microsoft.device.dualscreen.recyclerview.FoldableLayoutManager
-import com.microsoft.device.dualscreen.recyclerview.test.R
-import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
+import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredItemDecoration
+import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredLayoutManager
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
+import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
+import com.microsoft.device.dualscreen.sample_duolayoutmanager.databinding.ActivityMainBinding
+import com.microsoft.device.surfaceduo.recyclerview.utils.NumbersStaggeredAdapter
 import java.util.concurrent.Executor
 
-class SimpleRecyclerViewActivity : BaseTestActivity() {
+class StaggeredActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
     private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
     private lateinit var runOnUiThreadExecutor: Executor
 
-    override fun getContentViewLayoutResId(): Int {
-        return R.layout.activity_simple_surfaceduo_recyclerview
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initRecyclerView()
         initWindowLayoutInfo()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_staggered, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_main_grid -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun initRecyclerView() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.hasFixedSize()
-        recyclerView.adapter = NumbersAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.hasFixedSize()
+        binding.recyclerView.adapter = NumbersStaggeredAdapter()
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun initWindowLayoutInfo() {
@@ -68,8 +85,7 @@ class SimpleRecyclerViewActivity : BaseTestActivity() {
     }
 
     private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = FoldableLayoutManager(this, windowLayoutInfo).get()
-        recyclerView.replaceItemDecorationAt(FoldableItemDecoration(windowLayoutInfo))
+        binding.recyclerView.layoutManager = FoldableStaggeredLayoutManager(this, windowLayoutInfo).get()
+        binding.recyclerView.replaceItemDecorationAt(FoldableStaggeredItemDecoration(windowLayoutInfo))
     }
 }

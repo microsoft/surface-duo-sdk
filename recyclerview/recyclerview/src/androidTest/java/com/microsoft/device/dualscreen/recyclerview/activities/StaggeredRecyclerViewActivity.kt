@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
-import com.microsoft.device.dualscreen.recyclerview.FoldableItemDecoration
-import com.microsoft.device.dualscreen.recyclerview.FoldableLayoutManager
+import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredItemDecoration
+import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredLayoutManager
 import com.microsoft.device.dualscreen.recyclerview.test.R
-import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
+import com.microsoft.device.dualscreen.recyclerview.utils.NumbersStaggeredAdapter
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
 import java.util.concurrent.Executor
 
-class SimpleRecyclerViewActivity : BaseTestActivity() {
+class StaggeredRecyclerViewActivity : BaseTestActivity() {
 
     private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
     private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
@@ -41,7 +41,7 @@ class SimpleRecyclerViewActivity : BaseTestActivity() {
     private fun initRecyclerView() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.hasFixedSize()
-        recyclerView.adapter = NumbersAdapter()
+        recyclerView.adapter = NumbersStaggeredAdapter()
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
@@ -69,7 +69,7 @@ class SimpleRecyclerViewActivity : BaseTestActivity() {
 
     private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = FoldableLayoutManager(this, windowLayoutInfo).get()
-        recyclerView.replaceItemDecorationAt(FoldableItemDecoration(windowLayoutInfo))
+        recyclerView.layoutManager = FoldableStaggeredLayoutManager(this, windowLayoutInfo).get()
+        recyclerView.replaceItemDecorationAt(FoldableStaggeredItemDecoration(windowLayoutInfo))
     }
 }
