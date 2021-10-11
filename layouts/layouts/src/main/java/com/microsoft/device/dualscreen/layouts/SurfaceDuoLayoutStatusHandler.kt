@@ -57,12 +57,19 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
      * @param newConfig The host activity configuration
      * @param newState Contains the screen information like spanning mode and so on
      */
-    internal fun onConfigurationChanged(surfaceDuoLayout: SurfaceDuoLayout, newConfig: Configuration?, newState: ScreenSavedState) {
+    internal fun onConfigurationChanged(
+        surfaceDuoLayout: SurfaceDuoLayout,
+        newConfig: Configuration?,
+        newState: ScreenSavedState
+    ) {
         newConfig?.let {
             if (it.orientation != Configuration.ORIENTATION_UNDEFINED) {
                 refreshContent(surfaceDuoLayout, newConfig, newState)
             } else {
-                Log.d(SurfaceDuoLayoutStatusHandler::class.java.name, "New configuration orientation is undefined")
+                Log.d(
+                    SurfaceDuoLayoutStatusHandler::class.java.name,
+                    "New configuration orientation is undefined"
+                )
             }
         }
     }
@@ -117,11 +124,11 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         // Inflate view in EndContainer
         surfaceDuoLayoutConfig.dualScreenEndLayoutId
             .takeIf { it != View.NO_ID }?.let {
-            dualScreenEndContainer.addView(
-                LayoutInflater.from(context)
-                    .inflate(surfaceDuoLayoutConfig.dualScreenEndLayoutId, this.rootView, false)
-            )
-        }
+                dualScreenEndContainer.addView(
+                    LayoutInflater.from(context)
+                        .inflate(surfaceDuoLayoutConfig.dualScreenEndLayoutId, this.rootView, false)
+                )
+            }
 
         rootView.addView(hinge)
         rootView.addView(dualScreenEndContainer)
@@ -139,7 +146,11 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     /**
      * Refresh the content for [SurfaceDuoLayout] depending on new activity [Configuration] and new [ScreenSavedState] screen info
      */
-    private fun refreshContent(surfaceDuoLayout: SurfaceDuoLayout, newConfig: Configuration, newState: ScreenSavedState) {
+    private fun refreshContent(
+        surfaceDuoLayout: SurfaceDuoLayout,
+        newConfig: Configuration,
+        newState: ScreenSavedState
+    ) {
         val setupNewState = { state = newState }
         val currentScreenModeIsDualScreen = newState.screenMode == ScreenMode.DUAL_SCREEN
         setLayoutOrientation(newConfig)
@@ -166,7 +177,10 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
                 removeHingeAndSecondContainer()
             }
             else -> {
-                Log.d(SurfaceDuoLayoutStatusHandler::class.java.name, "New Screen configuration is undefined")
+                Log.d(
+                    SurfaceDuoLayoutStatusHandler::class.java.name,
+                    "New Screen configuration is undefined"
+                )
             }
         }
     }
@@ -197,7 +211,8 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         // Find Hinge and add new width and height
         val hinge = surfaceDuoLayout.findViewById<View>(R.id.hinge_id)
         state?.hingeRect?.let { hingeRectangle ->
-            hinge.layoutParams = LinearLayout.LayoutParams(hingeRectangle.width(), hingeRectangle.height())
+            hinge.layoutParams =
+                LinearLayout.LayoutParams(hingeRectangle.width(), hingeRectangle.height())
         }
 
         // Set new Orientation
@@ -261,7 +276,10 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         rootView.addView(singleScreenContainer)
     }
 
-    private fun addSingleScreenBehaviourOrRefreshContent(surfaceDuoLayout: SurfaceDuoLayout, state: ScreenSavedState) {
+    private fun addSingleScreenBehaviourOrRefreshContent(
+        surfaceDuoLayout: SurfaceDuoLayout,
+        state: ScreenSavedState
+    ) {
         if (surfaceDuoLayoutConfig.singleScreenLayoutId != View.NO_ID) {
             addSingleScreenBehaviour(state)
         } else {
@@ -290,7 +308,10 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
         }
     }
 
-    private fun addDualScreenBehaviourOrRefreshContent(surfaceDuoLayout: SurfaceDuoLayout, state: ScreenSavedState) {
+    private fun addDualScreenBehaviourOrRefreshContent(
+        surfaceDuoLayout: SurfaceDuoLayout,
+        state: ScreenSavedState
+    ) {
         if (surfaceDuoLayoutConfig.dualPortraitSingleLayoutId != View.NO_ID ||
             surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId != View.NO_ID
         ) {
@@ -318,12 +339,16 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
             val singleContainer = createSingleContainer(R.id.first_container_id)
             if (surfaceDuoLayoutConfig.dualPortraitSingleLayoutId != View.NO_ID) {
                 LayoutInflater.from(context)
-                    .inflate(surfaceDuoLayoutConfig.dualPortraitSingleLayoutId, this.rootView, false)?.let {
-                    if (!surfaceDuoLayoutConfig.isDualPortraitSingleContainer) {
-                        surfaceDuoLayoutConfig.isDualPortraitSingleContainer = true
+                    .inflate(
+                        surfaceDuoLayoutConfig.dualPortraitSingleLayoutId,
+                        this.rootView,
+                        false
+                    )?.let {
+                        if (!surfaceDuoLayoutConfig.isDualPortraitSingleContainer) {
+                            surfaceDuoLayoutConfig.isDualPortraitSingleContainer = true
+                        }
+                        singleContainer.addView(it)
                     }
-                    singleContainer.addView(it)
-                }
             }
             rootView.addView(singleContainer)
         } else {
@@ -351,12 +376,16 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
             val singleContainer = createSingleContainer(R.id.first_container_id)
             if (surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId != View.NO_ID) {
                 LayoutInflater.from(context)
-                    .inflate(surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId, this.rootView, false)?.let {
-                    if (!surfaceDuoLayoutConfig.isDualLandscapeSingleContainer) {
-                        surfaceDuoLayoutConfig.isDualLandscapeSingleContainer = true
+                    .inflate(
+                        surfaceDuoLayoutConfig.dualLandscapeSingleLayoutId,
+                        this.rootView,
+                        false
+                    )?.let {
+                        if (!surfaceDuoLayoutConfig.isDualLandscapeSingleContainer) {
+                            surfaceDuoLayoutConfig.isDualLandscapeSingleContainer = true
+                        }
+                        singleContainer.addView(it)
                     }
-                    singleContainer.addView(it)
-                }
             }
             rootView.addView(singleContainer)
         } else {
@@ -391,16 +420,18 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
 
         surfaceDuoLayoutConfig.dualScreenStartLayoutId
             .takeIf { it != View.NO_ID }?.let {
-            dualScreenStartContainer.addView(
-                LayoutInflater.from(context).inflate(surfaceDuoLayoutConfig.dualScreenStartLayoutId, rootView, false)
-            )
-        }
+                dualScreenStartContainer.addView(
+                    LayoutInflater.from(context)
+                        .inflate(surfaceDuoLayoutConfig.dualScreenStartLayoutId, rootView, false)
+                )
+            }
         surfaceDuoLayoutConfig.dualScreenEndLayoutId
             .takeIf { it != View.NO_ID }?.let {
-            dualScreenEndContainer.addView(
-                LayoutInflater.from(context).inflate(surfaceDuoLayoutConfig.dualScreenEndLayoutId, rootView, false)
-            )
-        }
+                dualScreenEndContainer.addView(
+                    LayoutInflater.from(context)
+                        .inflate(surfaceDuoLayoutConfig.dualScreenEndLayoutId, rootView, false)
+                )
+            }
 
         rootView.addView(dualScreenStartContainer)
         rootView.addView(hinge)
@@ -416,19 +447,25 @@ internal class SurfaceDuoLayoutStatusHandler internal constructor(
     ) {
         if (linearLayoutOrientation == VERTICAL) {
             // DUAL_LANDSCAPE
-            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            dualScreenStartContainer.layoutParams =
+                LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            dualScreenEndContainer.layoutParams =
+                LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
 
             rootView.doOnNextLayout {
                 val location = rootView.locationOnScreen
                 val dualScreenStartContainerHeight = (state?.hingeRect?.top ?: 0) - location.y
-                dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, dualScreenStartContainerHeight)
-                dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                dualScreenStartContainer.layoutParams =
+                    LinearLayout.LayoutParams(MATCH_PARENT, dualScreenStartContainerHeight)
+                dualScreenEndContainer.layoutParams =
+                    LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             }
         } else {
             // DUAL_PORTRAIT
-            dualScreenStartContainer.layoutParams = LinearLayout.LayoutParams(screenRectStart.width(), MATCH_PARENT)
-            dualScreenEndContainer.layoutParams = LinearLayout.LayoutParams(screenRectEnd.width(), MATCH_PARENT)
+            dualScreenStartContainer.layoutParams =
+                LinearLayout.LayoutParams(screenRectStart.width(), MATCH_PARENT)
+            dualScreenEndContainer.layoutParams =
+                LinearLayout.LayoutParams(screenRectEnd.width(), MATCH_PARENT)
         }
     }
 

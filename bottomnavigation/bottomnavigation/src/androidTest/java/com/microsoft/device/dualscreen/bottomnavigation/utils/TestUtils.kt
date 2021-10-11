@@ -13,11 +13,11 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.bottomnavigation.SurfaceDuoBottomNavigationView
-import com.microsoft.device.dualscreen.test.utils.DUAL_SCREEN_WIDTH
-import com.microsoft.device.dualscreen.test.utils.HINGE_WIDTH
-import com.microsoft.device.dualscreen.test.utils.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView
+import com.microsoft.device.dualscreen.utils.test.DUAL_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.utils.test.HINGE_WIDTH
+import com.microsoft.device.dualscreen.utils.test.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -29,13 +29,13 @@ fun changeDisplayPosition(pos: DisplayPosition): ViewAction =
         }
 
         override fun getDescription(): String {
-            return "Change Display Position value of SurfaceDuoTabLayout"
+            return "Change Display Position value of BottomNavigation buttons"
         }
 
         override fun perform(uiController: UiController, view: View) {
             uiController.loopMainThreadUntilIdle()
 
-            val tabLayout = view as SurfaceDuoBottomNavigationView
+            val tabLayout = view as BottomNavigationView
             tabLayout.displayPosition = pos
 
             uiController.loopMainThreadUntilIdle()
@@ -49,13 +49,13 @@ fun disableAnimation(): ViewAction =
         }
 
         override fun getDescription(): String {
-            return "Change Display Position value of SurfaceDuoBottomNavigationView"
+            return "disables the animations for the BottomNavigation"
         }
 
         override fun perform(uiController: UiController, view: View) {
             uiController.loopMainThreadUntilIdle()
 
-            val bottomNavigationView = view as SurfaceDuoBottomNavigationView
+            val bottomNavigationView = view as BottomNavigationView
             bottomNavigationView.useAnimation = false
 
             uiController.loopMainThreadUntilIdle()
@@ -64,14 +64,14 @@ fun disableAnimation(): ViewAction =
 
 fun areTabsOnScreen(pos: DisplayPosition): Matcher<View> =
     object :
-        BoundedMatcher<View, SurfaceDuoBottomNavigationView>(SurfaceDuoBottomNavigationView::class.java) {
+        BoundedMatcher<View, BottomNavigationView>(BottomNavigationView::class.java) {
         override fun describeTo(description: Description?) {
             description?.appendText(
                 "Checks whether the tabs are displayed on the right screen"
             )
         }
 
-        override fun matchesSafely(item: SurfaceDuoBottomNavigationView?): Boolean {
+        override fun matchesSafely(item: BottomNavigationView?): Boolean {
             if (item == null || pos != item.displayPosition) {
                 return false
             }
@@ -103,13 +103,13 @@ fun changeButtonArrangement(startBtnCount: Int, endBtnCount: Int): ViewAction =
         }
 
         override fun getDescription(): String {
-            return "Change Display Position value of SurfaceDuoTabLayout"
+            return "Change the button's position for the BottomNavigation"
         }
 
         override fun perform(uiController: UiController, view: View) {
             uiController.loopMainThreadUntilIdle()
 
-            val tabLayout = view as SurfaceDuoBottomNavigationView
+            val tabLayout = view as BottomNavigationView
             tabLayout.arrangeButtons(startBtnCount, endBtnCount)
 
             uiController.loopMainThreadUntilIdle()
@@ -137,12 +137,12 @@ fun checkChildCount(expectedChildCount: Int): Matcher<View> =
     object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
             description?.appendText(
-                "the background color of the view is the same as the expected one"
+                "the number of children is the same as the expected one"
             )
         }
 
         override fun matchesSafely(item: View?): Boolean {
-            if (item == null || item !is SurfaceDuoBottomNavigationView) {
+            if (item == null || item !is BottomNavigationView) {
                 return false
             }
 

@@ -12,31 +12,36 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_selected.*
+import com.microsoft.device.dualscreen.sample.bottomnavigation.databinding.FragmentNumbersBinding
 
-class SelectedFragment : Fragment() {
+class NumbersFragment : Fragment() {
     companion object {
         const val ARG_NAME = "arg_name"
 
-        fun newInstance(title: String) = SelectedFragment().apply {
+        fun newInstance(title: String) = NumbersFragment().apply {
             arguments = bundleOf(ARG_NAME to title)
         }
     }
+
+    private lateinit var binding: FragmentNumbersBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_selected, container, false)
+    ): View {
+        binding = FragmentNumbersBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        fragment_name.text = getString(R.string.key_fragment, getTitle())
+        binding.apply {
+            fragmentName.text = getString(R.string.key_fragment, getTitle())
 
-        recyclerView.hasFixedSize()
-        recyclerView.adapter = NumbersAdapter()
-        recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.hasFixedSize()
+            recyclerView.adapter = NumbersAdapter()
+            recyclerView.layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun getTitle() = arguments?.getString(ARG_NAME)

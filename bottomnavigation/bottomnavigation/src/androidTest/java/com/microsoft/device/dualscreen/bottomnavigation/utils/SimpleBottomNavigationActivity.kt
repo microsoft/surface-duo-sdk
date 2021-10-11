@@ -10,6 +10,6 @@ import com.microsoft.device.dualscreen.bottomnavigation.test.R
 
 class SimpleBottomNavigationActivity : BaseTestActivity() {
     override fun getContentViewLayoutResId(): Int {
-        return R.layout.activity_simple_surfaceduo_bottomnavigation
+        return R.layout.activity_simple_bottomnavigation
     }
 }

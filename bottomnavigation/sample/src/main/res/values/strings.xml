@@ -4,7 +4,7 @@
   -->
 
 <resources>
-    <string name="app_name">DuoBottomNavigation Sample</string>
+    <string name="app_name">BottomNavigation Sample</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

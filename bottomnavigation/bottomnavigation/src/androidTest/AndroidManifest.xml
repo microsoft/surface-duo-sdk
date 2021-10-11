@@ -20,7 +20,7 @@
     <uses-sdk tools:overrideLibrary="androidx.test, android.app, androidx.test.rule,
         androidx.test.espresso, androidx.test.espresso.idling" />
 
-    <application android:name=".utils.TestApplication">
+    <application>
 
         <activity
             android:name="androidx.appcompat.app.AppCompatActivity"

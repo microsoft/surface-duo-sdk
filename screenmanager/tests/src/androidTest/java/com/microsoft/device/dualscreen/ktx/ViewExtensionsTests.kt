@@ -25,14 +25,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.spy
-import org.mockito.Mockito.`when` as whenz
 
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ViewExtensionsTests {
     @Rule
     @JvmField
-    var rule: ActivityTestRule<SampleActivity> = ActivityTestRule(SampleActivity::class.java, false, false)
+    var rule: ActivityTestRule<SampleActivity> =
+        ActivityTestRule(SampleActivity::class.java, false, false)
     private var screenInfoListener = ScreenInfoListenerImpl()
 
     @After
@@ -53,12 +53,32 @@ class ViewExtensionsTests {
         val spyView = spy(view)
 
         assertThat(screenInfoListener.screenInfo).isNotNull()
-        assertThat(spyView.isSpannedInDualScreen(SINGLE_SCREEN, screenInfoListener.screenInfo!!)).isFalse()
-        assertThat(spyView.isSpannedInDualScreen(DUAL_SCREEN, screenInfoListener.screenInfo!!)).isFalse()
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                SINGLE_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isFalse()
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                DUAL_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isFalse()
 
-        whenz(spyView.isInEditMode).thenReturn(true)
-        assertThat(spyView.isSpannedInDualScreen(SINGLE_SCREEN, screenInfoListener.screenInfo!!)).isFalse()
-        assertThat(spyView.isSpannedInDualScreen(DUAL_SCREEN, screenInfoListener.screenInfo!!)).isTrue()
+        org.mockito.Mockito.`when`(spyView.isInEditMode).thenReturn(true)
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                SINGLE_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isFalse()
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                DUAL_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isTrue()
 
         reset(spyView)
         screenInfoListener.resetScreenInfo()
@@ -66,12 +86,32 @@ class ViewExtensionsTests {
 
         switchFromSingleToDualScreen()
         screenInfoListener.waitForScreenInfoChanges()
-        assertThat(spyView.isSpannedInDualScreen(SINGLE_SCREEN, screenInfoListener.screenInfo!!)).isTrue()
-        assertThat(spyView.isSpannedInDualScreen(DUAL_SCREEN, screenInfoListener.screenInfo!!)).isTrue()
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                SINGLE_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isTrue()
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                DUAL_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isTrue()
 
-        whenz(spyView.isInEditMode).thenReturn(true)
-        assertThat(spyView.isSpannedInDualScreen(SINGLE_SCREEN, screenInfoListener.screenInfo!!)).isFalse()
-        assertThat(spyView.isSpannedInDualScreen(DUAL_SCREEN, screenInfoListener.screenInfo!!)).isTrue()
+        org.mockito.Mockito.`when`(spyView.isInEditMode).thenReturn(true)
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                SINGLE_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isFalse()
+        assertThat(
+            spyView.isSpannedInDualScreen(
+                DUAL_SCREEN,
+                screenInfoListener.screenInfo!!
+            )
+        ).isTrue()
 
         screenInfoListener.resetScreenInfo()
         screenInfoListener.resetScreenInfoCounter()
