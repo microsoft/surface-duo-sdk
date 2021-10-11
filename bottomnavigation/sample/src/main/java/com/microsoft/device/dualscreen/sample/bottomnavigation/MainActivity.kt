@@ -10,11 +10,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
-import android.view.View
 import android.view.animation.OvershootInterpolator
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
@@ -107,16 +107,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
-        val visibility = if (windowLayoutInfo.isFoldingFeatureVertical()) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-
-        binding.apply {
-            moveToStart.visibility = visibility
-            moveToEnd.visibility = visibility
-            spanButtons.visibility = visibility
+        windowLayoutInfo.isFoldingFeatureVertical().let { isVisible ->
+            binding.apply {
+                moveToStart.isVisible = isVisible
+                moveToEnd.isVisible = isVisible
+                spanButtons.isVisible = isVisible
+            }
         }
     }
 
