@@ -8,7 +8,6 @@
     package="com.microsoft.device.dualscreen.sample_duolayoutmanager">
 
     <application
-        android:name="com.microsoft.device.surfaceduo.recyclerview.SampleApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -17,13 +16,15 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.microsoft.device.surfaceduo.recyclerview.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.microsoft.device.surfaceduo.recyclerview.StaggeredActivity" />
     </application>
 
 </manifest>

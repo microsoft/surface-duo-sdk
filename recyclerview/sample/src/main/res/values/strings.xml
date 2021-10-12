@@ -6,5 +6,7 @@
   -->
 
 <resources>
-    <string name="app_name">Sample DualScreen- Duo Layout Manager</string>
+    <string name="app_name">Sample Foldable Layout Manager</string>
+    <string name="menu_item_grid_title">Grid</string>
+    <string name="menu_item_staggered_title">Staggered</string>
 </resources>
