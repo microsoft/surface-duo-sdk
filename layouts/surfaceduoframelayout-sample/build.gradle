@@ -9,13 +9,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper"
+
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 31
+
         versionCode 1
         versionName "1.0"
 
@@ -26,7 +28,6 @@ android {
 
 dependencies {
     implementation project(':layouts:layouts')
-    implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.coreKtx

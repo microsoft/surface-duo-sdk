@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  -->
-<com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout
+<com.microsoft.device.dualscreen.layouts.FoldableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linearlayout_root"
     android:layout_width="match_parent"

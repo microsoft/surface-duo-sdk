@@ -21,7 +21,6 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
-        android:name=".utils.SampleApp"
         android:label="Android TestCase"
         android:maxRecents="1"
         android:multiArch="true"
@@ -32,6 +31,7 @@
 
         <activity
             android:name=".compatibility.activities.FrameLayoutCtsActivity"
+            android:exported="true"
             android:label="FrameLayoutCtsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +40,7 @@
         </activity>
         <activity
             android:name=".compatibility.activities.LinearLayoutCtsActivity"
+            android:exported="true"
             android:label="LinearLayoutCtsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +49,7 @@
         </activity>
         <activity
             android:name=".utils.SimpleDuoFrameLayoutActivity"
+            android:exported="true"
             android:label="SimpleDuoFrameLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,6 +58,7 @@
         </activity>
         <activity
             android:name=".utils.SimpleDuoLayoutActivity"
+            android:exported="true"
             android:label="SimpleDuoLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -64,6 +67,7 @@
         </activity>
         <activity
             android:name=".utils.SimpleDualLayoutActivity"
+            android:exported="true"
             android:label="SimpleDualLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,6 +77,7 @@
 
         <activity
             android:name=".utils.SimpleStartActivity"
+            android:exported="true"
             android:label="SimpleStartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

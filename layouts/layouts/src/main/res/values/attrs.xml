@@ -5,7 +5,7 @@
   ~
   -->
 <resources>
-    <declare-styleable name="SurfaceDuoLayout">
+    <declare-styleable name="FoldableLayout">
         <attr name="single_screen_layout_id" format="integer" />
         <attr name="dual_screen_start_layout_id" format="integer" />
         <attr name="dual_screen_end_layout_id" format="integer" />

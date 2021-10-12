@@ -4,7 +4,7 @@
   -->
 
 <resources>
-    <string name="app_name">SurfaceDuoLayout Sample</string>
+    <string name="app_name">FoldableDuoLayout Sample</string>
     <string name="dual_portrait_end">Dual Portrait - END</string>
     <string name="dual_portrait_start">Dual Portrait - START</string>
     <string name="dual_landscape_end">Dual Landscape - END</string>

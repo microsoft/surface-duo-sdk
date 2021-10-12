@@ -5,8 +5,8 @@
 <resources>
     <string name="go">Go</string>
     <string name="hello_world">Hello, World!</string>
-    <string name="surface">Surface</string>
-    <string name="duo">Duo</string>
+    <string name="text_frame">FrameLayout</string>
+    <string name="text_sample">Sample</string>
     <string name="dual_portrait_end">Dual Portrait - END</string>
     <string name="dual_portrait_start">Dual Portrait - START</string>
     <string name="dual_landscape_end">Dual Landscape - END</string>

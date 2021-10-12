@@ -29,7 +29,7 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout;
+import com.microsoft.device.dualscreen.layouts.FoldableFrameLayout;
 import com.microsoft.device.dualscreen.layouts.test.R;
 import com.microsoft.device.dualscreen.layouts.compatibility.util.WidgetTestUtils;
 
@@ -61,41 +61,41 @@ public class FrameLayout_LayoutParamsTest {
     public void testConstructor() throws XmlPullParserException, IOException {
         AttributeSet attrs = getAttributeSet();
 
-        new SurfaceDuoFrameLayout.LayoutParams(mContext, attrs);
-        new SurfaceDuoFrameLayout.LayoutParams(SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT,
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT);
-        new SurfaceDuoFrameLayout.LayoutParams(SurfaceDuoFrameLayout.LayoutParams.WRAP_CONTENT,
-                SurfaceDuoFrameLayout.LayoutParams.WRAP_CONTENT, 0);
-        new SurfaceDuoFrameLayout.LayoutParams(new ViewGroup.LayoutParams(mContext, attrs));
-        new SurfaceDuoFrameLayout.LayoutParams(new SurfaceDuoFrameLayout.LayoutParams(mContext, attrs));
-        new SurfaceDuoFrameLayout.LayoutParams(new MarginLayoutParams(mContext, attrs));
+        new FoldableFrameLayout.LayoutParams(mContext, attrs);
+        new FoldableFrameLayout.LayoutParams(FoldableFrameLayout.LayoutParams.MATCH_PARENT,
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT);
+        new FoldableFrameLayout.LayoutParams(FoldableFrameLayout.LayoutParams.WRAP_CONTENT,
+                FoldableFrameLayout.LayoutParams.WRAP_CONTENT, 0);
+        new FoldableFrameLayout.LayoutParams(new ViewGroup.LayoutParams(mContext, attrs));
+        new FoldableFrameLayout.LayoutParams(new FoldableFrameLayout.LayoutParams(mContext, attrs));
+        new FoldableFrameLayout.LayoutParams(new MarginLayoutParams(mContext, attrs));
 
-        new SurfaceDuoFrameLayout.LayoutParams(-1, -1);
-        new SurfaceDuoFrameLayout.LayoutParams(-1, -1, -1);
+        new FoldableFrameLayout.LayoutParams(-1, -1);
+        new FoldableFrameLayout.LayoutParams(-1, -1, -1);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullContext() {
-        new SurfaceDuoFrameLayout.LayoutParams(null, null);
+        new FoldableFrameLayout.LayoutParams(null, null);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullViewGroupParams() {
-        new SurfaceDuoFrameLayout.LayoutParams((ViewGroup.LayoutParams) null);
+        new FoldableFrameLayout.LayoutParams((ViewGroup.LayoutParams) null);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullViewGroupMarginParams() {
-        new SurfaceDuoFrameLayout.LayoutParams((ViewGroup.MarginLayoutParams) null);
+        new FoldableFrameLayout.LayoutParams((ViewGroup.MarginLayoutParams) null);
     }
 
     @Test
     public void testCopyConstructor() {
-        SurfaceDuoFrameLayout.LayoutParams copy;
+        FoldableFrameLayout.LayoutParams copy;
 
-        final SurfaceDuoFrameLayout.LayoutParams fllp = new SurfaceDuoFrameLayout.LayoutParams(
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT,
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT
+        final FoldableFrameLayout.LayoutParams fllp = new FoldableFrameLayout.LayoutParams(
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT,
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT
         );
         fllp.gravity = Gravity.BOTTOM;
         fllp.leftMargin = 5;
@@ -103,7 +103,7 @@ public class FrameLayout_LayoutParamsTest {
         fllp.rightMargin = 15;
         fllp.bottomMargin = 20;
 
-        copy = new SurfaceDuoFrameLayout.LayoutParams(fllp);
+        copy = new FoldableFrameLayout.LayoutParams(fllp);
         assertEquals("Width", fllp.width, copy.width);
         assertEquals("Height", fllp.height, copy.height);
         assertEquals("Gravity", fllp.gravity, copy.gravity);
@@ -113,15 +113,15 @@ public class FrameLayout_LayoutParamsTest {
         assertEquals("Bottom margin", fllp.bottomMargin, copy.bottomMargin);
 
         final MarginLayoutParams mlp = new MarginLayoutParams(
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT,
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT,
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT
         );
         mlp.leftMargin = 5;
         mlp.topMargin = 10;
         mlp.rightMargin = 15;
         mlp.bottomMargin = 20;
 
-        copy = new SurfaceDuoFrameLayout.LayoutParams(mlp);
+        copy = new FoldableFrameLayout.LayoutParams(mlp);
         assertEquals("Width", mlp.width, copy.width);
         assertEquals("Height", mlp.height, copy.height);
         assertEquals("Left margin", fllp.leftMargin, copy.leftMargin);
@@ -130,11 +130,11 @@ public class FrameLayout_LayoutParamsTest {
         assertEquals("Bottom margin", fllp.bottomMargin, copy.bottomMargin);
 
         final ViewGroup.LayoutParams vglp = new ViewGroup.LayoutParams(
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT,
-                SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT,
+                FoldableFrameLayout.LayoutParams.MATCH_PARENT
         );
 
-        copy = new SurfaceDuoFrameLayout.LayoutParams(vglp);
+        copy = new FoldableFrameLayout.LayoutParams(vglp);
         assertEquals("Width", vglp.width, copy.width);
         assertEquals("Height", vglp.height, copy.height);
     }

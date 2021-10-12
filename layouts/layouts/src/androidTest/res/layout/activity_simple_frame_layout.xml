@@ -2,7 +2,7 @@
   ~  Copyright (c) Microsoft Corporation. All rights reserved.
   ~  Licensed under the MIT License.
   -->
-<com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.microsoft.device.dualscreen.layouts.FoldableFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/duo_wrapper"
     android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:id="@+id/first_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/surface"
+            android:text="@string/text_frame"
             android:textSize="@dimen/text_size"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +31,7 @@
             android:id="@+id/second_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/duo"
+            android:text="@string/text_sample"
             android:textSize="@dimen/text_size"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,4 +40,4 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout>
+</com.microsoft.device.dualscreen.layouts.FoldableFrameLayout>

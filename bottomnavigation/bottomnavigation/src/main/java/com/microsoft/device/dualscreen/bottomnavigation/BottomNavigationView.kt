@@ -33,7 +33,7 @@ import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.OnSwipeListener
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.createHalfTransparentBackground
-import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeature
+import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
@@ -99,7 +99,7 @@ open class BottomNavigationView : BottomNavigationView {
     }
 
     private fun onInfoLayoutChanged(windowLayoutInfo: WindowLayoutInfo) {
-        getFoldingFeature(windowLayoutInfo)?.let {
+        windowLayoutInfo.getFoldingFeature()?.let {
             setScreenParameters(it)
         }
 
@@ -422,7 +422,7 @@ open class BottomNavigationView : BottomNavigationView {
             } else {
                 createHalfTransparentBackground(
                     displayPosition,
-                    windowLayoutInfo.extractFoldingFeature(),
+                    windowLayoutInfo.extractFoldingFeatureRect(),
                     initialBackground
                 )
             }

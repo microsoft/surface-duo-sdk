@@ -5,54 +5,61 @@
 
 package com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper
 
-import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
+import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.ScreenInfo
-import com.microsoft.device.dualscreen.ScreenInfoListener
-import com.microsoft.device.dualscreen.ScreenManagerProvider
+import androidx.core.util.Consumer
+import androidx.core.view.isVisible
+import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowLayoutInfo
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.Executor
 
-class MainActivity : AppCompatActivity(), ScreenInfoListener {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
+    private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
+    private lateinit var runOnUiThreadExecutor: Executor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setListeners()
+        initWindowLayoutInfo()
+    }
+
+    private fun initWindowLayoutInfo() {
+        adapter = WindowInfoRepositoryCallbackAdapter(windowInfoRepository())
+        runOnUiThreadExecutor = Executor { command: Runnable? ->
+            command?.let {
+                Handler(Looper.getMainLooper()).post(it)
+            }
+        }
+        consumerWindowLayoutInfo = Consumer { windowLayoutInfo ->
+            setButtonsVisibility(windowLayoutInfo)
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(this)
+        adapter.addWindowLayoutInfoListener(runOnUiThreadExecutor, consumerWindowLayoutInfo)
     }
 
-    override fun onPause() {
-        super.onPause()
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(this)
+    override fun onStop() {
+        super.onStop()
+        adapter.removeWindowLayoutInfoListener(consumerWindowLayoutInfo)
     }
 
-    override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
-        setButtonsVisibility(screenInfo)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        ScreenManagerProvider.getScreenManager().onConfigurationChanged()
-    }
-
-    private fun setButtonsVisibility(screenInfo: ScreenInfo) {
-        val visibility = if (screenInfo.isDualMode()
-        ) {
-            View.VISIBLE
-        } else {
-            View.GONE
+    private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
+        windowLayoutInfo.isFoldingFeatureVertical().let { isVisible ->
+            move_to_start.isVisible = isVisible
+            move_to_end.isVisible = isVisible
+            move_to_middle.isVisible = isVisible
         }
-
-        move_to_start.visibility = visibility
-        move_to_end.visibility = visibility
-        move_to_middle.visibility = visibility
     }
 
     private fun setListeners() {
@@ -68,6 +75,6 @@ class MainActivity : AppCompatActivity(), ScreenInfoListener {
     }
 
     private fun moveWrapperContent(displayPosition: DisplayPosition) {
-        duo_wrapper.surfaceDuoDisplayPosition = displayPosition
+        duo_wrapper.foldableDisplayPosition = displayPosition
     }
 }

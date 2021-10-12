@@ -10,7 +10,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.utils.wm.ScreenPosition
-import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeature
+import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
 
@@ -32,7 +32,7 @@ class FoldableItemDecoration(
             return
         }
 
-        windowLayoutInfo.extractFoldingFeature().let {
+        windowLayoutInfo.extractFoldingFeatureRect().let {
             val hingeWidth = it.right - it.left
             val position = parent.getChildAdapterPosition(view)
 
