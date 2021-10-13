@@ -48,27 +48,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.SimpleDuoFrameLayoutActivity"
+            android:name=".utils.FrameLayoutActivity"
             android:exported="true"
-            android:label="SimpleDuoFrameLayoutActivity">
+            android:label="FrameLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.SimpleDuoLayoutActivity"
+            android:name=".utils.FoldableLayoutSingleScreenActivity"
             android:exported="true"
-            android:label="SimpleDuoLayoutActivity">
+            android:label="FoldableLayoutSingleScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.SimpleDualLayoutActivity"
+            android:name=".utils.FoldableLayoutDualScreenActivity"
             android:exported="true"
-            android:label="SimpleDualLayoutActivity">
+            android:label="FoldableLayoutDualScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
@@ -76,9 +76,9 @@
         </activity>
 
         <activity
-            android:name=".utils.SimpleStartActivity"
+            android:name=".utils.FoldableLayoutTestOnSecondActivity"
             android:exported="true"
-            android:label="SimpleStartActivity">
+            android:label="FoldableLayoutTestOnSecondActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />

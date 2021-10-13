@@ -12,7 +12,7 @@ import androidx.test.filters.SmallTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.layouts.test.R
-import com.microsoft.device.dualscreen.layouts.utils.SimpleDuoFrameLayoutActivity
+import com.microsoft.device.dualscreen.layouts.utils.FrameLayoutActivity
 import com.microsoft.device.dualscreen.layouts.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.layouts.utils.isFrameLayoutOnScreen
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 class FrameLayoutTestForSurfaceDuo {
 
     @get:Rule
-    val activityTestRule = ActivityTestRule(SimpleDuoFrameLayoutActivity::class.java)
+    val activityTestRule = ActivityTestRule(FrameLayoutActivity::class.java)
 
     @Test
     fun testDisplayPositionFromLayout() {

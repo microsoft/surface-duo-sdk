@@ -15,7 +15,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.layouts.test.R
-import com.microsoft.device.dualscreen.layouts.utils.SimpleStartActivity
+import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutTestOnSecondActivity
 import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
@@ -30,7 +30,7 @@ private const val ONE_SEC = 1000L
 @RunWith(AndroidJUnit4ClassRunner::class)
 class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
     @get:Rule
-    val activityTestRule = ActivityTestRule(SimpleStartActivity::class.java)
+    val activityTestRule = ActivityTestRule(FoldableLayoutTestOnSecondActivity::class.java)
 
     @Before
     fun before() {

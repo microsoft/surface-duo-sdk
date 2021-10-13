@@ -39,13 +39,14 @@ internal class FoldableLayoutStatusHandler internal constructor(
 
     fun addViewsDependingOnSpanningMode(foldingFeature: FoldingFeature?) {
         this.foldingFeature = foldingFeature
-        screenMode = if (foldingFeature.screenMode() == ScreenMode.DUAL_SCREEN) {
-            addDualScreenBehaviour(foldingFeature!!)
-            ScreenMode.DUAL_SCREEN
-        } else {
-            addSingleScreenBehaviour()
-            ScreenMode.SINGLE_SCREEN
-        }
+        screenMode =
+            if (foldingFeature != null && foldingFeature.screenMode() == ScreenMode.DUAL_SCREEN) {
+                addDualScreenBehaviour(foldingFeature)
+                ScreenMode.DUAL_SCREEN
+            } else {
+                addSingleScreenBehaviour()
+                ScreenMode.SINGLE_SCREEN
+            }
     }
 
     private fun FoldingFeature?.screenMode(): ScreenMode {

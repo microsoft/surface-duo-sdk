@@ -57,10 +57,10 @@ open class FoldableFrameLayout @JvmOverloads constructor(
 
     init {
         extractAttributes(context, attrs)
-        onInfoLayoutChanged()
+        registerWindowInfoFlow()
     }
 
-    private fun onInfoLayoutChanged() {
+    private fun registerWindowInfoFlow() {
         val executor = ContextCompat.getMainExecutor(context)
         val windowInfoRepository: WindowInfoRepository =
             (context as Activity).windowInfoRepository()

@@ -6,7 +6,6 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 31
@@ -24,6 +23,9 @@ android {
         testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
     }
 
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {

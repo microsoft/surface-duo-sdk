@@ -27,14 +27,13 @@ fun WindowLayoutInfo?.isFoldingFeatureVertical(): Boolean =
  * Returns the first [FoldingFeature] from the [WindowLayoutInfo] or null if no [FoldingFeature] exists.
  * @return The first [FoldingFeature] if it exists
  */
-fun WindowLayoutInfo?.getFoldingFeature(): FoldingFeature? {
-    return if (this == null || displayFeatures.isEmpty()) {
+fun WindowLayoutInfo?.getFoldingFeature(): FoldingFeature? =
+    if (this == null || displayFeatures.isEmpty()) {
         null
     } else {
         displayFeatures
             .firstOrNull { feature -> feature is FoldingFeature } as? FoldingFeature
     }
-}
 
 /**
  * Returns coordinates for folding feature location

@@ -13,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.layouts.test.R
-import com.microsoft.device.dualscreen.layouts.utils.SimpleDualLayoutActivity
+import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutDualScreenActivity
 import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 class FoldableLayoutDualScreenTestForSurfaceDuo {
 
     @get:Rule
-    val activityTestRule = ActivityTestRule(SimpleDualLayoutActivity::class.java)
+    val activityTestRule = ActivityTestRule(FoldableLayoutDualScreenActivity::class.java)
 
     @Before
     fun before() {

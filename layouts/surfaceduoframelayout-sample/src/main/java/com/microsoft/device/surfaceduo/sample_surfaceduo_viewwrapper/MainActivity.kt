@@ -16,7 +16,7 @@ import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepositor
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
-import kotlinx.android.synthetic.main.activity_main.*
+import com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper.databinding.ActivityMainBinding
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
@@ -25,9 +25,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
     private lateinit var runOnUiThreadExecutor: Executor
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setListeners()
         initWindowLayoutInfo()
     }
@@ -56,25 +58,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
         windowLayoutInfo.isFoldingFeatureVertical().let { isVisible ->
-            move_to_start.isVisible = isVisible
-            move_to_end.isVisible = isVisible
-            move_to_middle.isVisible = isVisible
+            binding.apply {
+                moveToStart.isVisible = isVisible
+                moveToEnd.isVisible = isVisible
+                moveToMiddle.isVisible = isVisible
+            }
         }
     }
 
     private fun setListeners() {
-        move_to_start.setOnClickListener {
-            moveWrapperContent(DisplayPosition.START)
-        }
-        move_to_end.setOnClickListener {
-            moveWrapperContent(DisplayPosition.END)
-        }
-        move_to_middle.setOnClickListener {
-            moveWrapperContent(DisplayPosition.DUAL)
+        binding.apply {
+            moveToStart.setOnClickListener {
+                moveWrapperContent(DisplayPosition.START)
+            }
+            moveToEnd.setOnClickListener {
+                moveWrapperContent(DisplayPosition.END)
+            }
+            moveToMiddle.setOnClickListener {
+                moveWrapperContent(DisplayPosition.DUAL)
+            }
         }
     }
 
     private fun moveWrapperContent(displayPosition: DisplayPosition) {
-        duo_wrapper.foldableDisplayPosition = displayPosition
+        binding.duoWrapper.foldableDisplayPosition = displayPosition
     }
 }

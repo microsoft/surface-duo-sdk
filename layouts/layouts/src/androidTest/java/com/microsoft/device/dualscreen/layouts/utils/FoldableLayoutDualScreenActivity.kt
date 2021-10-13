@@ -9,10 +9,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.microsoft.device.dualscreen.layouts.test.R
 
-class SimpleDuoFrameLayoutActivity : AppCompatActivity() {
-
+class FoldableLayoutDualScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simple_frame_layout)
+        setContentView(R.layout.activity_simple_dual_layout)
     }
 }
