@@ -27,8 +27,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-private const val ONE_SEC = 1000L
-
 @RunWith(AndroidJUnit4ClassRunner::class)
 class FoldableLayoutSingleScreenTestForSurfaceDuo {
 
@@ -49,7 +47,6 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
     @Test
     fun testLayoutSingleScreenLandscape() {
         setOrientationRight()
-        Thread.sleep(ONE_SEC)
 
         onView(withId(R.id.textViewSingle)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewSingle)).check(matches(withText(R.string.single_screen_mode)))
@@ -58,7 +55,6 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
     @Test
     fun testLayoutDualScreenLandscape() {
         switchFromSingleToDualScreen()
-        Thread.sleep(ONE_SEC)
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualStart)).check(
@@ -80,7 +76,6 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
         switchFromSingleToDualScreen()
 
         setOrientationLeft()
-        Thread.sleep(ONE_SEC)
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualStart)).check(

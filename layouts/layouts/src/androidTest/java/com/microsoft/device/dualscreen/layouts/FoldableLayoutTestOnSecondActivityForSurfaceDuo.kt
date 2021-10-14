@@ -24,8 +24,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-private const val ONE_SEC = 1000L
-
 @LargeTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
@@ -48,7 +46,6 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
     @Test
     fun testLayoutSingleScreenLandscape() {
         setOrientationRight()
-        Thread.sleep(ONE_SEC)
 
         onView(withId(R.id.start)).perform(click())
 
