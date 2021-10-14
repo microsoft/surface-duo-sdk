@@ -21,7 +21,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     }
     ```
 
-2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here). There are multiple libraries available - you should always reference **ScreenManager** plus any additional libraries you plan to use:
+2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here). There are multiple libraries available - for some of them you should reference **ScreenManager** plus any additional libraries you plan to use:
 
     **ScreenManager**
 
@@ -40,10 +40,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Bottom navigation**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta2"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
-    // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta3"
     ```
 
     **Fragments handler**
@@ -58,10 +55,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Layouts**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta4"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
-    // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta5"
     ```
 
     **Tabs**
@@ -76,10 +70,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **RecyclerView**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta3"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
-    // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta4"
     ```
 
     **Ink**
