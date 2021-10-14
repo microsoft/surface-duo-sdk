@@ -72,7 +72,8 @@ open class BottomNavigationView : BottomNavigationView {
     }
 
     private var job: Job? = null
-    private var singleScreenWidth = -1
+    private var startScreenWidth = -1
+    private var endScreenWidth = -1
     private var totalScreenWidth = -1
     private var hingeWidth = -1
 
@@ -212,10 +213,11 @@ open class BottomNavigationView : BottomNavigationView {
     }
 
     private fun setScreenParameters(foldingFeature: FoldingFeature) {
-        singleScreenWidth = foldingFeature.bounds.left
         totalScreenWidth = context.getWindowRect().right
         foldingFeature.bounds.let {
             hingeWidth = it.right - it.left
+            startScreenWidth = it.left
+            endScreenWidth = totalScreenWidth - it.right
         }
     }
 
@@ -280,15 +282,20 @@ open class BottomNavigationView : BottomNavigationView {
         }
         val startPoint =
             if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
-                singleScreenWidth + hingeWidth
+                windowLayoutInfo.extractFoldingFeatureRect().right
             } else {
                 0
+            }
+        val screenWidth =
+            if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
+                endScreenWidth
+            } else {
+                startScreenWidth
             }
 
         if (defaultChildWidth == -1) {
             defaultChildWidth = getChildAt(0).measuredWidth
         }
-        val screenWidth = singleScreenWidth
 
         val childWidth = if (buttonsCount * defaultChildWidth > screenWidth) {
             screenWidth / buttonsCount
@@ -421,9 +428,10 @@ open class BottomNavigationView : BottomNavigationView {
                 initialBackground
             } else {
                 createHalfTransparentBackground(
+                    initialBackground,
                     displayPosition,
                     windowLayoutInfo.extractFoldingFeatureRect(),
-                    initialBackground
+                    totalScreenWidth
                 )
             }
         }
