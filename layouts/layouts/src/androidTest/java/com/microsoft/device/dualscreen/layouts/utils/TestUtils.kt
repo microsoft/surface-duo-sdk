@@ -11,11 +11,11 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout
-import com.microsoft.device.dualscreen.test.utils.DUAL_SCREEN_WIDTH
-import com.microsoft.device.dualscreen.test.utils.HINGE_WIDTH
-import com.microsoft.device.dualscreen.test.utils.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.layouts.FoldableFrameLayout
+import com.microsoft.device.dualscreen.utils.test.DUAL_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.utils.test.HINGE_WIDTH
+import com.microsoft.device.dualscreen.utils.test.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -44,7 +44,7 @@ fun isViewOnScreen(pos: DisplayPosition, orientation: Int): Matcher<View> =
             } else {
                 startArray[1] + item.height
             }
-            return areCoordinatesOnSurfaceScreen(pos, start, end)
+            return areCoordinatesOnTargetScreen(pos, start, end)
         }
     }
 
@@ -55,35 +55,35 @@ fun changeDisplayPosition(pos: DisplayPosition): ViewAction =
         }
 
         override fun getDescription(): String {
-            return "Change Display Position value of SurfaceDuoTabLayout"
+            return "Change Display Position value of a FoldableFrameLayout"
         }
 
         override fun perform(uiController: UiController, view: View) {
             uiController.loopMainThreadUntilIdle()
 
-            val frameLayout = view as SurfaceDuoFrameLayout
-            frameLayout.surfaceDuoDisplayPosition = pos
+            val frameLayout = view as FoldableFrameLayout
+            frameLayout.foldableDisplayPosition = pos
 
             uiController.loopMainThreadUntilIdle()
         }
     }
 
 fun isFrameLayoutOnScreen(pos: DisplayPosition): Matcher<View> =
-    object : BoundedMatcher<View, SurfaceDuoFrameLayout>(SurfaceDuoFrameLayout::class.java) {
+    object : BoundedMatcher<View, FoldableFrameLayout>(FoldableFrameLayout::class.java) {
         override fun describeTo(description: Description?) {
             description?.appendText(
                 "Checks whether the layout is displayed on the right screen"
             )
         }
 
-        override fun matchesSafely(item: SurfaceDuoFrameLayout?): Boolean {
-            if (item == null || pos != item.surfaceDuoDisplayPosition) {
+        override fun matchesSafely(item: FoldableFrameLayout?): Boolean {
+            if (item == null || pos != item.foldableDisplayPosition) {
                 return false
             }
             val child = item.getChildAt(0) ?: return false
             val startArray = IntArray(2)
             child.getLocationInWindow(startArray)
-            return areCoordinatesOnSurfaceScreen(
+            return areCoordinatesOnTargetScreen(
                 pos,
                 startArray[0],
                 startArray[0] + child.width
@@ -91,8 +91,12 @@ fun isFrameLayoutOnScreen(pos: DisplayPosition): Matcher<View> =
         }
     }
 
-fun areCoordinatesOnSurfaceScreen(pos: DisplayPosition, xStart: Int, xEnd: Int): Boolean {
-    return when (pos) {
+fun areCoordinatesOnTargetScreen(
+    targetScreenPosition: DisplayPosition,
+    xStart: Int,
+    xEnd: Int
+): Boolean {
+    return when (targetScreenPosition) {
         DisplayPosition.DUAL ->
             xStart in 0..SINGLE_SCREEN_WIDTH &&
                 xEnd in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH

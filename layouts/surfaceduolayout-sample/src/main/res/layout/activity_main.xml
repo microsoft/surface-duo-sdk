@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout
+    <com.microsoft.device.dualscreen.layouts.FoldableLayout
         android:id="@+id/surface_duo_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"

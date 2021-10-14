@@ -6,11 +6,11 @@
   -->
 
 <resources>
-    <string name="app_name">SurfaceDuoFrameLayout Sample</string>
+    <string name="app_name">FoldableFrameLayout Sample</string>
 
     <string name="move_to_start">Move to start</string>
     <string name="move_to_end">Move to end</string>
     <string name="move_to_middle">Span</string>
-    <string name="surface">Surface</string>
-    <string name="duo">Duo</string>
+    <string name="text_frame">FrameLayout</string>
+    <string name="text_sample">Sample</string>
 </resources>

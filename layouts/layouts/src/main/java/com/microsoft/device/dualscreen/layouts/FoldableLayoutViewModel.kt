@@ -6,13 +6,15 @@
 package com.microsoft.device.dualscreen.layouts
 
 import androidx.lifecycle.ViewModel
+import androidx.window.layout.WindowLayoutInfo
 
 /**
  * Internal ViewModel implementation used to store the screen info across application lifecycle
  */
-internal class SurfaceDuoLayoutViewModel : ViewModel() {
+internal class FoldableLayoutViewModel : ViewModel() {
+
     /**
      * Application screen state.
      */
-    var screenState = ScreenSavedState()
+    var windowLayoutInfo: WindowLayoutInfo? = null
 }

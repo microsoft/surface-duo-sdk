@@ -5,25 +5,32 @@
 
 package com.microsoft.device.dualscreen.layouts
 
+import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.ScreenInfo
-import com.microsoft.device.dualscreen.ScreenInfoListener
-import com.microsoft.device.dualscreen.ScreenManagerProvider
-import com.microsoft.device.dualscreen.ScreenMode
-import com.microsoft.device.dualscreen.isPortrait
-import com.microsoft.device.dualscreen.isSpannedInDualScreen
+import androidx.core.content.ContextCompat
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoRepository
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
+import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * A wrapper layout that positions its child on the start, end or both screens when the application is spanned on both screens.
  * This class supports only one child.
  */
-open class SurfaceDuoFrameLayout @JvmOverloads constructor(
+open class FoldableFrameLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -36,8 +43,10 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
 
     private var displayPosition = DisplayPosition.DUAL
     private var screenMode = ScreenMode.DUAL_SCREEN
+    private var job: Job? = null
+    private var foldingFeature: FoldingFeature? = null
 
-    var surfaceDuoDisplayPosition: DisplayPosition
+    var foldableDisplayPosition: DisplayPosition
         get() {
             return displayPosition
         }
@@ -46,33 +55,32 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
             requestLayout()
         }
 
-    private var currentScreenInfo: ScreenInfo? = null
-    private val screenInfoListener = object : ScreenInfoListener {
-        override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
-            currentScreenInfo = screenInfo
-            setScreenParameters(screenInfo)
-        }
-    }
-
     init {
         extractAttributes(context, attrs)
+        registerWindowInfoFlow()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
+    private fun registerWindowInfoFlow() {
+        val executor = ContextCompat.getMainExecutor(context)
+        val windowInfoRepository: WindowInfoRepository =
+            (context as Activity).windowInfoRepository()
+        job?.cancel()
+        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
+            windowInfoRepository.windowLayoutInfo
+                .collect { info ->
+                    foldingFeature = info.getFoldingFeature()
+                    foldingFeature?.let {
+                        setScreenParameters(it)
+                    }
+                }
+        }
     }
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {
         val styledAttributes =
             context.theme.obtainStyledAttributes(attrs, R.styleable.ScreenManagerAttrs, 0, 0)
         try {
-            displayPosition = DisplayPosition.fromId(
+            displayPosition = DisplayPosition.fromResId(
                 styledAttributes.getInt(
                     R.styleable.ScreenManagerAttrs_display_position,
                     DisplayPosition.DUAL.ordinal
@@ -89,26 +97,22 @@ open class SurfaceDuoFrameLayout @JvmOverloads constructor(
         }
     }
 
-    private fun setScreenParameters(screenInfo: ScreenInfo) {
-        screenInfo.getHinge()?.let {
+    private fun setScreenParameters(foldingFeature: FoldingFeature) {
+        singleScreenWidth = foldingFeature.bounds.left
+        totalScreenWidth = context.getWindowRect().right
+        foldingFeature.bounds.let {
             hingeWidth = it.right - it.left
-            singleScreenWidth = it.left
         }
+    }
 
-        screenInfo.getHinge()?.let {
-            singleScreenWidth = it.left
-        }
-
-        screenInfo.getWindowRect().let {
-            totalScreenWidth = it.right
-        }
+    private fun shouldNotSplit(): Boolean {
+        return foldingFeature == null || foldingFeature?.orientation == FoldingFeature.Orientation.HORIZONTAL
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val screenInfo = currentScreenInfo
-        if (screenInfo != null && !isSpannedInDualScreen(screenMode, screenInfo) || isPortrait()) {
+        if (shouldNotSplit()) {
             return
         }
 

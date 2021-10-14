@@ -6,7 +6,6 @@
 package com.microsoft.device.dualscreen.utils.wm
 
 import android.graphics.Rect
-import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
 
@@ -25,28 +24,24 @@ fun WindowLayoutInfo?.isFoldingFeatureVertical(): Boolean =
         (displayFeatures.firstOrNull() as? FoldingFeature)?.orientation == FoldingFeature.Orientation.VERTICAL
 
 /**
- * Returns coordinates for folding feature location
- * @return [Rect] object with folding feature coordinates or empty Rect if no display features are found
+ * Returns the first [FoldingFeature] from the [WindowLayoutInfo] or null if no [FoldingFeature] exists.
+ * @return The first [FoldingFeature] if it exists
  */
-fun WindowLayoutInfo?.extractFoldingFeature(): Rect =
+fun WindowLayoutInfo?.getFoldingFeature(): FoldingFeature? =
     if (this == null || displayFeatures.isEmpty()) {
-        Rect(0, 0, 0, 0)
+        null
     } else {
-        displayFeatures.first().bounds
+        displayFeatures
+            .firstOrNull { feature -> feature is FoldingFeature } as? FoldingFeature
     }
 
 /**
  * Returns coordinates for folding feature location
  * @return [Rect] object with folding feature coordinates or empty Rect if no display features are found
  */
-fun WindowLayoutInfo.getFoldingFeature(): DisplayFeature? =
-    displayFeatures.firstOrNull()
-
-/**
- * Returns the first [FoldingFeature] from the [WindowLayoutInfo] or null if no [FoldingFeature] exists.
- * @return The first [FoldingFeature] if it exists
- */
-fun getFoldingFeature(windowLayoutInfo: WindowLayoutInfo): FoldingFeature? {
-    return windowLayoutInfo.displayFeatures
-        .firstOrNull { feature -> feature is FoldingFeature } as? FoldingFeature
-}
+fun WindowLayoutInfo?.extractFoldingFeatureRect(): Rect =
+    if (this == null || displayFeatures.isEmpty()) {
+        Rect(0, 0, 0, 0)
+    } else {
+        displayFeatures.first().bounds
+    }

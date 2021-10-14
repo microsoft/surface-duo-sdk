@@ -38,7 +38,6 @@ android {
 }
 
 dependencies {
-    implementation project(commonDependencies.screenManager)
     implementation kotlinDependencies.kotlinStdlib
     implementation commonDependencies.mockitoCore
     implementation instrumentationTestDependencies.uiAutomator

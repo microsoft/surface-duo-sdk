@@ -8,14 +8,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.dualscreen.sample_fragmentshandler"
 
-        minSdkVersion 29
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion 31
+
         versionCode 1
         versionName "1.0"
 

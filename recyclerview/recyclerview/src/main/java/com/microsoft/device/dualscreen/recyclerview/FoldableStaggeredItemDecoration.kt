@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.utils.wm.ScreenPosition
-import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeature
+import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
 
@@ -33,7 +33,7 @@ class FoldableStaggeredItemDecoration(
             return
         }
 
-        windowLayoutInfo.extractFoldingFeature().let {
+        windowLayoutInfo.extractFoldingFeatureRect().let {
             val hingeWidth = it.right - it.left
             val layoutParams = view.layoutParams as StaggeredGridLayoutManager.LayoutParams
 

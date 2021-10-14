@@ -34,7 +34,7 @@ import androidx.test.filters.MediumTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout;
+import com.microsoft.device.dualscreen.layouts.FoldableLayout;
 import com.microsoft.device.dualscreen.layouts.compatibility.activities.LinearLayoutCtsActivity;
 import com.microsoft.device.dualscreen.layouts.test.R;
 
@@ -52,7 +52,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Test {@link SurfaceDuoLayout}.
+ * Test {@link FoldableLayout}.
  */
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -72,24 +72,24 @@ public class LinearLayoutTest {
 
     @Test
     public void testConstructor() {
-        new SurfaceDuoLayout(mActivity);
+        new FoldableLayout(mActivity);
 
-        new SurfaceDuoLayout(mActivity, (AttributeSet) null);
+        new FoldableLayout(mActivity, (AttributeSet) null);
 
         XmlPullParser parser = mActivity.getResources().getXml(R.layout.linearlayout_layout);
         AttributeSet attrs = Xml.asAttributeSet(parser);
-        new SurfaceDuoLayout(mActivity, attrs);
+        new FoldableLayout(mActivity, attrs);
     }
 
     @Test(expected=NullPointerException.class)
     public void testConstructorNullContext() {
-        new SurfaceDuoLayout(null, (AttributeSet) null);
+        new FoldableLayout(null, (AttributeSet) null);
     }
 
     @UiThreadTest
     @Test
     public void testAccessBaselineAligned() {
-        SurfaceDuoLayout parent = (SurfaceDuoLayout) mActivity.findViewById(R.id.linear_empty);
+        FoldableLayout parent = (FoldableLayout) mActivity.findViewById(R.id.linear_empty);
         parent.setBaselineAligned(true);
         assertTrue(parent.isBaselineAligned());
 
@@ -97,18 +97,18 @@ public class LinearLayoutTest {
         assertFalse(parent.isBaselineAligned());
 
         // android:baselineAligned="false" in LinearLayout weightsum
-        parent = (SurfaceDuoLayout) mActivity.findViewById(R.id.linear_weightsum);
+        parent = (FoldableLayout) mActivity.findViewById(R.id.linear_weightsum);
         assertFalse(parent.isBaselineAligned());
 
         // default mBaselineAligned is true.
-        parent = (SurfaceDuoLayout) mActivity.findViewById(R.id.linear_horizontal);
+        parent = (FoldableLayout) mActivity.findViewById(R.id.linear_horizontal);
         assertTrue(parent.isBaselineAligned());
     }
 
     @UiThreadTest
     @Test
     public void testGetBaseline() {
-        SurfaceDuoLayout parent = (SurfaceDuoLayout) mActivity.findViewById(R.id.linear_empty);
+        FoldableLayout parent = (FoldableLayout) mActivity.findViewById(R.id.linear_empty);
 
         ListView lv1 = new ListView(mActivity);
         parent.addView(lv1);
@@ -132,11 +132,11 @@ public class LinearLayoutTest {
     @UiThreadTest
     @Test
     public void testWeightDistribution() {
-        SurfaceDuoLayout parent = (SurfaceDuoLayout) mActivity.findViewById(R.id.linear_empty);
+        FoldableLayout parent = (FoldableLayout) mActivity.findViewById(R.id.linear_empty);
         parent.removeAllViews();
 
         for (int i = 0; i < 3; i++) {
-            parent.addView(new View(mActivity), new SurfaceDuoLayout.LayoutParams(0, 0, 1));
+            parent.addView(new View(mActivity), new FoldableLayout.LayoutParams(0, 0, 1));
         }
 
         int size = 100;
@@ -144,12 +144,12 @@ public class LinearLayoutTest {
 
         for (int i = 0; i < 3; i++) {
             View child = parent.getChildAt(i);
-            SurfaceDuoLayout.LayoutParams lp = (SurfaceDuoLayout.LayoutParams) child.getLayoutParams();
+            FoldableLayout.LayoutParams lp = (FoldableLayout.LayoutParams) child.getLayoutParams();
             lp.height = 0;
-            lp.width = SurfaceDuoLayout.LayoutParams.MATCH_PARENT;
+            lp.width = FoldableLayout.LayoutParams.MATCH_PARENT;
             child.setLayoutParams(lp);
         }
-        parent.setOrientation(SurfaceDuoLayout.VERTICAL);
+        parent.setOrientation(FoldableLayout.VERTICAL);
         parent.measure(spec, spec);
         parent.layout(0, 0, size, size);
         assertEquals(100, parent.getWidth());
@@ -163,12 +163,12 @@ public class LinearLayoutTest {
 
         for (int i = 0; i < 3; i++) {
             View child = parent.getChildAt(i);
-            SurfaceDuoLayout.LayoutParams lp = (SurfaceDuoLayout.LayoutParams) child.getLayoutParams();
-            lp.height = SurfaceDuoLayout.LayoutParams.MATCH_PARENT;
+            FoldableLayout.LayoutParams lp = (FoldableLayout.LayoutParams) child.getLayoutParams();
+            lp.height = FoldableLayout.LayoutParams.MATCH_PARENT;
             lp.width = 0;
             child.setLayoutParams(lp);
         }
-        parent.setOrientation(SurfaceDuoLayout.HORIZONTAL);
+        parent.setOrientation(FoldableLayout.HORIZONTAL);
         parent.measure(spec, spec);
         parent.layout(0, 0, size, size);
         assertEquals(100, parent.getWidth());
@@ -186,7 +186,7 @@ public class LinearLayoutTest {
     public void testGenerateLayoutParams() {
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(320, 240);
         MockLinearLayout parent = (MockLinearLayout) mActivity.findViewById(R.id.linear_custom);
-        SurfaceDuoLayout.LayoutParams layoutParams1 = parent.generateLayoutParams(lp);
+        FoldableLayout.LayoutParams layoutParams1 = parent.generateLayoutParams(lp);
         assertEquals(320, layoutParams1.width);
         assertEquals(240, layoutParams1.height);
     }
@@ -199,7 +199,7 @@ public class LinearLayoutTest {
         ViewGroup.LayoutParams params = new AbsoluteLayout.LayoutParams(240, 320, 0, 0);
         assertFalse(parent.checkLayoutParams(params));
 
-        params = new SurfaceDuoLayout.LayoutParams(240, 320);
+        params = new FoldableLayout.LayoutParams(240, 320);
         assertTrue(parent.checkLayoutParams(params));
     }
 
@@ -208,17 +208,17 @@ public class LinearLayoutTest {
     public void testGenerateDefaultLayoutParams() {
         MockLinearLayout parent = (MockLinearLayout) mActivity.findViewById(R.id.linear_custom);
 
-        parent.setOrientation(SurfaceDuoLayout.HORIZONTAL);
+        parent.setOrientation(FoldableLayout.HORIZONTAL);
         ViewGroup.LayoutParams param = parent.generateDefaultLayoutParams();
         assertNotNull(param);
-        assertTrue(param instanceof SurfaceDuoLayout.LayoutParams);
+        assertTrue(param instanceof FoldableLayout.LayoutParams);
         assertEquals(ViewGroup.LayoutParams.WRAP_CONTENT, param.width);
         assertEquals(ViewGroup.LayoutParams.WRAP_CONTENT, param.height);
 
-        parent.setOrientation(SurfaceDuoLayout.VERTICAL);
+        parent.setOrientation(FoldableLayout.VERTICAL);
         param = parent.generateDefaultLayoutParams();
         assertNotNull(param);
-        assertTrue(param instanceof SurfaceDuoLayout.LayoutParams);
+        assertTrue(param instanceof FoldableLayout.LayoutParams);
         assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, param.width);
         assertEquals(ViewGroup.LayoutParams.WRAP_CONTENT, param.height);
 
@@ -236,7 +236,7 @@ public class LinearLayoutTest {
         lp.topMargin = 2;
         lp.rightMargin = 3;
         lp.bottomMargin = 4;
-        SurfaceDuoLayout.LayoutParams generated = parent.generateLayoutParams(lp);
+        FoldableLayout.LayoutParams generated = parent.generateLayoutParams(lp);
         assertNotNull(generated);
         assertEquals(3, generated.width);
         assertEquals(5, generated.height);
@@ -265,7 +265,7 @@ public class LinearLayoutTest {
      * extends from it and override protected methods so that we can access them in
      * our test codes.
      */
-    public static class MockLinearLayout extends SurfaceDuoLayout {
+    public static class MockLinearLayout extends FoldableLayout {
         public MockLinearLayout(Context c) {
             super(c);
         }
@@ -280,12 +280,12 @@ public class LinearLayoutTest {
         }
 
         @Override
-        protected SurfaceDuoLayout.LayoutParams generateDefaultLayoutParams() {
+        protected FoldableLayout.LayoutParams generateDefaultLayoutParams() {
             return super.generateDefaultLayoutParams();
         }
 
         @Override
-        protected SurfaceDuoLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        protected FoldableLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
             return super.generateLayoutParams(p);
         }
     }

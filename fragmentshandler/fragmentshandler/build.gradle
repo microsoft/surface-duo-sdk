@@ -19,12 +19,12 @@ ext {
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 31
 
         versionCode rootProject.ext.fragmentsHandlerVersionCode
         versionName rootProject.ext.fragmentsHandlerVersionName
