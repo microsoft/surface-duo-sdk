@@ -13,7 +13,6 @@
         tools:ignore="AllowBackup">
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|smallestScreenSize|screenSize|screenLayout"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

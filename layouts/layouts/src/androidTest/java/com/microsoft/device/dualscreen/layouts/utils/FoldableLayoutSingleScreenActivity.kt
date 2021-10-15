@@ -12,6 +12,6 @@ import com.microsoft.device.dualscreen.layouts.test.R
 class FoldableLayoutSingleScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simple_duo_layout)
+        setContentView(R.layout.activity_simple_layout)
     }
 }
