@@ -55,5 +55,5 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
-    androidTestImplementation project(':test-utils')
+    androidTestImplementation project(':utils:test-utils')
 }
