@@ -17,7 +17,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.BaseInterpolator
-import androidx.core.content.ContextCompat
 import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.customview.view.AbsSavedState
 import androidx.transition.ChangeBounds
@@ -38,9 +37,8 @@ import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -86,17 +84,20 @@ open class BottomNavigationView : BottomNavigationView {
     private var defaultChildWidth = -1
 
     private fun registerWindowInfoFlow() {
-        val executor = ContextCompat.getMainExecutor(context)
         val windowInfoRepository: WindowInfoRepository =
             (context as Activity).windowInfoRepository()
-        job?.cancel()
-        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
+        job = MainScope().launch {
             windowInfoRepository.windowLayoutInfo
                 .collect { info ->
                     windowLayoutInfo = info
                     onInfoLayoutChanged(info)
                 }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job?.cancel()
     }
 
     private fun onInfoLayoutChanged(windowLayoutInfo: WindowLayoutInfo) {

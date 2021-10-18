@@ -12,7 +12,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.core.content.ContextCompat
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoRepository
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
@@ -20,9 +19,8 @@ import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -61,11 +59,9 @@ open class FoldableFrameLayout @JvmOverloads constructor(
     }
 
     private fun registerWindowInfoFlow() {
-        val executor = ContextCompat.getMainExecutor(context)
         val windowInfoRepository: WindowInfoRepository =
             (context as Activity).windowInfoRepository()
-        job?.cancel()
-        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
+        job = MainScope().launch {
             windowInfoRepository.windowLayoutInfo
                 .collect { info ->
                     foldingFeature = info.getFoldingFeature()
@@ -74,6 +70,11 @@ open class FoldableFrameLayout @JvmOverloads constructor(
                     }
                 }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job?.cancel()
     }
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {

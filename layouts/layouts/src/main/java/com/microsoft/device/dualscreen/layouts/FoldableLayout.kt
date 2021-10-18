@@ -30,9 +30,8 @@ import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -84,7 +83,7 @@ open class FoldableLayout @JvmOverloads constructor(
         }
 
         setupViewModel()
-        initFoldingObs()
+        registerWindowInfoFlow()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -98,17 +97,20 @@ open class FoldableLayout @JvmOverloads constructor(
         )
     }
 
-    private fun initFoldingObs() {
-        val executor = ContextCompat.getMainExecutor(context)
+    private fun registerWindowInfoFlow() {
         val windowInfoRepository: WindowInfoRepository =
             (context as Activity).windowInfoRepository()
-        job?.cancel()
-        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
+        job = MainScope().launch {
             windowInfoRepository.windowLayoutInfo
                 .collect { info ->
                     viewModel.windowLayoutInfo = info
                 }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job?.cancel()
     }
 
     /**

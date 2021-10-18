@@ -16,6 +16,10 @@
  -->
 
 <resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
     <drawable name="red">#7f00</drawable>
     <drawable name="blue">#770000ff</drawable>
     <drawable name="black">#77ffffff</drawable>
