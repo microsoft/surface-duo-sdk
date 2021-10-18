@@ -93,7 +93,7 @@ open class FoldableLayout @JvmOverloads constructor(
                 addContent()
                 requestLayout()
             },
-            1L
+            50L
         )
     }
 

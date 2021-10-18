@@ -71,9 +71,10 @@ class MainActivity : AppCompatActivity() {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(
             R.id.fragment_container,
-            NumbersFragment.newInstance(item.title.toString())
+            NumbersFragment.newInstance()
         )
         transaction.commit()
+        binding.fragmentName.text = getString(R.string.key_fragment, item.title.toString())
     }
 
     private fun getSavedNavItem(savedInstanceState: Bundle?): Int {

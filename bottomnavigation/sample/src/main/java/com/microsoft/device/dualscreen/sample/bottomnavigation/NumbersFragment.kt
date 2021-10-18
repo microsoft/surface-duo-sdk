@@ -9,18 +9,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.microsoft.device.dualscreen.sample.bottomnavigation.databinding.FragmentNumbersBinding
 
 class NumbersFragment : Fragment() {
     companion object {
-        const val ARG_NAME = "arg_name"
-
-        fun newInstance(title: String) = NumbersFragment().apply {
-            arguments = bundleOf(ARG_NAME to title)
-        }
+        fun newInstance() = NumbersFragment()
     }
 
     private lateinit var binding: FragmentNumbersBinding
@@ -36,13 +31,9 @@ class NumbersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.apply {
-            fragmentName.text = getString(R.string.key_fragment, getTitle())
-
             recyclerView.hasFixedSize()
             recyclerView.adapter = NumbersAdapter()
             recyclerView.layoutManager = LinearLayoutManager(context)
         }
     }
-
-    private fun getTitle() = arguments?.getString(ARG_NAME)
 }
