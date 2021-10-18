@@ -28,7 +28,7 @@ class StaggeredRecyclerViewActivity : BaseTestActivity() {
     private lateinit var runOnUiThreadExecutor: Executor
 
     override fun getContentViewLayoutResId(): Int {
-        return R.layout.activity_simple_surfaceduo_recyclerview
+        return R.layout.activity_simple_recyclerview
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
