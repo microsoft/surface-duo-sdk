@@ -9,15 +9,25 @@ plugins {
     id 'kotlin-android'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
+    PUBLISH_ARTIFACT_ID = 'wm-utils'
+    LIBRARY_DESCRIPTION = 'Library that contains useful extension functions and code that can be shared between libraries'
+    LIBRARY_VERSION = rootProject.ext.wmUtilsVersionName
+}
+
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
 android {
     compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 31
+
+        versionCode rootProject.ext.wmUtilsVersionCode
+        versionName rootProject.ext.wmUtilsVersionName
     }
 
     buildTypes {
