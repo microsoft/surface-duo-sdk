@@ -14,6 +14,7 @@ import android.view.animation.OvershootInterpolator
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
         windowLayoutInfo.isFoldingFeatureVertical().let { isVisible ->
-            binding.buttonsLayout.rootView.apply {
+            binding.apply {
                 moveToStart.isVisible = isVisible
                 moveToEnd.isVisible = isVisible
                 spanButtons.isVisible = isVisible

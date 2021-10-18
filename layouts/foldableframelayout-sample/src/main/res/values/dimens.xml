@@ -6,7 +6,7 @@
   -->
 
 <resources>
-    <dimen name="margin_small">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
     <dimen name="position_button_margin">40dp</dimen>
     <dimen name="position_button_margin_large">80dp</dimen>
     <dimen name="text_size">32sp</dimen>
