@@ -32,7 +32,8 @@ jobs:
           "fragmentshandler:fragmentshandler",
           "bottomnavigation:bottomnavigation",
           "tabs:tabs",
-          "recyclerview:recyclerview"
+          "recyclerview:recyclerview",
+          "utils:wm-utils"
         ]
       fail-fast: false
 
