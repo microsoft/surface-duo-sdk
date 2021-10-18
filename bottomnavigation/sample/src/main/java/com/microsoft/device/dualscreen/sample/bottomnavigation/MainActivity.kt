@@ -14,7 +14,6 @@ import android.view.animation.OvershootInterpolator
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
-import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
@@ -71,9 +70,10 @@ class MainActivity : AppCompatActivity() {
         val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         transaction.replace(
             R.id.fragment_container,
-            NumbersFragment.newInstance(item.title.toString())
+            NumbersFragment.newInstance()
         )
         transaction.commit()
+        binding.fragmentName.text = getString(R.string.key_fragment, item.title.toString())
     }
 
     private fun getSavedNavItem(savedInstanceState: Bundle?): Int {
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
         windowLayoutInfo.isFoldingFeatureVertical().let { isVisible ->
-            binding.apply {
+            binding.buttonsLayout.rootView.apply {
                 moveToStart.isVisible = isVisible
                 moveToEnd.isVisible = isVisible
                 spanButtons.isVisible = isVisible
