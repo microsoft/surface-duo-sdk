@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -47,6 +48,8 @@ class MainActivity : AppCompatActivity() {
         seekBar = findViewById(R.id.seekBar)
         circleView = findViewById(R.id.circleView)
 
+        setupClickListeners()
+
         webView.webViewClient = WebViewClient()
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
@@ -54,14 +57,16 @@ class MainActivity : AppCompatActivity() {
 
         webView.loadUrl("https://en.wikipedia.org/wiki/Special:Random")
 
-        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                setStrokeWidth()
-            }
+        seekBar.setOnSeekBarChangeListener(
+            object : OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    setStrokeWidth()
+                }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            },
+        )
 
         setStrokeWidth()
     }
@@ -82,39 +87,53 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun clickClear(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setupClickListeners() {
+        findViewById<Button>(R.id.btnClear)?.setOnClickListener(::clickClear)
+        findViewById<ImageView>(R.id.redColorPick)?.setOnClickListener(::setRed)
+        findViewById<ImageView>(R.id.greenColorPick)?.setOnClickListener(::setGreen)
+        findViewById<ImageView>(R.id.blueColorPick)?.setOnClickListener(::setBlue)
+        findViewById<ImageView>(R.id.yellowColorPick)?.setOnClickListener(::setYellow)
+        findViewById<ImageView>(R.id.blackColorPick)?.setOnClickListener(::setBlack)
+        findViewById<ImageView>(R.id.rainbowColorPick)?.setOnClickListener(::setRainbow)
+        fancySwitch.setOnClickListener(::fancySwitchChanged)
+        findViewById<SwitchCompat>(R.id.webSwitch)?.setOnClickListener(::webSwitchChanged)
+        findViewById<ImageView>(R.id.imageCopy)?.setOnClickListener(::copyImage)
+    }
+
+    private fun clickClear(@Suppress("UNUSED_PARAMETER") view: View) {
         inkView.clearInk()
     }
 
-    fun setRed(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setRed(@Suppress("UNUSED_PARAMETER") view: View) {
         resetPaintHandler()
         inkView.color = Color.RED
     }
 
-    fun setGreen(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setGreen(@Suppress("UNUSED_PARAMETER") view: View) {
         resetPaintHandler()
         inkView.color = Color.GREEN
     }
 
-    fun setBlue(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setBlue(@Suppress("UNUSED_PARAMETER") view: View) {
         resetPaintHandler()
         inkView.color = Color.BLUE
     }
 
-    fun setBlack(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setBlack(@Suppress("UNUSED_PARAMETER") view: View) {
         resetPaintHandler()
         inkView.color = Color.BLACK
     }
 
-    fun setYellow(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setYellow(@Suppress("UNUSED_PARAMETER") view: View) {
         resetPaintHandler()
         inkView.color = Color.YELLOW
     }
 
-    fun setRainbow(@Suppress("UNUSED_PARAMETER") view: View) {
+    private fun setRainbow(@Suppress("UNUSED_PARAMETER") view: View) {
         inkView.dynamicPaintHandler = RainbowPaintHandler()
         fancySwitch.isChecked = false
     }
+
     /**
      * Required because some colors are set on the InkView, but
      * rainbow ink is controlled via a paint handler (which is also
@@ -128,12 +147,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun copyImage(view: View) {
+    private fun copyImage(view: View) {
         val image = view as ImageView
         image.setImageBitmap(inkView.saveBitmap())
     }
 
-    fun fancySwitchChanged(view: View) {
+    private fun fancySwitchChanged(view: View) {
         val switch = view as SwitchCompat
         if (switch.isChecked) {
             inkView.dynamicPaintHandler = FancyPaintHandler()
@@ -241,7 +260,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun webSwitchChanged(view: View) {
+    private fun webSwitchChanged(view: View) {
         val switch = view as SwitchCompat
         this.webView.isVisible = switch.isChecked
     }

@@ -21,13 +21,13 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:orientation="vertical">
-    <com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout
+    <com.microsoft.device.dualscreen.layouts.FoldableFrameLayout
         android:layout_width="100dip"
         android:layout_height="100dip"
         android:background="@drawable/yellow"
         android:id="@+id/framelayout">
-    </com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout>
-    <com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout
+    </com.microsoft.device.dualscreen.layouts.FoldableFrameLayout>
+    <com.microsoft.device.dualscreen.layouts.FoldableFrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/yellow"
@@ -41,8 +41,8 @@
             android:layout_width="50dip"
             android:layout_height="15dip"
             android:text="@string/go"/>
-    </com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout>
-    <com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout
+    </com.microsoft.device.dualscreen.layouts.FoldableFrameLayout>
+    <com.microsoft.device.dualscreen.layouts.FoldableFrameLayout
         android:id="@+id/foreground_tint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

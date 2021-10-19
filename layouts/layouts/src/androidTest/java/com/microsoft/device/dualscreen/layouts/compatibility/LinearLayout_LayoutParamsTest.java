@@ -29,7 +29,7 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout;
+import com.microsoft.device.dualscreen.layouts.FoldableLayout;
 import com.microsoft.device.dualscreen.layouts.compatibility.util.XmlUtils;
 import com.microsoft.device.dualscreen.layouts.test.R;
 
@@ -47,44 +47,44 @@ public class LinearLayout_LayoutParamsTest {
         final Context context = InstrumentationRegistry.getTargetContext();
         XmlResourceParser p = context.getResources().getLayout(R.layout.linearlayout_layout2);
 
-        XmlUtils.beginDocument(p, "com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout");
-        SurfaceDuoLayout.LayoutParams linearLayoutParams =
-                new SurfaceDuoLayout.LayoutParams(context, p);
+        XmlUtils.beginDocument(p, "com.microsoft.device.dualscreen.layouts.FoldableLayout");
+        FoldableLayout.LayoutParams linearLayoutParams =
+                new FoldableLayout.LayoutParams(context, p);
         assertEquals(LayoutParams.MATCH_PARENT, linearLayoutParams.width);
         assertEquals(LayoutParams.WRAP_CONTENT, linearLayoutParams.height);
         assertEquals(0.0f, linearLayoutParams.weight, 0.0f);
         assertEquals(-1, linearLayoutParams.gravity);
 
-        linearLayoutParams = new SurfaceDuoLayout.LayoutParams(320, 240);
+        linearLayoutParams = new FoldableLayout.LayoutParams(320, 240);
         assertEquals(320, linearLayoutParams.width);
         assertEquals(240, linearLayoutParams.height);
         assertEquals(0.0f, linearLayoutParams.weight, 0.0f);
         assertEquals(-1, linearLayoutParams.gravity);
 
-        linearLayoutParams = new SurfaceDuoLayout.LayoutParams(360, 320, 0.4f);
+        linearLayoutParams = new FoldableLayout.LayoutParams(360, 320, 0.4f);
         assertEquals(360, linearLayoutParams.width);
         assertEquals(320, linearLayoutParams.height);
         assertEquals(0.4f, linearLayoutParams.weight, 0.0f);
         assertEquals(-1, linearLayoutParams.gravity);
 
         LayoutParams layoutParams = new LayoutParams(200, 480);
-        linearLayoutParams = new SurfaceDuoLayout.LayoutParams(layoutParams);
+        linearLayoutParams = new FoldableLayout.LayoutParams(layoutParams);
         assertEquals(200, linearLayoutParams.width);
         assertEquals(480, linearLayoutParams.height);
         assertEquals(0.0f, linearLayoutParams.weight, 0.0f);
         assertEquals(-1, linearLayoutParams.gravity);
 
         MarginLayoutParams marginLayoutParams = new MarginLayoutParams(320, 200);
-        linearLayoutParams = new SurfaceDuoLayout.LayoutParams(marginLayoutParams);
+        linearLayoutParams = new FoldableLayout.LayoutParams(marginLayoutParams);
         assertEquals(320, linearLayoutParams.width);
         assertEquals(200, linearLayoutParams.height);
         assertEquals(0.0f, linearLayoutParams.weight, 0.0f);
         assertEquals(-1, linearLayoutParams.gravity);
 
-        SurfaceDuoLayout.LayoutParams linearLayoutParams2 = new SurfaceDuoLayout.LayoutParams(360, 720);
+        FoldableLayout.LayoutParams linearLayoutParams2 = new FoldableLayout.LayoutParams(360, 720);
         linearLayoutParams2.weight = 0.9f;
         linearLayoutParams2.gravity = Gravity.RIGHT;
-        linearLayoutParams = new SurfaceDuoLayout.LayoutParams(linearLayoutParams2);
+        linearLayoutParams = new FoldableLayout.LayoutParams(linearLayoutParams2);
         assertEquals(360, linearLayoutParams.width);
         assertEquals(720, linearLayoutParams.height);
         assertEquals(0.9f, linearLayoutParams.weight, 0.0f);
@@ -93,7 +93,7 @@ public class LinearLayout_LayoutParamsTest {
 
     @Test
     public void testDebug() {
-        SurfaceDuoLayout.LayoutParams layoutParams = new SurfaceDuoLayout.LayoutParams(320, 240);
+        FoldableLayout.LayoutParams layoutParams = new FoldableLayout.LayoutParams(320, 240);
         assertNotNull(layoutParams.debug("test: "));
     }
 }

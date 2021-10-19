@@ -1,13 +1,11 @@
 /*
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
- *
  */
 
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
 }
 
 ext {
@@ -19,12 +17,12 @@ ext {
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 31
 
         versionCode rootProject.ext.bottomNavigationVersionCode
         versionName rootProject.ext.bottomNavigationVersionName
@@ -45,18 +43,18 @@ android {
 }
 
 dependencies {
-    api project(':screenmanager:screenmanager-utils')
-    compileOnly project(commonDependencies.screenManager)
-
+    api project(':utils:wm-utils')
     implementation kotlinDependencies.kotlinStdlib
     api materialDependencies.material
 
+    api "androidx.window:window-java:1.0.0-beta02"
+
     testImplementation testDependencies.junit
+    androidTestImplementation project(':utils:test-utils')
     androidTestImplementation instrumentationTestDependencies.junit
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation project(commonDependencies.screenManager)
-    androidTestImplementation project(':test-utils')
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

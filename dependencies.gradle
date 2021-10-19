@@ -19,12 +19,13 @@ ext {
     screenManagerDMVersionCode = 4
     screenManagerWMVersionCode = 4
     screenManagerUtilsVersionCode = 4
-    layoutsVersionCode = 4
+    layoutsVersionCode = 5
     fragmentsHandlerVersionCode = 3
-    bottomNavigationVersionCode = 2
+    bottomNavigationVersionCode = 3
     tabsVersionCode = 2
-    recyclerviewVersionCode = 3
+    recyclerviewVersionCode = 4
     inkSDKVersionCode = 6
+    wmUtilsVersionCode = 1
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -32,19 +33,20 @@ ext {
     screenManagerDMVersionName = '1.0.0-beta4'
     screenManagerWMVersionName = '1.0.0-beta4'
     screenManagerUtilsVersionName = '1.0.0-beta4'
-    layoutsVersionName = '1.0.0-beta4'
+    layoutsVersionName = '1.0.0-beta5'
     fragmentsHandlerVersionName = '1.0.0-beta3'
-    bottomNavigationVersionName = '1.0.0-beta2'
+    bottomNavigationVersionName = '1.0.0-beta3'
     tabsVersionName = '1.0.0-beta2'
-    recyclerviewVersionName = '1.0.0-beta3'
+    recyclerviewVersionName = '1.0.0-beta4'
     inkSDKVersionName = "1.0.0-alpha4"
+    wmUtilsVersionName = "1.0.0-beta1"
     // ----------------------------------
 
     //Config Android sdk, plugins and libraries version
-    gradlePluginVersion = "4.2.1"
+    gradlePluginVersion = "7.0.2"
     kotlinVersion = "1.5.0"
     compileSdkVersion = 29
-    buildToolsVersion = '30.0.2'
+    buildToolsVersion = '30.0.3'
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 21
 
@@ -59,12 +61,12 @@ ext {
     ]
 
     //AndroidX versions
-    appCompatVersion = "1.3.0"
+    appCompatVersion = "1.3.1"
     constraintLayoutVersion = "2.0.4"
     coreKtxVersion = "1.5.0"
     windowVersion = "1.0.0-alpha01"
     lifecycleVersion = "2.3.1"
-    recycleViewVersion = "1.2.0"
+    recyclerViewVersion = "1.2.0"
 
     androidxDependencies = [
             appCompat         : "androidx.appcompat:appcompat:$appCompatVersion",
@@ -72,7 +74,7 @@ ext {
             coreKtx           : "androidx.core:core-ktx:$coreKtxVersion",
             window            : "androidx.window:window:$windowVersion",
             lifecycleViewmodel: "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion",
-            recycleView       : "androidx.recyclerview:recyclerview:$recycleViewVersion"
+            recyclerView      : "androidx.recyclerview:recyclerview:$recyclerViewVersion"
     ]
 
     //Material Design
@@ -114,7 +116,7 @@ ext {
     ]
 
     //Android test dependencies version
-    junitInstrumentationVersion = "1.1.2"
+    junitInstrumentationVersion = "1.1.3"
     espressoCoreVersion = "3.3.0"
     testRunnerVersion = "1.3.0"
     testRulesVersion = "1.3.0"

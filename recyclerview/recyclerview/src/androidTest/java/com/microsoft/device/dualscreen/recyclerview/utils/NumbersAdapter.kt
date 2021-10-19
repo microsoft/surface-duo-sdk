@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.microsoft.device.dualscreen.recyclerview.test.R
 
 class NumbersAdapter : RecyclerView.Adapter<NumbersAdapter.ViewHolder>() {
-    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val textView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recyclerview_item, parent, false) as TextView
+            .inflate(R.layout.item_recyclerview, parent, false) as TextView
         return ViewHolder(textView)
     }
 
@@ -25,19 +24,6 @@ class NumbersAdapter : RecyclerView.Adapter<NumbersAdapter.ViewHolder>() {
     }
 
     override fun getItemCount() = numberDataSet.size
-}
 
-val numberDataSet = mutableListOf(
-    "One",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Eleven",
-    "Twelve"
-)
+    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+}

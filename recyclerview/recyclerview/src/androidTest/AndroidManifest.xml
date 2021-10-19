@@ -11,10 +11,14 @@
     <uses-sdk tools:overrideLibrary="androidx.test, android.app, androidx.test.rule,
         androidx.test.espresso, androidx.test.espresso.idling" />
 
-    <application android:name=".utils.TestApplication">
-
+    <application>
         <activity
             android:name=".activities.SimpleRecyclerViewActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="false"/>
+        <activity
+            android:name=".activities.StaggeredRecyclerViewActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="false"/>
     </application>
 </manifest>

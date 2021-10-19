@@ -23,13 +23,16 @@ include ':fragmentshandler:fragmentshandler'
 include ':fragmentshandler:sample'
 
 include ':layouts:layouts'
-include ':layouts:surfaceduolayout-sample'
-include ':layouts:surfaceduoframelayout-sample'
+include ':layouts:foldablelayout-sample'
+include ':layouts:foldableframelayout-sample'
 
 include ':tabs:tabs'
 include ':tabs:sample'
 
 include ':inksdk:ink'
 include ':inksdk:inksample'
+
+include ':utils:wm-utils'
+include ':utils:test-utils'
 
 rootProject.name='DuoSDK'

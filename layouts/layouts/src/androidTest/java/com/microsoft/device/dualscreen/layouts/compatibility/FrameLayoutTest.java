@@ -55,7 +55,7 @@ import androidx.test.filters.SmallTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.microsoft.device.dualscreen.layouts.SurfaceDuoFrameLayout;
+import com.microsoft.device.dualscreen.layouts.FoldableFrameLayout;
 import com.microsoft.device.dualscreen.layouts.compatibility.util.PollingCheck;
 import com.microsoft.device.dualscreen.layouts.compatibility.util.WidgetTestUtils;
 import com.microsoft.device.dualscreen.layouts.test.R;
@@ -76,7 +76,7 @@ import java.io.IOException;
 public class FrameLayoutTest {
     private Instrumentation mInstrumentation;
     private Activity mActivity;
-    private SurfaceDuoFrameLayout mFrameLayout;
+    private FoldableFrameLayout mFrameLayout;
 
     @Rule
     public ActivityTestRule<FrameLayoutCtsActivity> mActivityRule =
@@ -86,16 +86,16 @@ public class FrameLayoutTest {
     public void setup() {
         mInstrumentation = InstrumentationRegistry.getInstrumentation();
         mActivity = mActivityRule.getActivity();
-        mFrameLayout = (SurfaceDuoFrameLayout) mActivity.findViewById(R.id.framelayout);
+        mFrameLayout = (FoldableFrameLayout) mActivity.findViewById(R.id.framelayout);
     }
 
     @Test
     public void testConstructor() throws XmlPullParserException, IOException {
         AttributeSet attrs = getAttributeSet();
 
-        new SurfaceDuoFrameLayout(mActivity);
-        new SurfaceDuoFrameLayout(mActivity, attrs);
-        new SurfaceDuoFrameLayout(mActivity, attrs, 0);
+        new FoldableFrameLayout(mActivity);
+        new FoldableFrameLayout(mActivity, attrs);
+        new FoldableFrameLayout(mActivity, attrs, 0);
     }
 
     @Test
@@ -159,8 +159,8 @@ public class FrameLayoutTest {
 
     @Test
     public void testAccessMeasureAllChildren() throws Throwable {
-        final SurfaceDuoFrameLayout frameLayout
-                = (SurfaceDuoFrameLayout) mActivity.findViewById(R.id.framelayout_measureall);
+        final FoldableFrameLayout frameLayout
+                = (FoldableFrameLayout) mActivity.findViewById(R.id.framelayout_measureall);
         assertFalse(frameLayout.getConsiderGoneChildrenWhenMeasuring());
 
         // text view and button are VISIBLE, they should be measured
@@ -201,7 +201,7 @@ public class FrameLayoutTest {
 
         ViewGroup.LayoutParams params = myFrameLayout.generateLayoutParams(p);
         assertNotNull(params);
-        assertTrue(params instanceof SurfaceDuoFrameLayout.LayoutParams);
+        assertTrue(params instanceof FoldableFrameLayout.LayoutParams);
         assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, params.width);
         assertEquals(ViewGroup.LayoutParams.WRAP_CONTENT, params.height);
     }
@@ -210,7 +210,7 @@ public class FrameLayoutTest {
     public void testGenerateLayoutParams2() throws XmlPullParserException, IOException {
         AttributeSet attrs = getAttributeSet();
 
-        SurfaceDuoFrameLayout.LayoutParams params = mFrameLayout.generateLayoutParams(attrs);
+        FoldableFrameLayout.LayoutParams params = mFrameLayout.generateLayoutParams(attrs);
         assertNotNull(params);
         assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, params.width);
         assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, params.height);
@@ -227,7 +227,7 @@ public class FrameLayoutTest {
         ViewGroup.LayoutParams params1 = new ViewGroup.LayoutParams(width, height);
         assertFalse(myFrameLayout.checkLayoutParams(params1));
 
-        SurfaceDuoFrameLayout.LayoutParams params2 = new SurfaceDuoFrameLayout.LayoutParams(width, height);
+        FoldableFrameLayout.LayoutParams params2 = new FoldableFrameLayout.LayoutParams(width, height);
         assertTrue(myFrameLayout.checkLayoutParams(params2));
     }
 
@@ -239,8 +239,8 @@ public class FrameLayoutTest {
         lp.topMargin = 2;
         lp.rightMargin = 3;
         lp.bottomMargin = 4;
-        SurfaceDuoFrameLayout.LayoutParams generated =
-                (SurfaceDuoFrameLayout.LayoutParams) myFrameLayout.generateLayoutParams(lp);
+        FoldableFrameLayout.LayoutParams generated =
+                (FoldableFrameLayout.LayoutParams) myFrameLayout.generateLayoutParams(lp);
         assertNotNull(generated);
         assertEquals(3, generated.width);
         assertEquals(5, generated.height);
@@ -254,11 +254,11 @@ public class FrameLayoutTest {
     @Test
     public void testGenerateDefaultLayoutParams() {
         MyFrameLayout frameLayout = new MyFrameLayout(mActivity);
-        SurfaceDuoFrameLayout.LayoutParams params = frameLayout.generateDefaultLayoutParams();
+        FoldableFrameLayout.LayoutParams params = frameLayout.generateDefaultLayoutParams();
 
         assertNotNull(params);
-        assertEquals(SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT, params.width);
-        assertEquals(SurfaceDuoFrameLayout.LayoutParams.MATCH_PARENT, params.height);
+        assertEquals(FoldableFrameLayout.LayoutParams.MATCH_PARENT, params.width);
+        assertEquals(FoldableFrameLayout.LayoutParams.MATCH_PARENT, params.height);
     }
 
     @Test
@@ -278,7 +278,7 @@ public class FrameLayoutTest {
     @UiThreadTest
     @Test
     public void testForegroundTint() {
-        SurfaceDuoFrameLayout inflatedView = (SurfaceDuoFrameLayout) mActivity.findViewById(R.id.foreground_tint);
+        FoldableFrameLayout inflatedView = (FoldableFrameLayout) mActivity.findViewById(R.id.foreground_tint);
 
         assertEquals("Foreground tint inflated correctly",
                 Color.WHITE, inflatedView.getForegroundTintList().getDefaultColor());
@@ -286,7 +286,7 @@ public class FrameLayoutTest {
                 PorterDuff.Mode.SRC_OVER, inflatedView.getForegroundTintMode());
 
         final Drawable foreground = spy(new ColorDrawable());
-        SurfaceDuoFrameLayout view = new SurfaceDuoFrameLayout(mActivity);
+        FoldableFrameLayout view = new FoldableFrameLayout(mActivity);
 
         view.setForeground(foreground);
         verify(foreground, never()).setTintList(any(ColorStateList.class));
@@ -324,7 +324,7 @@ public class FrameLayoutTest {
         return Xml.asAttributeSet(parser);
     }
 
-    private static class MyFrameLayout extends SurfaceDuoFrameLayout {
+    private static class MyFrameLayout extends FoldableFrameLayout {
         public MyFrameLayout(Context context) {
             super(context);
         }
@@ -340,7 +340,7 @@ public class FrameLayoutTest {
         }
 
         @Override
-        protected SurfaceDuoFrameLayout.LayoutParams generateDefaultLayoutParams() {
+        protected FoldableFrameLayout.LayoutParams generateDefaultLayoutParams() {
             return super.generateDefaultLayoutParams();
         }
 

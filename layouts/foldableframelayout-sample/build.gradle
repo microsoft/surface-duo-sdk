@@ -1,0 +1,43 @@
+/*
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License.
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper"
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion 31
+
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation project(':layouts:layouts')
+
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.coreKtx
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.constraintLayout
+    implementation androidxDependencies.lifecycleViewmodel
+
+    testImplementation testDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+}

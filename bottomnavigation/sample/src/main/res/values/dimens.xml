@@ -5,6 +5,7 @@
   ~
   -->
 <resources>
+    <dimen name="normal_margin">16dp</dimen>
     <dimen name="position_button_margin">32dp</dimen>
     <dimen name="fragment_name_margin_top">20dp</dimen>
     <dimen name="fragment_name_margin_left">150dp</dimen>

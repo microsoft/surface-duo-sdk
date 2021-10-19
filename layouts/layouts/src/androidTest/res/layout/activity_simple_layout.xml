@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  -->
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@id/top_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/text_sample" />
+
+    <TextView
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:text="TabsLayout"
+        app:layout_constraintBottom_toTopOf="@id/surface_duo_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <com.microsoft.device.dualscreen.layouts.FoldableLayout
+        android:id="@+id/surface_duo_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:dual_screen_end_layout_id="@layout/dual_screen_end"
+        app:dual_screen_start_layout_id="@layout/dual_screen_start"
+        app:single_screen_layout_id="@layout/single_screen"
+        app:tools_hinge_color="black"
+        app:layout_constraintBottom_toTopOf="@id/bottom_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_view"
+        app:tools_screen_mode="dual_screen" />
+
+
+    <TextView
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:text="BottomNavigationView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/surface_duo_layout" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

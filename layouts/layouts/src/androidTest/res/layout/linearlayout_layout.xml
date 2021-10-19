@@ -23,13 +23,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout
+        <com.microsoft.device.dualscreen.layouts.FoldableLayout
             android:id="@+id/linear_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="100dip"
             android:orientation="horizontal"
             android:background="#888"/>
-        <com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout
+        <com.microsoft.device.dualscreen.layouts.FoldableLayout
             android:id="@+id/linear_weightsum"
             android:layout_width="100dip"
             android:layout_height="100dip"
@@ -37,7 +37,7 @@
             android:weightSum="1.0"
             android:baselineAligned="false"
             android:background="#888"/>
-        <com.microsoft.device.dualscreen.layouts.SurfaceDuoLayout
+        <com.microsoft.device.dualscreen.layouts.FoldableLayout
             android:id="@+id/linear_empty"
             android:layout_width="100px"
             android:layout_height="100px" />

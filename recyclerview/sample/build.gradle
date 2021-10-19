@@ -6,16 +6,15 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.dualscreen.sample_recyclerview"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -24,11 +23,14 @@ android {
     packagingOptions {
         exclude("META-INF/*.kotlin_module")
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
     implementation project(':recyclerview:recyclerview')
-    implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.coreKtx

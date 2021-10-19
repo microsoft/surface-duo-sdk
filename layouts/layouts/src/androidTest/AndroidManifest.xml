@@ -21,7 +21,6 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
-        android:name=".utils.SampleApp"
         android:label="Android TestCase"
         android:maxRecents="1"
         android:multiArch="true"
@@ -32,6 +31,7 @@
 
         <activity
             android:name=".compatibility.activities.FrameLayoutCtsActivity"
+            android:exported="true"
             android:label="FrameLayoutCtsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,6 +40,7 @@
         </activity>
         <activity
             android:name=".compatibility.activities.LinearLayoutCtsActivity"
+            android:exported="true"
             android:label="LinearLayoutCtsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,24 +48,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.SimpleDuoFrameLayoutActivity"
-            android:label="SimpleDuoFrameLayoutActivity">
+            android:name=".utils.FrameLayoutActivity"
+            android:exported="true"
+            android:label="FrameLayoutActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.SimpleDuoLayoutActivity"
-            android:label="SimpleDuoLayoutActivity">
+            android:name=".utils.FoldableLayoutSingleScreenActivity"
+            android:exported="true"
+            android:label="FoldableLayoutSingleScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".utils.SimpleDualLayoutActivity"
-            android:label="SimpleDualLayoutActivity">
+            android:name=".utils.FoldableLayoutDualScreenActivity"
+            android:exported="true"
+            android:label="FoldableLayoutDualScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />
@@ -72,8 +76,9 @@
         </activity>
 
         <activity
-            android:name=".utils.SimpleStartActivity"
-            android:label="SimpleStartActivity">
+            android:name=".utils.FoldableLayoutTestOnSecondActivity"
+            android:exported="true"
+            android:label="FoldableLayoutTestOnSecondActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.FRAMEWORK_INSTRUMENTATION_TEST" />

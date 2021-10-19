@@ -4,9 +4,9 @@
   ~  Licensed under the MIT License.
   ~
   -->
-
 <resources>
     <dimen name="recycler_cell_stroke_thickness">5dp</dimen>
     <dimen name="recycler_cell_height">150dp</dimen>
+    <dimen name="recycler_cell_larger_height">200dp</dimen>
     <dimen name="recycler_cell_text_size">23sp</dimen>
 </resources>
