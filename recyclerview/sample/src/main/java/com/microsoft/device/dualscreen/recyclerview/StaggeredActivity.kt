@@ -86,9 +86,7 @@ class StaggeredActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager =
             FoldableStaggeredLayoutManager(this, windowLayoutInfo).get()
         binding.recyclerView.replaceItemDecorationAt(
-            FoldableStaggeredItemDecoration(
-                windowLayoutInfo
-            )
+            FoldableStaggeredItemDecoration(windowLayoutInfo)
         )
     }
 }
