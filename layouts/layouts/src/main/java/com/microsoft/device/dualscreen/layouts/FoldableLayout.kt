@@ -7,7 +7,6 @@
 
 package com.microsoft.device.dualscreen.layouts
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.TypedArray
@@ -19,26 +18,28 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.window.layout.WindowInfoRepository
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
  * Class that is the root view of the layout containers for different screen modes.
  * The class receives the layout ids for the views that will be added inside of the
- * containers and then creates a FoldableLayoutStatusHandler to handle the logic for each screen
+ * containers and then creates a [FoldableLayoutController] to handle the logic for each screen
  * state.
  * On foldable devices it supports the following configurations:
  * - Two children side by side when the device is double portrait mode.
@@ -55,9 +56,8 @@ open class FoldableLayout @JvmOverloads constructor(
 
     constructor(context: Context, config: Config) : this(context, null, 0, config)
 
-    private lateinit var foldableLayoutStatusHandler: FoldableLayoutStatusHandler
+    private lateinit var layoutController: FoldableLayoutController
     private lateinit var viewModel: FoldableLayoutViewModel
-    private var job: Job? = null
 
     init {
         if (context !is ViewModelStoreOwner) {
@@ -69,6 +69,10 @@ open class FoldableLayout @JvmOverloads constructor(
 
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
         gravity = Gravity.BOTTOM
+
+        setupViewModel()
+        val currentConfiguration = viewModel.layoutConfig ?: config
+        viewModel.layoutConfig = currentConfiguration
 
         if (attrs != null) {
             val styledAttributes = readAttributes(context, attrs)
@@ -82,35 +86,30 @@ open class FoldableLayout @JvmOverloads constructor(
             createView(config)
         }
 
-        setupViewModel()
         registerWindowInfoFlow()
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        this.postDelayed(
-            {
-                addContent()
-                requestLayout()
-            },
-            50L
-        )
-    }
-
     private fun registerWindowInfoFlow() {
-        val windowInfoRepository: WindowInfoRepository =
-            (context as Activity).windowInfoRepository()
-        job = MainScope().launch {
-            windowInfoRepository.windowLayoutInfo
-                .collect { info ->
+        val activity = context as AppCompatActivity
+        val windowInfoRepository = activity.windowInfoRepository()
+        activity.lifecycleScope.launch(Dispatchers.Main) {
+            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                windowInfoRepository.windowLayoutInfo.collect { info ->
                     viewModel.windowLayoutInfo = info
+                    layoutController.foldingFeature = info.getFoldingFeature()
                 }
+            }
         }
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        job?.cancel()
+    /**
+     * Update the layout containers based on the given configuration and view model screen state
+     *
+     * @param config The new configuration
+     */
+    private fun updateContentWithConfiguration(config: Config) {
+        viewModel.layoutConfig = config
+        layoutController.changeConfiguration(config)
     }
 
     /**
@@ -119,13 +118,6 @@ open class FoldableLayout @JvmOverloads constructor(
     private fun setupViewModel() {
         viewModel =
             ViewModelProvider(context as ViewModelStoreOwner).get(FoldableLayoutViewModel::class.java)
-    }
-
-    /**
-     * Adds the layout containers depending on view model screen state.
-     */
-    private fun addContent() {
-        foldableLayoutStatusHandler.addViewsDependingOnSpanningMode(viewModel.windowLayoutInfo?.getFoldingFeature())
     }
 
     private fun readAttributes(context: Context, attrs: AttributeSet?): TypedArray {
@@ -172,13 +164,13 @@ open class FoldableLayout @JvmOverloads constructor(
     }
 
     /**
-     * Instantiates FoldableLayoutStatusHandler that will add the containers and views
+     * Instantiates [FoldableLayoutController] that will add the containers and views
      * depending on the given configuration.
      *
-     * @param config The configuration of the FoldableLayout
+     * @param config The configuration of the [FoldableLayout]
      */
     private fun createView(config: Config) {
-        foldableLayoutStatusHandler = FoldableLayoutStatusHandler(this.context, this, config)
+        layoutController = FoldableLayoutController(this, config)
     }
 
     /**
@@ -438,4 +430,61 @@ open class FoldableLayout @JvmOverloads constructor(
 
         var isDualLandscapeSingleContainer: Boolean = false
     )
+
+    fun newConfigCreator() = BaseConfig.NewConfigCreator(this)
+    fun updateConfigCreator() = BaseConfig.UpdateConfigCreator(this)
+
+    /**
+     * Base class to keep the configuration of the SurfaceDuoLayout
+     *
+     * @param <T> An object that extends BaseConfig
+     */
+    @Suppress("UNCHECKED_CAST")
+    sealed class BaseConfig<T : BaseConfig<T>>(protected val config: Config) {
+
+        /**
+         * Class to add a new config in SurfaceDuoLayout
+         * and recreate the view
+         */
+        class NewConfigCreator(
+            private val surfaceDuoLayout: FoldableLayout
+        ) : BaseConfig<NewConfigCreator>(Config()) {
+            fun reInflate() {
+                surfaceDuoLayout.updateContentWithConfiguration(config)
+            }
+        }
+
+        /**
+         * Class to update the config in SurfaceDuoLayout
+         * and recreate the view
+         */
+        class UpdateConfigCreator(
+            private val surfaceDuoLayout: FoldableLayout
+        ) : BaseConfig<UpdateConfigCreator>(surfaceDuoLayout.config.copy()) {
+            fun reInflate() {
+                surfaceDuoLayout.updateContentWithConfiguration(config)
+            }
+        }
+
+        fun singleScreenLayoutId(singleScreenLayoutId: Int): T =
+            apply { config.singleScreenLayoutId = singleScreenLayoutId } as T
+
+        fun dualScreenStartLayoutId(dualScreenStartLayoutId: Int): T =
+            apply { config.dualScreenStartLayoutId = dualScreenStartLayoutId } as T
+
+        fun dualScreenEndLayoutId(dualScreenEndLayoutId: Int): T =
+            apply { config.dualScreenEndLayoutId = dualScreenEndLayoutId } as T
+
+        fun dualPortraitSingleLayoutId(dualPortraitSingleLayoutId: Int): T =
+            apply { config.dualPortraitSingleLayoutId = dualPortraitSingleLayoutId } as T
+
+        fun isDualPortraitSingleContainer(isDualPortraitSingleContainer: Boolean): T =
+            apply { config.isDualPortraitSingleContainer = isDualPortraitSingleContainer } as T
+
+        fun dualLandscapeSingleLayoutId(dualLandscapeSingleLayoutId: Int): T =
+            apply { config.dualLandscapeSingleLayoutId = dualLandscapeSingleLayoutId } as T
+
+        fun isDualLandscapeSingleContainer(isDualLandscapeSingleContainer: Boolean): T =
+            apply { config.isDualLandscapeSingleContainer = isDualLandscapeSingleContainer } as T
+    }
 }

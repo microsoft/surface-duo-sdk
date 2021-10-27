@@ -49,6 +49,7 @@ dependencies {
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
     implementation androidxDependencies.lifecycleViewmodel
+    implementation androidxDependencies.lifecycleRuntimeKtx
     implementation androidxDependencies.coreKtx
 
     api "androidx.window:window-java:1.0.0-beta02"
