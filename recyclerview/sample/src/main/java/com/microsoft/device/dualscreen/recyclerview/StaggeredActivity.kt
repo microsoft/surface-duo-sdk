@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.recyclerview
+package com.microsoft.device.dualscreen.recyclerview
 
 import android.os.Bundle
 import android.os.Handler
@@ -16,12 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
-import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredItemDecoration
-import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredLayoutManager
+import com.microsoft.device.dualscreen.recyclerview.utils.NumbersStaggeredAdapter
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.databinding.ActivityMainBinding
-import com.microsoft.device.surfaceduo.recyclerview.utils.NumbersStaggeredAdapter
 import java.util.concurrent.Executor
 
 class StaggeredActivity : AppCompatActivity() {
@@ -85,7 +83,12 @@ class StaggeredActivity : AppCompatActivity() {
     }
 
     private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {
-        binding.recyclerView.layoutManager = FoldableStaggeredLayoutManager(this, windowLayoutInfo).get()
-        binding.recyclerView.replaceItemDecorationAt(FoldableStaggeredItemDecoration(windowLayoutInfo))
+        binding.recyclerView.layoutManager =
+            FoldableStaggeredLayoutManager(this, windowLayoutInfo).get()
+        binding.recyclerView.replaceItemDecorationAt(
+            FoldableStaggeredItemDecoration(
+                windowLayoutInfo
+            )
+        )
     }
 }

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.recyclerview
+package com.microsoft.device.dualscreen.recyclerview
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,12 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
-import com.microsoft.device.dualscreen.recyclerview.FoldableItemDecoration
-import com.microsoft.device.dualscreen.recyclerview.FoldableLayoutManager
+import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.databinding.ActivityMainBinding
-import com.microsoft.device.surfaceduo.recyclerview.utils.NumbersAdapter
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
