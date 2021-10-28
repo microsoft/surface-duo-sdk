@@ -3,8 +3,9 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.recyclerview
+package com.microsoft.device.dualscreen.recyclerview
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,15 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
-import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredItemDecoration
-import com.microsoft.device.dualscreen.recyclerview.FoldableStaggeredLayoutManager
+import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.databinding.ActivityMainBinding
-import com.microsoft.device.surfaceduo.recyclerview.utils.NumbersStaggeredAdapter
 import java.util.concurrent.Executor
 
-class StaggeredActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -42,14 +41,14 @@ class StaggeredActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_staggered, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_main_grid -> {
-                finish()
+            R.id.menu_main_staggered -> {
+                startActivity(Intent(this, StaggeredActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -58,7 +57,7 @@ class StaggeredActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         binding.recyclerView.hasFixedSize()
-        binding.recyclerView.adapter = NumbersStaggeredAdapter()
+        binding.recyclerView.adapter = NumbersAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
@@ -85,7 +84,7 @@ class StaggeredActivity : AppCompatActivity() {
     }
 
     private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {
-        binding.recyclerView.layoutManager = FoldableStaggeredLayoutManager(this, windowLayoutInfo).get()
-        binding.recyclerView.replaceItemDecorationAt(FoldableStaggeredItemDecoration(windowLayoutInfo))
+        binding.recyclerView.layoutManager = FoldableLayoutManager(this, windowLayoutInfo).get()
+        binding.recyclerView.replaceItemDecorationAt(FoldableItemDecoration(windowLayoutInfo))
     }
 }

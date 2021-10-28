@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.microsoft.device.surfaceduo.recyclerview.MainActivity"
+            android:name="com.microsoft.device.dualscreen.recyclerview.MainActivity"
             android:label="@string/app_name"
             android:exported="true">
             <intent-filter>
@@ -24,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.microsoft.device.surfaceduo.recyclerview.StaggeredActivity" />
+        <activity android:name="com.microsoft.device.dualscreen.recyclerview.StaggeredActivity" />
     </application>
 
 </manifest>

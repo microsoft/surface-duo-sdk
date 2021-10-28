@@ -1,4 +1,4 @@
-package com.microsoft.device.surfaceduo.recyclerview.utils
+package com.microsoft.device.dualscreen.recyclerview.utils
 
 val numberDataSet = mutableListOf(
     "One",
