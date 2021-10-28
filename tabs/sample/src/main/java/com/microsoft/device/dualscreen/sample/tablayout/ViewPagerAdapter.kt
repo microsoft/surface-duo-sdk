@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.sample.tablayout
+package com.microsoft.device.dualscreen.sample.tablayout
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

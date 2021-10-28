@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout
+    <com.microsoft.device.dualscreen.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,6 +38,6 @@
             android:text="@string/tab_layout_text" />
 
 
-    </com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout>
+    </com.microsoft.device.dualscreen.tabs.TabLayout>
 
 </RelativeLayout>

@@ -6,6 +6,7 @@
 package com.microsoft.device.dualscreen.tabs
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Parcel
@@ -14,40 +15,99 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.customview.view.AbsSavedState
+import androidx.transition.ChangeBounds
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
+import androidx.window.layout.FoldingFeature
+import androidx.window.layout.WindowInfoRepository
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.tabs.TabLayout
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.OnSwipeListener
-import com.microsoft.device.dualscreen.ScreenInfo
-import com.microsoft.device.dualscreen.ScreenInfoListener
-import com.microsoft.device.dualscreen.ScreenManagerProvider
-import com.microsoft.device.dualscreen.ScreenMode
-import com.microsoft.device.dualscreen.createHalfTransparentBackground
-import com.microsoft.device.dualscreen.isPortrait
-import com.microsoft.device.dualscreen.isSpannedInDualScreen
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import com.microsoft.device.dualscreen.utils.wm.OnSwipeListener
+import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import com.microsoft.device.dualscreen.utils.wm.createHalfTransparentBackground
+import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
+import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
+import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
+import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * A sub class of the TabLayout that can position its children in different ways when the application is spanned on both screens.
  * Using the [arrangeButtons] and [displayPosition] the children can be split in any way between the two screens.
  * If one of the screens doesn't contain any button, its background can be made transparent.
  */
-open class SurfaceDuoTabLayout @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : TabLayout(context, attrs, defStyleAttr) {
+open class TabLayout : TabLayout {
 
-    private var singleScreenWidth = -1
+    constructor(context: Context) : super(context) {
+        this.registerWindowInfoFlow()
+    }
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        this.registerWindowInfoFlow()
+        extractAttributes(context, attrs)
+    }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        this.registerWindowInfoFlow()
+        extractAttributes(context, attrs)
+    }
+
+    private var job: Job? = null
+    private var startScreenWidth = -1
+    private var endScreenWidth = -1
     private var totalScreenWidth = -1
     private var hingeWidth = -1
 
     private var screenMode = ScreenMode.DUAL_SCREEN
+    private var windowLayoutInfo: WindowLayoutInfo? = null
 
     private var initialBackground: Drawable? = null
-    private var currentScreenInfo: ScreenInfo? = null
     private var startBtnCount: Int = -1
     private var endBtnCount: Int = -1
     private var defaultChildWidth = -1
+
+    private fun registerWindowInfoFlow() {
+        val windowInfoRepository: WindowInfoRepository =
+            (context as Activity).windowInfoRepository()
+        job = MainScope().launch {
+            windowInfoRepository.windowLayoutInfo
+                .collect { info ->
+                    windowLayoutInfo = info
+                    onInfoLayoutChanged(info)
+                }
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job?.cancel()
+    }
+
+    private fun onInfoLayoutChanged(windowLayoutInfo: WindowLayoutInfo) {
+        windowLayoutInfo.getFoldingFeature()?.let {
+            setScreenParameters(it)
+        }
+
+        tryUpdateBackground()
+
+        val changeBounds: Transition = ChangeBounds()
+        changeBounds.duration = 300L
+        changeBounds.interpolator = PathInterpolatorCompat.create(0.2f, 0f, 0f, 1f)
+        TransitionManager.beginDelayedTransition(this@TabLayout, changeBounds)
+        requestLayout()
+    }
 
     private var onSwipeListener: OnSwipeListener = object : OnSwipeListener(context) {
         override fun onSwipeLeft() {
@@ -62,14 +122,6 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
             if (allowFlingGesture) {
                 displayPosition = DisplayPosition.END
             }
-        }
-    }
-
-    private val screenInfoListener = object : ScreenInfoListener {
-        override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
-            currentScreenInfo = screenInfo
-            setScreenParameters(screenInfo)
-            tryUpdateBackground()
         }
     }
 
@@ -98,18 +150,7 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
         }
 
     init {
-        extractAttributes(context, attrs)
         tryUpdateBackground()
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(screenInfoListener)
     }
 
     private fun extractAttributes(context: Context, attrs: AttributeSet?) {
@@ -127,7 +168,7 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
                     ScreenMode.DUAL_SCREEN.ordinal
                 )
             )
-            displayPosition = DisplayPosition.fromId(
+            displayPosition = DisplayPosition.fromResId(
                 styledAttributes.getInt(
                     R.styleable.ScreenManagerAttrs_display_position,
                     DisplayPosition.DUAL.ordinal
@@ -148,18 +189,17 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
         }
     }
 
-    private fun setScreenParameters(screenInfo: ScreenInfo) {
-        screenInfo.getHinge()?.let {
-            singleScreenWidth = it.left
-        }
-
-        screenInfo.getWindowRect().let {
-            totalScreenWidth = it.right
-        }
-
-        screenInfo.getHinge()?.let {
+    private fun setScreenParameters(foldingFeature: FoldingFeature) {
+        totalScreenWidth = context.getWindowRect().right
+        foldingFeature.bounds.let {
             hingeWidth = it.right - it.left
+            startScreenWidth = it.left
+            endScreenWidth = totalScreenWidth - it.right
         }
+    }
+
+    private fun shouldSplit(): Boolean {
+        return windowLayoutInfo.isInDualMode() && windowLayoutInfo.isFoldingFeatureVertical()
     }
 
     /**
@@ -167,7 +207,7 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
      */
     fun arrangeButtons(startBtnCount: Int, endBtnCount: Int) {
         val child = getChildAt(0) as LinearLayout
-        if (!isSpanned() || isPortrait()) {
+        if (!shouldSplit()) {
             if (child.doesChildCountMatch(startBtnCount, endBtnCount)) {
                 syncBtnCount(startBtnCount, endBtnCount)
             }
@@ -189,7 +229,7 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        if (!isSpanned() || isPortrait()) {
+        if (!shouldSplit()) {
             return
         }
 
@@ -214,22 +254,30 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
         if (buttonsCount == 0) {
             return
         }
-        val startPoint = if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
-            singleScreenWidth + hingeWidth
-        } else {
-            0
-        }
+
+        val startPoint =
+            if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
+                windowLayoutInfo.extractFoldingFeatureRect().right
+            } else {
+                0
+            }
+        val screenWidth =
+            if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
+                endScreenWidth
+            } else {
+                startScreenWidth
+            }
 
         if (defaultChildWidth == -1) {
             defaultChildWidth = getChildAt(0).measuredWidth
         }
-        val screenWidth = singleScreenWidth
 
         val childWidth = if (buttonsCount * defaultChildWidth > screenWidth) {
             screenWidth / buttonsCount
         } else {
             defaultChildWidth
         }
+
         val childMargin = (screenWidth - childWidth * buttonsCount) / (buttonsCount + 1)
 
         for (i in firstBtnIndex..secondBtnIndex) {
@@ -250,7 +298,7 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
     }
 
     private fun updateDisplayPosition(newPosition: DisplayPosition) {
-        if (!isSpanned() || isPortrait()) {
+        if (!shouldSplit()) {
             return
         }
 
@@ -287,11 +335,6 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
         }
     }
 
-    private fun isSpanned(): Boolean {
-        val screenInfo = currentScreenInfo
-        return screenInfo != null && isSpannedInDualScreen(screenMode, screenInfo)
-    }
-
     private fun hasButtonsOnBothScreens(): Boolean {
         return startBtnCount > 0 && endBtnCount > 0
     }
@@ -324,20 +367,21 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
     }
 
     private fun tryUpdateBackground() {
-        if (!isSpanned() || isPortrait() ||
+        if (!shouldSplit() ||
             childCount != 1 || !useTransparentBackground || hasButtonsOnBothScreens()
         ) {
             if (background != initialBackground) {
                 background = initialBackground
             }
         } else {
-            if (displayPosition == DisplayPosition.DUAL) {
-                background = initialBackground
+            background = if (displayPosition == DisplayPosition.DUAL) {
+                initialBackground
             } else {
-                background = createHalfTransparentBackground(
+                createHalfTransparentBackground(
+                    initialBackground,
                     displayPosition,
-                    currentScreenInfo,
-                    initialBackground
+                    windowLayoutInfo.extractFoldingFeatureRect(),
+                    totalScreenWidth
                 )
             }
         }
@@ -386,7 +430,7 @@ open class SurfaceDuoTabLayout @JvmOverloads constructor(
         constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
             allowFlingGesture = source.readInt() == 1
             useTransparentBackground = source.readInt() == 1
-            displayPosition = DisplayPosition.fromId(source.readInt())
+            displayPosition = DisplayPosition.fromResId(source.readInt())
             startBtnCount = source.readInt()
             endBtnCount = source.readInt()
         }

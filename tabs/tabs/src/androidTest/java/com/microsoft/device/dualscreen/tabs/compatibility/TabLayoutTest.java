@@ -26,7 +26,7 @@ import androidx.test.filters.SmallTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout;
+import com.microsoft.device.dualscreen.tabs.TabLayout;
 import com.microsoft.device.dualscreen.tabs.test.R;
 
 import org.junit.Rule;
@@ -56,12 +56,12 @@ public class TabLayoutTest {
     @UiThreadTest
     public void testInflateTabLayoutWithTabItems() {
         final LayoutInflater inflater = LayoutInflater.from(activityTestRule.getActivity());
-        final SurfaceDuoTabLayout tabLayout = (SurfaceDuoTabLayout) inflater.inflate(R.layout.design_tabs_items, null);
+        final TabLayout tabLayout = (TabLayout) inflater.inflate(R.layout.design_tabs_items, null);
 
         assertEquals(3, tabLayout.getTabCount());
 
         // Tab 0 has text, but no icon or custom view
-        SurfaceDuoTabLayout.Tab tab = tabLayout.getTabAt(0);
+        TabLayout.Tab tab = tabLayout.getTabAt(0);
         assertEquals(
                 activityTestRule.getActivity().getString(R.string.tab_layout_text),
                 tab.getText().toString());
@@ -97,17 +97,17 @@ public class TabLayoutTest {
     @Test
     @UiThreadTest
     public void testTabWithCustomLayoutSelection1() {
-        final SurfaceDuoTabLayout.OnTabSelectedListener mockListener =
-                mock(SurfaceDuoTabLayout.OnTabSelectedListener.class);
+        final TabLayout.OnTabSelectedListener mockListener =
+                mock(TabLayout.OnTabSelectedListener.class);
         final LayoutInflater inflater = LayoutInflater.from(activityTestRule.getActivity());
 
-        final SurfaceDuoTabLayout tabLayout = (SurfaceDuoTabLayout) inflater.inflate(R.layout.design_tabs, null);
+        final TabLayout tabLayout = (TabLayout) inflater.inflate(R.layout.design_tabs, null);
         tabLayout.addOnTabSelectedListener(mockListener);
-        final SurfaceDuoTabLayout.Tab tab = tabLayout.newTab();
+        final TabLayout.Tab tab = tabLayout.newTab();
         tab.setCustomView(R.layout.design_tab_item_custom);
         tabLayout.addTab(tab);
         verify(mockListener, times(1)).onTabSelected(eq(tab));
-        verify(mockListener, times(0)).onTabUnselected(any(SurfaceDuoTabLayout.Tab.class));
+        verify(mockListener, times(0)).onTabUnselected(any(TabLayout.Tab.class));
 
         assertNotNull("Tab has custom view", tab.getCustomView());
         assertEquals("First tab is selected", 0, tabLayout.getSelectedTabPosition());
@@ -117,16 +117,16 @@ public class TabLayoutTest {
     @Test
     @UiThreadTest
     public void testTabWithCustomLayoutSelection2() {
-        final SurfaceDuoTabLayout.OnTabSelectedListener mockListener =
-                mock(SurfaceDuoTabLayout.OnTabSelectedListener.class);
+        final TabLayout.OnTabSelectedListener mockListener =
+                mock(TabLayout.OnTabSelectedListener.class);
         final LayoutInflater inflater = LayoutInflater.from(activityTestRule.getActivity());
 
-        final SurfaceDuoTabLayout tabLayout = (SurfaceDuoTabLayout) inflater.inflate(R.layout.design_tabs, null);
+        final TabLayout tabLayout = (TabLayout) inflater.inflate(R.layout.design_tabs, null);
         tabLayout.addOnTabSelectedListener(mockListener);
-        final SurfaceDuoTabLayout.Tab tab = tabLayout.newTab();
+        final TabLayout.Tab tab = tabLayout.newTab();
         tabLayout.addTab(tab);
         verify(mockListener, times(1)).onTabSelected(eq(tab));
-        verify(mockListener, times(0)).onTabUnselected(any(SurfaceDuoTabLayout.Tab.class));
+        verify(mockListener, times(0)).onTabUnselected(any(TabLayout.Tab.class));
         tab.setCustomView(R.layout.design_tab_item_custom);
 
         assertNotNull("Tab has custom view", tab.getCustomView());
@@ -137,21 +137,21 @@ public class TabLayoutTest {
     @Test
     @UiThreadTest
     public void testMultipleTabsWithCustomLayoutSelection1() {
-        final SurfaceDuoTabLayout.OnTabSelectedListener mockListener =
-                mock(SurfaceDuoTabLayout.OnTabSelectedListener.class);
+        final TabLayout.OnTabSelectedListener mockListener =
+                mock(TabLayout.OnTabSelectedListener.class);
         final LayoutInflater inflater = LayoutInflater.from(activityTestRule.getActivity());
-        final SurfaceDuoTabLayout tabs = (SurfaceDuoTabLayout) inflater.inflate(R.layout.design_tabs, null);
+        final TabLayout tabs = (TabLayout) inflater.inflate(R.layout.design_tabs, null);
         tabs.addOnTabSelectedListener(mockListener);
 
-        final SurfaceDuoTabLayout.Tab tab1 = tabs.newTab().setCustomView(R.layout.design_tab_item_custom);
+        final TabLayout.Tab tab1 = tabs.newTab().setCustomView(R.layout.design_tab_item_custom);
         tabs.addTab(tab1);
         verify(mockListener, times(1)).onTabSelected(eq(tab1));
-        verify(mockListener, times(0)).onTabUnselected(any(SurfaceDuoTabLayout.Tab.class));
-        final SurfaceDuoTabLayout.Tab tab2 = tabs.newTab().setCustomView(R.layout.design_tab_item_custom);
+        verify(mockListener, times(0)).onTabUnselected(any(TabLayout.Tab.class));
+        final TabLayout.Tab tab2 = tabs.newTab().setCustomView(R.layout.design_tab_item_custom);
         tabs.addTab(tab2, true);
         verify(mockListener, times(1)).onTabSelected(eq(tab2));
         verify(mockListener, times(1)).onTabUnselected(eq(tab1));
-        final SurfaceDuoTabLayout.Tab tab3 = tabs.newTab().setCustomView(R.layout.design_tab_item_custom);
+        final TabLayout.Tab tab3 = tabs.newTab().setCustomView(R.layout.design_tab_item_custom);
         tabs.addTab(tab3);
         verifyNoMoreInteractions(mockListener);
 
@@ -162,21 +162,21 @@ public class TabLayoutTest {
     @Test
     @UiThreadTest
     public void testMultipleTabsWithCustomLayoutSelection2() {
-        final SurfaceDuoTabLayout.OnTabSelectedListener mockListener =
-                mock(SurfaceDuoTabLayout.OnTabSelectedListener.class);
+        final TabLayout.OnTabSelectedListener mockListener =
+                mock(TabLayout.OnTabSelectedListener.class);
         final LayoutInflater inflater = LayoutInflater.from(activityTestRule.getActivity());
-        final SurfaceDuoTabLayout tabs = (SurfaceDuoTabLayout) inflater.inflate(R.layout.design_tabs, null);
+        final TabLayout tabs = (TabLayout) inflater.inflate(R.layout.design_tabs, null);
         tabs.addOnTabSelectedListener(mockListener);
 
-        final SurfaceDuoTabLayout.Tab tab1 = tabs.newTab();
+        final TabLayout.Tab tab1 = tabs.newTab();
         tabs.addTab(tab1);
         verify(mockListener, times(1)).onTabSelected(eq(tab1));
-        verify(mockListener, times(0)).onTabUnselected(any(SurfaceDuoTabLayout.Tab.class));
-        final SurfaceDuoTabLayout.Tab tab2 = tabs.newTab();
+        verify(mockListener, times(0)).onTabUnselected(any(TabLayout.Tab.class));
+        final TabLayout.Tab tab2 = tabs.newTab();
         tabs.addTab(tab2, true);
         verify(mockListener, times(1)).onTabSelected(eq(tab2));
         verify(mockListener, times(1)).onTabUnselected(eq(tab1));
-        final SurfaceDuoTabLayout.Tab tab3 = tabs.newTab();
+        final TabLayout.Tab tab3 = tabs.newTab();
         tabs.addTab(tab3);
         verifyNoMoreInteractions(mockListener);
 
@@ -188,9 +188,9 @@ public class TabLayoutTest {
         assertTabCustomViewSelected(tabs);
     }
 
-    private static void assertTabCustomViewSelected(final SurfaceDuoTabLayout tabLayout) {
+    private static void assertTabCustomViewSelected(final TabLayout tabLayout) {
         for (int i = 0, count = tabLayout.getTabCount(); i < count; i++) {
-            final SurfaceDuoTabLayout.Tab tab = tabLayout.getTabAt(i);
+            final TabLayout.Tab tab = tabLayout.getTabAt(i);
             final View tabCustomView = tab.getCustomView();
             if (tabCustomView != null) {
                 assertEquals(tab.isSelected(), tabCustomView.isSelected());
