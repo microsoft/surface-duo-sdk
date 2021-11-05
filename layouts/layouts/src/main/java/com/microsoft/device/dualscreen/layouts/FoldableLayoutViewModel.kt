@@ -19,7 +19,7 @@ internal class FoldableLayoutViewModel : ViewModel() {
     var windowLayoutInfo: WindowLayoutInfo? = null
 
     /**
-     * Current SurfaceDuoLayout configuration
+     * Current [FoldableLayout] configuration
      */
     var layoutConfig: FoldableLayout.Config? = null
 }

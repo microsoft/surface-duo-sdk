@@ -18,6 +18,4 @@ val View.locationOnScreen: Point
         return Point(location[0], location[1])
     }
 
-fun ViewGroup.hasChild(@IdRes childId: Int): Boolean {
-    return findViewById<View>(childId) != null
-}
+fun ViewGroup.hasChild(@IdRes childId: Int): Boolean = findViewById<View>(childId) != null
