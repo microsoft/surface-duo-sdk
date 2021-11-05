@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 package com.microsoft.device.dualscreen.layouts
 
 import android.content.Context
@@ -184,8 +189,8 @@ internal class FoldableLayoutController constructor(
      * Inflate content and add it to both containers.
      *
      * @param layoutOrientation The [FoldableLayout] orientation
-     * @param startScreenRect The bounds for the first screen
-     * @param endScreenRect The bounds for the second screen
+     * @param startScreenRect The bounds for the first display area
+     * @param endScreenRect The bounds for the second display area
      */
     private fun addDualScreenContent(
         layoutOrientation: Int,
@@ -249,8 +254,8 @@ internal class FoldableLayoutController constructor(
      * Updates the containers dimensions corresponding to the dual screen mode and layout orientation
      *
      * @param linearLayoutOrientation The [FoldableLayout] orientation
-     * @param startScreenRect The bounds for the first screen
-     * @param endScreenRect The bounds for the second screen
+     * @param startScreenRect The bounds for the first display area
+     * @param endScreenRect The bounds for the second display area
      */
     private fun updateDimensionsForDualScreen(
         linearLayoutOrientation: Int,

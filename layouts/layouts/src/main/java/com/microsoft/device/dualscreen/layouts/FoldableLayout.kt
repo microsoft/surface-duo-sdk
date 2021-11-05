@@ -93,7 +93,7 @@ open class FoldableLayout @JvmOverloads constructor(
         val activity = context as AppCompatActivity
         val windowInfoRepository = activity.windowInfoRepository()
         activity.lifecycleScope.launch(Dispatchers.Main) {
-            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 windowInfoRepository.windowLayoutInfo.collect { info ->
                     viewModel.windowLayoutInfo = info
                     layoutController.foldingFeature = info.getFoldingFeature()
@@ -435,7 +435,7 @@ open class FoldableLayout @JvmOverloads constructor(
     fun updateConfigCreator() = BaseConfig.UpdateConfigCreator(this)
 
     /**
-     * Base class to keep the configuration of the SurfaceDuoLayout
+     * Base class to keep the configuration of the [FoldableLayout]
      *
      * @param <T> An object that extends BaseConfig
      */
@@ -443,26 +443,26 @@ open class FoldableLayout @JvmOverloads constructor(
     sealed class BaseConfig<T : BaseConfig<T>>(protected val config: Config) {
 
         /**
-         * Class to add a new config in SurfaceDuoLayout
+         * Class to add a new config in [FoldableLayout]
          * and recreate the view
          */
         class NewConfigCreator(
-            private val surfaceDuoLayout: FoldableLayout
+            private val foldableLayout: FoldableLayout
         ) : BaseConfig<NewConfigCreator>(Config()) {
             fun reInflate() {
-                surfaceDuoLayout.updateContentWithConfiguration(config)
+                foldableLayout.updateContentWithConfiguration(config)
             }
         }
 
         /**
-         * Class to update the config in SurfaceDuoLayout
+         * Class to update the config in [FoldableLayout]
          * and recreate the view
          */
         class UpdateConfigCreator(
-            private val surfaceDuoLayout: FoldableLayout
-        ) : BaseConfig<UpdateConfigCreator>(surfaceDuoLayout.config.copy()) {
+            private val foldableLayout: FoldableLayout
+        ) : BaseConfig<UpdateConfigCreator>(foldableLayout.config.copy()) {
             fun reInflate() {
-                surfaceDuoLayout.updateContentWithConfiguration(config)
+                foldableLayout.updateContentWithConfiguration(config)
             }
         }
 
