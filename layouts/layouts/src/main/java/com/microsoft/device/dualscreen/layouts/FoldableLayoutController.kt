@@ -70,7 +70,7 @@ internal class FoldableLayoutController constructor(
      * Called when a new configuration change was requested.
      *
      * The function will take the containers inside [FoldableLayout]
-     * and change the width and height of them according to new [SurfaceDuoLayout.Config]
+     * and change the width and height of them according to new [FoldableLayout.Config]
      * @param newConfig The new configuration
      */
     internal fun changeConfiguration(
