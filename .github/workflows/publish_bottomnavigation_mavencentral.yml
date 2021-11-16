@@ -19,7 +19,7 @@ on:
         required: false
 
 jobs:
-  publish-dualscreenSDK:
+  publish-BottomNavigation-MavenCentral:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
