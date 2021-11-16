@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromYDelta="100%"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:toYDelta="0" />
+
+    <alpha
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromAlpha="0.0"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:toAlpha="1.0" />
+</set>
