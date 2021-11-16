@@ -17,4 +17,9 @@ internal class FoldableLayoutViewModel : ViewModel() {
      * Application screen state.
      */
     var windowLayoutInfo: WindowLayoutInfo? = null
+
+    /**
+     * Current [FoldableLayout] configuration
+     */
+    var layoutConfig: FoldableLayout.Config? = null
 }

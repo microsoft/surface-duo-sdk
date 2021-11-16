@@ -13,8 +13,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.tabs.test.R
 import com.microsoft.device.dualscreen.tabs.utils.SimpleTabActivity
 import com.microsoft.device.dualscreen.tabs.utils.areTabsOnScreen
@@ -22,15 +20,12 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.test.utils.resetOrientation
-import com.microsoft.device.dualscreen.test.utils.setOrientationLeft
-import com.microsoft.device.dualscreen.test.utils.setOrientationRight
-import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
+import com.microsoft.device.dualscreen.utils.test.setOrientationRight
+import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers.not
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,21 +36,6 @@ class SurfaceDuoTabLayoutTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleTabActivity::class.java)
-    private var screenInfoListener = ScreenInfoListenerImpl()
-
-    @Before
-    fun before() {
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
-    }
-
-    @After
-    fun after() {
-        ScreenManagerProvider.getScreenManager().clear()
-        resetOrientation()
-        screenInfoListener.resetScreenInfoCounter()
-    }
 
     @Test
     fun testDisplayPositionFromLayout() {

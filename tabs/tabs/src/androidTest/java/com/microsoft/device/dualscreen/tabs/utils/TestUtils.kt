@@ -12,11 +12,11 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
-import com.microsoft.device.dualscreen.DisplayPosition
-import com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout
-import com.microsoft.device.dualscreen.test.utils.DUAL_SCREEN_WIDTH
-import com.microsoft.device.dualscreen.test.utils.HINGE_WIDTH
-import com.microsoft.device.dualscreen.test.utils.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.tabs.TabLayout
+import com.microsoft.device.dualscreen.utils.test.DUAL_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.utils.test.HINGE_WIDTH
+import com.microsoft.device.dualscreen.utils.test.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -28,13 +28,13 @@ fun changeDisplayPosition(pos: DisplayPosition): ViewAction =
         }
 
         override fun getDescription(): String {
-            return "Change Display Position value of SurfaceDuoTabLayout"
+            return "Change Display Position value of TabLayout"
         }
 
         override fun perform(uiController: UiController, view: View) {
             uiController.loopMainThreadUntilIdle()
 
-            val tabLayout = view as SurfaceDuoTabLayout
+            val tabLayout = view as TabLayout
             tabLayout.displayPosition = pos
 
             uiController.loopMainThreadUntilIdle()
@@ -48,13 +48,13 @@ fun changeButtonArrangement(startBtnCount: Int, endBtnCount: Int): ViewAction =
         }
 
         override fun getDescription(): String {
-            return "Change Display Position value of SurfaceDuoTabLayout"
+            return "Change Display Position value of TabLayout"
         }
 
         override fun perform(uiController: UiController, view: View) {
             uiController.loopMainThreadUntilIdle()
 
-            val tabLayout = view as SurfaceDuoTabLayout
+            val tabLayout = view as TabLayout
             tabLayout.arrangeButtons(startBtnCount, endBtnCount)
 
             uiController.loopMainThreadUntilIdle()
@@ -62,14 +62,14 @@ fun changeButtonArrangement(startBtnCount: Int, endBtnCount: Int): ViewAction =
     }
 
 fun areTabsOnScreen(pos: DisplayPosition): Matcher<View> =
-    object : BoundedMatcher<View, SurfaceDuoTabLayout>(SurfaceDuoTabLayout::class.java) {
+    object : BoundedMatcher<View, TabLayout>(TabLayout::class.java) {
         override fun describeTo(description: Description?) {
             description?.appendText(
                 "Checks whether the tabs are displayed on the right screen"
             )
         }
 
-        override fun matchesSafely(item: SurfaceDuoTabLayout?): Boolean {
+        override fun matchesSafely(item: TabLayout?): Boolean {
             if (item == null || pos != item.displayPosition) {
                 return false
             }
@@ -105,7 +105,7 @@ fun checkChildCount(expectedChildCount: Int): Matcher<View> =
         }
 
         override fun matchesSafely(item: View?): Boolean {
-            if (item == null || item !is SurfaceDuoTabLayout) {
+            if (item == null || item !is TabLayout) {
                 return false
             }
 

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.sample_surfaceduo_layout
+package com.microsoft.device.dualscreen.sample_surfaceduo_layout
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

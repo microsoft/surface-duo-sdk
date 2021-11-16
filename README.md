@@ -55,7 +55,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Layouts**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta5"
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta6"
     ```
 
     **Tabs**

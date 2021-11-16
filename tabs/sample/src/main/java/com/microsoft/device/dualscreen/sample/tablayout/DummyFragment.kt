@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.sample.tablayout
+package com.microsoft.device.dualscreen.sample.tablayout
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,11 +17,11 @@ class DummyFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view: View =
             inflater.inflate(R.layout.dummy_fragment, container, false)
-        view.findViewById<TextView>(R.id.first_text).text = "Surface"
-        view.findViewById<TextView>(R.id.second_text).text = "Duo"
+        view.findViewById<TextView>(R.id.first_text).text = getString(R.string.label_tablayout)
+        view.findViewById<TextView>(R.id.second_text).text = getString(R.string.label_sample)
         return view
     }
 }

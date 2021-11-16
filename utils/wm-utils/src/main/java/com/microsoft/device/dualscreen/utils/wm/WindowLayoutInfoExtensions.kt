@@ -6,6 +6,7 @@
 package com.microsoft.device.dualscreen.utils.wm
 
 import android.graphics.Rect
+import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowLayoutInfo
 
@@ -44,4 +45,17 @@ fun WindowLayoutInfo?.extractFoldingFeatureRect(): Rect =
         Rect(0, 0, 0, 0)
     } else {
         displayFeatures.first().bounds
+    }
+
+/**
+ * Returns [ScreenMode.DUAL_SCREEN] if there is any [DisplayFeature],
+ * [ScreenMode.SINGLE_SCREEN] otherwise
+ */
+val WindowLayoutInfo.screenMode: ScreenMode
+    get() {
+        return if (displayFeatures.isNotEmpty()) {
+            ScreenMode.DUAL_SCREEN
+        } else {
+            ScreenMode.SINGLE_SCREEN
+        }
     }

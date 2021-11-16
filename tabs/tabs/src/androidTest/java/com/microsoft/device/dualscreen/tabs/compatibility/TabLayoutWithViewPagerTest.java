@@ -46,6 +46,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
+
 import androidx.annotation.DimenRes;
 import androidx.annotation.LayoutRes;
 import androidx.test.espresso.UiController;
@@ -58,19 +59,21 @@ import androidx.test.runner.AndroidJUnit4;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout;
-import com.microsoft.device.dualscreen.tabs.test.R;
+import com.microsoft.device.dualscreen.tabs.TabLayout;
 import com.microsoft.device.dualscreen.tabs.compatibility.activities.TabLayoutWithViewPagerActivity;
 import com.microsoft.device.dualscreen.tabs.compatibility.utils.TabLayoutActions;
 import com.microsoft.device.dualscreen.tabs.compatibility.utils.TestUtilsActions;
 import com.microsoft.device.dualscreen.tabs.compatibility.utils.TestUtilsMatchers;
 import com.microsoft.device.dualscreen.tabs.compatibility.utils.ViewPagerActions;
-import java.util.ArrayList;
+import com.microsoft.device.dualscreen.tabs.test.R;
+
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
 
 @RunWith(AndroidJUnit4.class)
 public class TabLayoutWithViewPagerTest {
@@ -79,7 +82,7 @@ public class TabLayoutWithViewPagerTest {
     public final ActivityTestRule<TabLayoutWithViewPagerActivity> activityTestRule =
             new ActivityTestRule<>(TabLayoutWithViewPagerActivity.class);
 
-    private SurfaceDuoTabLayout tabLayout;
+    private TabLayout tabLayout;
     private ViewPager viewPager;
     private ColorPagerAdapter defaultPagerAdapter;
 
@@ -444,7 +447,7 @@ public class TabLayoutWithViewPagerTest {
         onView(withId(R.id.tabs_viewpager))
                 .perform(
                         addItemsToPager(
-                                new String[] {"Yellow", "Magenta"}, new Integer[] {Color.YELLOW, Color.MAGENTA}));
+                                new String[]{"Yellow", "Magenta"}, new Integer[]{Color.YELLOW, Color.MAGENTA}));
 
         // We have more comprehensive test coverage for changing the ViewPager adapter in v4/tests.
         // Here we are focused on testing the continuous integration of TabLayout with the new
@@ -476,7 +479,7 @@ public class TabLayoutWithViewPagerTest {
         onView(withId(R.id.tabs_viewpager))
                 .perform(
                         addItemsToPager(
-                                new String[] {"Yellow", "Magenta"}, new Integer[] {Color.YELLOW, Color.MAGENTA}));
+                                new String[]{"Yellow", "Magenta"}, new Integer[]{Color.YELLOW, Color.MAGENTA}));
 
         // Assert that the TabLayout did not update and add the new items
         final int newItemCount = defaultPagerAdapter.getCount();
@@ -556,8 +559,8 @@ public class TabLayoutWithViewPagerTest {
         onView(withId(R.id.tabs)).perform(setupWithViewPager(viewPager));
 
         // Set fixed mode on the TabLayout
-        onView(withId(R.id.tabs)).perform(TabLayoutActions.setTabMode(SurfaceDuoTabLayout.MODE_FIXED));
-        assertEquals("Fixed tab mode", SurfaceDuoTabLayout.MODE_FIXED, tabLayout.getTabMode());
+        onView(withId(R.id.tabs)).perform(TabLayoutActions.setTabMode(TabLayout.MODE_FIXED));
+        assertEquals("Fixed tab mode", TabLayout.MODE_FIXED, tabLayout.getTabMode());
 
         // Add a bunch of tabs and verify that all of them are visible on the screen
         for (int i = 0; i < 8; i++) {
@@ -586,11 +589,11 @@ public class TabLayoutWithViewPagerTest {
      * method then checks that all tab views respect the minimum and maximum tab width set on
      * TabLayout.
      *
-     * @param tabLayoutResId Layout resource for the TabLayout to be wired to the ViewPager.
+     * @param tabLayoutResId   Layout resource for the TabLayout to be wired to the ViewPager.
      * @param tabMinWidthResId If non zero, points to the dimension resource to use for tab min width
-     *     check.
+     *                         check.
      * @param tabMaxWidthResId If non zero, points to the dimension resource to use for tab max width
-     *     check.
+     *                         check.
      */
     private void verifyMinMaxTabWidth(
             @LayoutRes int tabLayoutResId,
@@ -598,7 +601,7 @@ public class TabLayoutWithViewPagerTest {
             @DimenRes int tabMaxWidthResId) {
         setupTabLayoutWithViewPager();
 
-        assertEquals("Scrollable tab mode", SurfaceDuoTabLayout.MODE_SCROLLABLE, tabLayout.getTabMode());
+        assertEquals("Scrollable tab mode", TabLayout.MODE_SCROLLABLE, tabLayout.getTabMode());
 
         final Resources res = activityTestRule.getActivity().getResources();
         final int minTabWidth =
@@ -622,7 +625,7 @@ public class TabLayoutWithViewPagerTest {
         // no tab is wider than the configured max width. Before we start that test,
         // verify that we're in the scrollable mode so that each tab title gets as much width
         // as needed to display its text.
-        assertEquals("Scrollable tab mode", SurfaceDuoTabLayout.MODE_SCROLLABLE, tabLayout.getTabMode());
+        assertEquals("Scrollable tab mode", TabLayout.MODE_SCROLLABLE, tabLayout.getTabMode());
 
         final StringBuilder tabTitleBuilder = new StringBuilder();
         for (int i = 0; i < 40; i++) {

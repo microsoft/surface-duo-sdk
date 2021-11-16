@@ -6,11 +6,14 @@
   -->
 
 <resources>
-    <string name="app_name">DuoTabLayout Sample</string>
+    <string name="app_name">TabLayout Sample</string>
 
     <string name="move_tab_layout_start">Move to Start</string>
     <string name="move_tab_layout_end">Move to End</string>
-    <string name="move_tab_layout_middle">Span 4-2</string>
+    <string name="move_tab_layout_middle">Span 4–2</string>
 
     <string name="fragment_no">Fragment no: </string>
+
+    <string name="label_tablayout">TabLayout</string>
+    <string name="label_sample">Sample</string>
 </resources>
