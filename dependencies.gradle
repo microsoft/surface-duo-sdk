@@ -19,13 +19,13 @@ ext {
     screenManagerDMVersionCode = 4
     screenManagerWMVersionCode = 4
     screenManagerUtilsVersionCode = 4
-    layoutsVersionCode = 5
+    layoutsVersionCode = 6
     fragmentsHandlerVersionCode = 3
     bottomNavigationVersionCode = 3
     tabsVersionCode = 2
     recyclerviewVersionCode = 4
     inkSDKVersionCode = 6
-    wmUtilsVersionCode = 1
+    wmUtilsVersionCode = 2
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -33,13 +33,13 @@ ext {
     screenManagerDMVersionName = '1.0.0-beta4'
     screenManagerWMVersionName = '1.0.0-beta4'
     screenManagerUtilsVersionName = '1.0.0-beta4'
-    layoutsVersionName = '1.0.0-beta5'
+    layoutsVersionName = '1.0.0-beta6'
     fragmentsHandlerVersionName = '1.0.0-beta3'
     bottomNavigationVersionName = '1.0.0-beta3'
     tabsVersionName = '1.0.0-beta2'
     recyclerviewVersionName = '1.0.0-beta4'
     inkSDKVersionName = "1.0.0-alpha4"
-    wmUtilsVersionName = "1.0.0-beta1"
+    wmUtilsVersionName = "1.0.0-beta2"
     // ----------------------------------
 
     //Config Android sdk, plugins and libraries version
