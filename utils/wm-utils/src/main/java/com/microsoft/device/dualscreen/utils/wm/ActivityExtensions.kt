@@ -9,15 +9,17 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Rect
+import androidx.window.layout.WindowMetricsCalculator
 
 /**
  * Returns a [Rect] representing the total space the application is covering.
  */
 fun Context.getWindowRect(): Rect {
-    val windowRect = Rect()
     val activity = getActivityFromContext()
-    activity?.windowManager?.defaultDisplay?.getRectSize(windowRect)
-    return windowRect
+    return activity?.let {
+        val windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(it)
+        return windowMetrics.bounds
+    } ?: Rect(0, 0, 0, 0)
 }
 
 /**

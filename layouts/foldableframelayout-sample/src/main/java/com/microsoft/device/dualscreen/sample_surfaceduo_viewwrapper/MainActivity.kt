@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper
+package com.microsoft.device.dualscreen.sample_surfaceduo_viewwrapper
 
 import android.os.Bundle
 import android.os.Handler
@@ -14,9 +14,9 @@ import androidx.core.view.isVisible
 import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
+import com.microsoft.device.dualscreen.sample_surfaceduo_viewwrapper.databinding.ActivityMainBinding
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
-import com.microsoft.device.surfaceduo.sample_surfaceduo_viewwrapper.databinding.ActivityMainBinding
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {

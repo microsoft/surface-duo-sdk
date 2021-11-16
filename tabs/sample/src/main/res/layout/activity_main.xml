@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout
+    <com.microsoft.device.dualscreen.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

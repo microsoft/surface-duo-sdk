@@ -32,7 +32,7 @@ class FrameLayoutTestForSurfaceDuo {
     fun testDisplayPositionFromLayout() {
         switchFromSingleToDualScreen()
         onView(withId(R.id.duo_wrapper))
-            .check(matches(isFrameLayoutOnScreen(DisplayPosition.END)))
+            .check(matches(isFrameLayoutOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test

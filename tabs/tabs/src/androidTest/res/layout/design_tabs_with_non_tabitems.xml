@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout
+<com.microsoft.device.dualscreen.tabs.TabLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -29,4 +29,4 @@
     <include
         layout="@layout/design_tab_item_custom"/>
 
-</com.microsoft.device.dualscreen.tabs.SurfaceDuoTabLayout>
+</com.microsoft.device.dualscreen.tabs.TabLayout>
