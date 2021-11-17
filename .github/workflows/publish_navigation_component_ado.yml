@@ -7,7 +7,7 @@ name: publish-navigation-component-ado
 on:
   push:
     tags:
-      - 'dualscreen*'
+      - 'navigation*'
 
   workflow_dispatch:
     inputs:
@@ -18,7 +18,7 @@ on:
         required: false
 
 jobs:
-  publish-dualscreenSDK:
+  publish-NavigationComponent:
     runs-on: ubuntu-latest
 
     strategy:

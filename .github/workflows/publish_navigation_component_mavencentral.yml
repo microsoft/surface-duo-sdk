@@ -8,7 +8,7 @@ name: publish-navigation-component-mavencentral
 on:
   push:
     tags:
-      - 'dualscreen*'
+      - 'navigation*'
 
   workflow_dispatch:
     inputs:
@@ -19,7 +19,7 @@ on:
         required: false
 
 jobs:
-  publish-dualscreenSDK:
+  publish-NavigationComponent:
     runs-on: ubuntu-latest
 
     strategy:

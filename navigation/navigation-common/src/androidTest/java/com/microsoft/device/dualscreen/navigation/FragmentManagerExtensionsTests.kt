@@ -15,7 +15,7 @@ import com.microsoft.device.dualscreen.navigation.utils.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.navigation.utils.SimpleFragmentBackStackListener
 import com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity
 import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
-import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
