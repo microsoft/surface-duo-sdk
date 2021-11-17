@@ -18,6 +18,7 @@
 
 package androidx.navigation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -112,6 +113,7 @@ public class FoldableActivityNavigator extends FoldableNavigator<FoldableActivit
         return false;
     }
 
+    @SuppressLint("WrongConstant")
     @Nullable
     @Override
     public FoldableNavDestination navigate(@NonNull Destination destination, @Nullable Bundle args,
