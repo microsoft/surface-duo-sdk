@@ -26,6 +26,7 @@ ext {
     recyclerviewVersionCode = 4
     inkSDKVersionCode = 6
     wmUtilsVersionCode = 2
+    navigationVersionCode = 1
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -40,14 +41,17 @@ ext {
     recyclerviewVersionName = '1.0.0-beta4'
     inkSDKVersionName = "1.0.0-alpha4"
     wmUtilsVersionName = "1.0.0-beta2"
+    navigationVersionName = "1.0.0-alpha1"
     // ----------------------------------
 
     //Config Android sdk, plugins and libraries version
     gradlePluginVersion = "7.0.2"
     kotlinVersion = "1.5.0"
     compileSdkVersion = 29
+    compileSdkVersion2 = 31
     buildToolsVersion = '30.0.3'
     targetSdkVersion = compileSdkVersion
+    targetSdkVersion2 = compileSdkVersion2
     minSdkVersion = 21
 
     config = [
@@ -68,15 +72,29 @@ ext {
     lifecycleVersion = "2.3.1"
     recyclerViewVersion = "1.2.0"
     lifecycleRuntimeKtxVersion = "2.4.0-rc01"
+    annotationVersion = "1.1.0"
+    fragmentKtxVersion = "1.3.1"
+    windowManagerVersion = '1.0.0-beta02'
+    activityKtxVersion = "1.1.0"
+    customViewVersion = "1.1.0"
+    drawerLayoutVersion = "1.1.1"
+    transitionVersion = "1.4.0"
 
     androidxDependencies = [
-            appCompat         : "androidx.appcompat:appcompat:$appCompatVersion",
-            constraintLayout  : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
-            coreKtx           : "androidx.core:core-ktx:$coreKtxVersion",
-            window            : "androidx.window:window:$windowVersion",
-            lifecycleViewmodel: "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion",
-            recyclerView      : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
-            lifecycleRuntimeKtx: "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleRuntimeKtxVersion"
+            appCompat          : "androidx.appcompat:appcompat:$appCompatVersion",
+            constraintLayout   : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
+            coreKtx            : "androidx.core:core-ktx:$coreKtxVersion",
+            window             : "androidx.window:window:$windowVersion",
+            lifecycleViewmodel : "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion",
+            recyclerView       : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
+            lifecycleRuntimeKtx: "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleRuntimeKtxVersion",
+            annotation         : "androidx.annotation:annotation:$annotationVersion",
+            fragmentKtx        : "androidx.fragment:fragment-ktx:$fragmentKtxVersion",
+            windowManager      : "androidx.window:window-java:$windowManagerVersion",
+            activityKtx        : "androidx.activity:activity-ktx:$activityKtxVersion",
+            customView         : "androidx.customview:customview:$customViewVersion",
+            drawerLayout       : "androidx.drawerlayout:drawerlayout:$drawerLayoutVersion",
+            transition         : "androidx.transition:transition:$transitionVersion"
     ]
 
     //Material Design
@@ -98,8 +116,11 @@ ext {
     ]
 
     // Navigation version
-    navigationVersion = "2.3.4"
+    // Navigation version
+    navigationVersion = "2.3.5"
     navigationDependencies = [
+            common        : "androidx.navigation:navigation-common:$navigationVersion",
+            commonKtx     : "androidx.navigation:navigation-common-ktx:$navigationVersion",
             runtime       : "androidx.navigation:navigation-runtime:$navigationVersion",
             runtimeKtx    : "androidx.navigation:navigation-runtime-ktx:$navigationVersion",
             fragment      : "androidx.navigation:navigation-fragment:$navigationVersion",
@@ -124,22 +145,33 @@ ext {
     testRulesVersion = "1.3.0"
     uiAutomatorVersion = "2.2.0"
     supportTestRulesVersion = "1.0.2"
+    fragmentTestingVersion = "1.3.1"
+    lifecycleRuntimeTestingVersion = "2.3.1"
+    supportTestRulesVersion = "1.0.2"
+    espressoIntentsVersion = "3.3.0"
+    espressoContribVersion = "3.3.0"
 
     instrumentationTestDependencies = [
-            junit       : "androidx.test.ext:junit:$junitInstrumentationVersion",
-            junitKtx    : "androidx.test.ext:junit-ktx:$junitInstrumentationVersion",
-            espressoCore: "androidx.test.espresso:espresso-core:$espressoCoreVersion",
-            testRunner  : "androidx.test:runner:$testRunnerVersion",
-            testRules   : "androidx.test:rules:$testRulesVersion",
-            uiAutomator : "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion",
+            junit                  : "androidx.test.ext:junit:$junitInstrumentationVersion",
+            junitKtx               : "androidx.test.ext:junit-ktx:$junitInstrumentationVersion",
+            espressoCore           : "androidx.test.espresso:espresso-core:$espressoCoreVersion",
+            testRunner             : "androidx.test:runner:$testRunnerVersion",
+            testRules              : "androidx.test:rules:$testRulesVersion",
+            uiAutomator            : "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion",
+            navigationTesting      : "androidx.navigation:navigation-testing:$navigationVersion",
+            fragmentTesting        : "androidx.fragment:fragment-testing:$fragmentTestingVersion",
+            lifecycleRuntimeTesting: "androidx.lifecycle:lifecycle-runtime-testing:$lifecycleRuntimeTestingVersion",
+            supportTestRules       : "com.android.support.test:rules:$supportTestRulesVersion",
+            espressoIntents        : "androidx.test.espresso:espresso-intents:$espressoIntentsVersion",
+            espressoContrib        : "androidx.test.espresso:espresso-contrib:$espressoContribVersion"
     ]
 
     mlKitVersion = "16.1.0"
     mlKitDependencies = [
-            digitalInk  : "com.google.mlkit:digital-ink-recognition:$mlKitVersion"
+            digitalInk: "com.google.mlkit:digital-ink-recognition:$mlKitVersion"
     ]
 
     inkSDK = [
-            minSdkVersion : 23
+            minSdkVersion: 23
     ]
 }

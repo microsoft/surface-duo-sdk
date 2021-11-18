@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) Microsoft Corporation. All rights reserved.
+  ~ Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <declare-styleable name="FoldableNavigation">
+        <attr name="launchScreen" format="enum">
+            <enum name="start" value="1" />
+            <enum name="end" value="2" />
+            <enum name="both" value="3" />
+        </attr>
+    </declare-styleable>
+</resources>

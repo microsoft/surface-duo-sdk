@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion2
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.microsoft.device.dualscreen.navigation.sample"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion2
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude("META-INF/*.kotlin_module")
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation project(':navigation:navigation-ui-ktx')
+    implementation project(':navigation:navigation-fragment-ktx')
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.coreKtx
+    implementation androidxDependencies.constraintLayout
+    implementation androidxDependencies.recyclerView
+
+    // Unit Testing
+    testImplementation testDependencies.junit
+
+    // Espresso UI Testing
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+    androidTestImplementation instrumentationTestDependencies.espressoContrib
+    androidTestImplementation instrumentationTestDependencies.supportTestRules
+    androidTestImplementation project(':test-utils')
+}
