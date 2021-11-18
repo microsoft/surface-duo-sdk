@@ -79,6 +79,19 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     implementation "com.microsoft.device:ink:1.0.0-alpha4"
     ```
 
+    **Foldable Navigation Component**
+    ```gradle
+    def nav_version = "1.0.0-alpha1"
+
+    // Java language implementation
+    implementation "com.microsoft.device.dualscreen:navigation-fragment:$nav_version"
+    implementation "com.microsoft.device.dualscreen:navigation-ui:$nav_version"
+
+    // Kotlin
+    implementation "com.microsoft.device.dualscreen:navigation-fragment-ktx:$nav_version"
+    implementation "com.microsoft.device.dualscreen:navigation-ui-ktx:$nav_version"
+    ```
+
 ### Useful links
 
 - Documentation for these libraries at [dual-screen library](https://docs.microsoft.com/dual-screen/android/api-reference/dualscreen-library/)
