@@ -22,7 +22,7 @@ ext {
     layoutsVersionCode = 6
     fragmentsHandlerVersionCode = 3
     bottomNavigationVersionCode = 3
-    tabsVersionCode = 2
+    tabsVersionCode = 3
     recyclerviewVersionCode = 4
     inkSDKVersionCode = 6
     wmUtilsVersionCode = 2
@@ -37,7 +37,7 @@ ext {
     layoutsVersionName = '1.0.0-beta6'
     fragmentsHandlerVersionName = '1.0.0-beta3'
     bottomNavigationVersionName = '1.0.0-beta3'
-    tabsVersionName = '1.0.0-beta2'
+    tabsVersionName = '1.0.0-beta3'
     recyclerviewVersionName = '1.0.0-beta4'
     inkSDKVersionName = "1.0.0-alpha4"
     wmUtilsVersionName = "1.0.0-beta2"
