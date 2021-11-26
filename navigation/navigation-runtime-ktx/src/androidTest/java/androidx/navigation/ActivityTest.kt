@@ -18,10 +18,10 @@
 
 package androidx.navigation
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.filters.LargeTest
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertTrue
@@ -120,7 +120,7 @@ data class FakeTestArgs(val bundle: Bundle) : NavArgs {
         fun fromBundle(bundle: Bundle) = FakeTestArgs(bundle)
     }
 }
-class TestActivity : Activity() {
+class TestActivity : AppCompatActivity() {
     val args: FakeTestArgs by foldableNavArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {

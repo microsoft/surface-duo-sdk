@@ -19,8 +19,8 @@
 package androidx.navigation.fragment
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavArgs
 import androidx.navigation.fragment.ktx.test.R
 import androidx.test.annotation.UiThreadTest
@@ -89,7 +89,7 @@ class ActivityTest {
     }
 }
 
-class TestActivity : FragmentActivity()
+class TestActivity : AppCompatActivity()
 
 /**
  * It is a lot harder to test generated NavArgs classes, so

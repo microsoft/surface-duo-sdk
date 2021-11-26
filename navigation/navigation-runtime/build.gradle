@@ -67,7 +67,7 @@ dependencies {
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
-    androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation project(':utils:test-utils')
     androidTestImplementation project(':navigation:navigation-test-utils')
 }

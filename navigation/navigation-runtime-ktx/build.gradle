@@ -63,6 +63,7 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.supportTestRules
     androidTestImplementation instrumentationTestDependencies.testRunner
     androidTestImplementation commonDependencies.googleTruth
+    androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation project(':utils:test-utils')
     androidTestImplementation project(':navigation:navigation-test-utils')
 }

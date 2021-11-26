@@ -26,9 +26,9 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
-import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.testing.TestLifecycleOwner
 import androidx.navigation.test.R
@@ -1658,7 +1658,7 @@ class FoldableNavControllerTest {
     }
 }
 
-class TestActivity : ComponentActivity() {
+class TestActivity : AppCompatActivity() {
 
     val navController: FoldableNavController = createNavController(this)
 

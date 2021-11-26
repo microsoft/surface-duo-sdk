@@ -1,4 +1,4 @@
-package com.microsoft.device.dualscreen.test.utils
+package com.microsoft.device.dualscreen.utils.test
 
 import androidx.test.espresso.ViewAction
 
