@@ -63,7 +63,7 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation instrumentationTestDependencies.testRunner
     androidTestImplementation instrumentationTestDependencies.fragmentTesting
-    androidTestImplementation project(commonDependencies.screenManager)
+    androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker

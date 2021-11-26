@@ -42,4 +42,8 @@ dependencies {
     implementation commonDependencies.mockitoCore
     implementation instrumentationTestDependencies.uiAutomator
     implementation instrumentationTestDependencies.espressoCore
+    implementation androidxDependencies.appCompat
+    implementation commonDependencies.mockitoCore
+    implementation instrumentationTestDependencies.junitKtx
+    implementation androidxDependencies.windowManager
 }
