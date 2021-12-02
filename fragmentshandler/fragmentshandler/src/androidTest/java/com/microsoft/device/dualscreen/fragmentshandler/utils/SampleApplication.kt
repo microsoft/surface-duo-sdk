@@ -6,7 +6,6 @@
 package com.microsoft.device.dualscreen.fragmentshandler.utils
 
 import android.app.Application
-import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.fragmentshandler.FragmentManagerStateHandler
 
 /**
@@ -15,7 +14,6 @@ import com.microsoft.device.dualscreen.fragmentshandler.FragmentManagerStateHand
 class SampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        ScreenManagerProvider.init(this)
         FragmentManagerStateHandler.init(this)
     }
 }

@@ -5,18 +5,23 @@
 
 package com.microsoft.device.dualscreen.fragmentshandler.utils
 
-import android.content.res.Configuration
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
-import com.microsoft.device.dualscreen.ScreenInfo
-import com.microsoft.device.dualscreen.ScreenInfoListener
-import com.microsoft.device.dualscreen.ScreenManagerProvider
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.fragmentshandler.test.R
+import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.launch
 
 /**
  * Simple activity used for testing purpose.
  */
-class SampleActivity : FragmentActivity(), ScreenInfoListener {
+class SampleActivity : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_DUAL_START = "FragmentDualStart"
         private const val FRAGMENT_DUAL_END = "FragmentDualEnd"
@@ -65,30 +70,29 @@ class SampleActivity : FragmentActivity(), ScreenInfoListener {
         lastSavedInstanceState = savedInstanceState
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
+        registerWindowInfoFlow()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        ScreenManagerProvider.getScreenManager().onConfigurationChanged()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        ScreenManagerProvider.getScreenManager().removeScreenInfoListener(this)
+    private fun registerWindowInfoFlow() {
+        val windowInfoRepository = windowInfoRepository()
+        lifecycleScope.launch(Dispatchers.Main) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                windowInfoRepository.windowLayoutInfo.collectIndexed { index, info ->
+                    if (index == 0) {
+                        onWindowLayoutInfoChanged(info)
+                    }
+                }
+            }
+        }
     }
 
     /**
      * Called whenever the screen info was changed.
-     * @param screenInfo object used to retrieve screen information
+     * @param windowLayoutInfo object used to retrieve screen information
      */
-    override fun onScreenInfoChanged(screenInfo: ScreenInfo) {
+    private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {
         when {
-            screenInfo.isDualMode() -> setupDualScreenFragments()
+            windowLayoutInfo.isInDualMode() -> setupDualScreenFragments()
             else -> setupSingleScreenFragments()
         }
     }

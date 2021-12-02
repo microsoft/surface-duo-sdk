@@ -8,14 +8,26 @@ package com.microsoft.device.dualscreen.fragmentshandler
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.Context.WINDOW_SERVICE
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.view.Surface
+import android.view.WindowManager
 import androidx.annotation.VisibleForTesting
-import com.microsoft.device.dualscreen.ActivityLifecycle
-import com.microsoft.device.dualscreen.ScreenInfoProvider
-import com.microsoft.device.dualscreen.ScreenMode
-import com.microsoft.device.dualscreen.Version
-import com.microsoft.device.dualscreen.screenMode
+import androidx.core.content.ContextCompat
+import androidx.window.layout.WindowInfoRepository
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowLayoutInfo
+import com.microsoft.device.dualscreen.utils.wm.ActivityLifecycle
+import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import com.microsoft.device.dualscreen.utils.wm.screenMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.launch
 
 /**
  * Wrapper class that restores the state of the fragments when the host activity is recreated.
@@ -38,25 +50,43 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
         app.registerActivityLifecycleCallbacks(this)
     }
 
-    private var previousSpanningMode = ScreenMode.SINGLE_SCREEN
+    private var previousSpanningMode: ScreenMode? = null
     private var currentSpanningMode = previousSpanningMode
     private var screenModeWasChanged = false
 
     private var oldOrientation = Configuration.ORIENTATION_UNDEFINED
     private var orientation = oldOrientation
+    private var orientationWasChanged = false
 
     private var fragmentManagerStateMap = mutableMapOf<String, FragmentManagerStateWrapper>()
+
+    private var job: Job? = null
+    private fun registerWindowInfoFlow(activity: Activity) {
+        val executor = ContextCompat.getMainExecutor(activity)
+        val windowInfoRepository: WindowInfoRepository = activity.windowInfoRepository()
+        job?.cancel()
+        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
+            windowInfoRepository.windowLayoutInfo
+                .collectIndexed { index, info ->
+                    if (index == 0 && !orientationWasChanged) {
+                        checkForScreenModeChanges(info)
+                    }
+                }
+        }
+    }
 
     /**
      * Clears the internal data.
      */
     @VisibleForTesting
     fun clear() {
-        previousSpanningMode = ScreenMode.SINGLE_SCREEN
+        previousSpanningMode = null
         currentSpanningMode = previousSpanningMode
+        screenModeWasChanged = false
+
         oldOrientation = Configuration.ORIENTATION_UNDEFINED
         orientation = oldOrientation
-        screenModeWasChanged = false
+        orientationWasChanged = false
         fragmentManagerStateMap.clear()
     }
 
@@ -65,20 +95,36 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
      * [Activity.onCreate]
      */
     override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
-        super.onActivityPreCreated(activity, savedInstanceState)
-        orientation = activity.resources.configuration.orientation
-        if (ScreenInfoProvider.version == Version.DisplayMask) {
-            detectSpanningMode(activity)
-        }
+        registerWindowInfoFlow(activity)
+        checkForOrientationChanges(activity)
 
         savedInstanceState?.let {
-            if (screenModeWasChanged) {
+            if (shouldSwapStates()) {
                 changeFragmentManagerState(activity, it)
             }
         } ?: run {
             fragmentManagerStateMap[activity.getMapKey()] = FragmentManagerStateWrapper()
         }
+        super.onActivityPreCreated(activity, savedInstanceState)
     }
+
+    /**
+     * Check if the device orientation was changed
+     *
+     * @param activity [Activity] used to retrieve the current device orientation
+     */
+    private fun checkForOrientationChanges(activity: Activity) {
+        orientation = activity.displayOrientation
+        if (oldOrientation == Configuration.ORIENTATION_UNDEFINED) {
+            oldOrientation = orientation
+        }
+        orientationWasChanged = orientation != oldOrientation
+    }
+
+    /**
+     * Returns [true] if the app bundle can be swapped from one state to another, [false] otherwise
+     */
+    private fun shouldSwapStates(): Boolean = !orientationWasChanged && screenModeWasChanged
 
     /**
      * Contains swap FragmentManagerState logic depending on the activity state:
@@ -86,49 +132,16 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
      *  - Resuming to single screen or dual screen
      */
     private fun changeFragmentManagerState(activity: Activity, savedInstanceState: Bundle) {
-        when {
-            // Transition from single-screen to dual-screen
-            previousSpanningMode == ScreenMode.SINGLE_SCREEN &&
-                currentSpanningMode == ScreenMode.DUAL_SCREEN ->
-                fragmentManagerStateMap[activity.getMapKey()]?.swapSingleToDual(savedInstanceState)
-
-            // Transition from dual-screen to single-screen
-            previousSpanningMode == ScreenMode.DUAL_SCREEN &&
-                currentSpanningMode == ScreenMode.SINGLE_SCREEN ->
-                fragmentManagerStateMap[activity.getMapKey()]?.swapDualToSingle(savedInstanceState)
-
-            // If not a screen rotation -> Resume previous Activity to single-screen FragmentManagerState
-            // Handles case when an activity is left in dual screen state and resumed in single screen
-            previousSpanningMode == ScreenMode.SINGLE_SCREEN &&
-                currentSpanningMode == ScreenMode.SINGLE_SCREEN &&
-                orientation == oldOrientation ->
-                fragmentManagerStateMap[activity.getMapKey()]?.swapDualToSingle(savedInstanceState)
-
-            // If not a screen rotation -> Resume previous Activity to dual-screen FragmentManager
-            // Handles case when an activity is left in single screen state and resumed in dual screen
-            previousSpanningMode == ScreenMode.DUAL_SCREEN &&
-                currentSpanningMode == ScreenMode.DUAL_SCREEN &&
-                orientation == oldOrientation ->
-                fragmentManagerStateMap[activity.getMapKey()]?.swapSingleToDual(savedInstanceState)
-
-            else -> {
-            }
-        }
+        fragmentManagerStateMap[activity.getMapKey()]?.swap(savedInstanceState)
     }
 
-    override fun onActivityPreDestroyed(activity: Activity) {
-        super.onActivityPreDestroyed(activity)
-        if (ScreenInfoProvider.version == Version.WindowManager) {
-            detectSpanningMode(activity)
-        }
-    }
-
-    private fun detectSpanningMode(activity: Activity) {
-        val screenInfo = ScreenInfoProvider.getScreenInfo(activity).apply {
-            updateHingeIfNull()
-            updateScreenModeIfNull()
-        }
-        val nextSpanningMode = screenInfo.screenMode
+    /**
+     * Check if screen mode was changed from single to dual screen or vice versa
+     *
+     * @param windowLayoutInfo [WindowLayoutInfo] object received from [WindowManager]
+     */
+    private fun checkForScreenModeChanges(windowLayoutInfo: WindowLayoutInfo) {
+        val nextSpanningMode = windowLayoutInfo.screenMode
         screenModeWasChanged = currentSpanningMode != nextSpanningMode
         if (screenModeWasChanged) {
             previousSpanningMode = currentSpanningMode
@@ -141,8 +154,24 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
      */
     override fun onActivityResumed(activity: Activity) {
         super.onActivityResumed(activity)
-        oldOrientation = activity.resources.configuration.orientation
+        oldOrientation = activity.displayOrientation
     }
 }
+
+val Context.displayOrientation: Int
+    get() {
+        val rotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            display?.rotation
+        } else {
+            val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay?.rotation
+        } ?: Surface.ROTATION_0
+
+        return when (rotation) {
+            Surface.ROTATION_0, Surface.ROTATION_180 -> Configuration.ORIENTATION_PORTRAIT
+            else -> Configuration.ORIENTATION_LANDSCAPE
+        }
+    }
 
 private fun Activity.getMapKey(): String = this::class.java.simpleName

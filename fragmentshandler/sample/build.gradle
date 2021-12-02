@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation androidxDependencies.lifecycleRuntimeKtx
     implementation project(':fragmentshandler:fragmentshandler')
     implementation project(':layouts:layouts')
     implementation project(commonDependencies.screenManager)

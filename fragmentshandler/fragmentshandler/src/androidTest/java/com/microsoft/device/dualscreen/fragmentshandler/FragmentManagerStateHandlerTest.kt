@@ -1,14 +1,19 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ *
+ */
+
 package com.microsoft.device.dualscreen.fragmentshandler
 
-import android.os.Bundle
 import android.os.Parcelable
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.fragmentshandler.utils.SampleActivity
-import com.microsoft.device.dualscreen.fragmentshandler.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.fragmentshandler.utils.runAction
+import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight
@@ -16,136 +21,145 @@ import com.microsoft.device.dualscreen.utils.test.switchFromDualToSingleScreen
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
-import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.MethodSorters
 
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class FragmentManagerStateHandlerTest {
-    @Rule
-    @JvmField
-    var rule: ActivityTestRule<SampleActivity> = ActivityTestRule(SampleActivity::class.java, false, false)
-    private var screenInfoListener = ScreenInfoListenerImpl()
+    @get:Rule
+    val activityScenarioRule = ActivityScenarioRule(SampleActivity::class.java)
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @Before
     fun before() {
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-        rule.launchActivity(null)
+        activityScenarioRule.scenario.onActivity {
+            windowLayoutInfoConsumer.register(it)
+        }
+
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
     }
 
     @After
     fun after() {
-        switchFragmentManagerStateToSingleScreen()
-        resetOrientation()
-        ScreenManagerProvider.getScreenManager().clear()
-        screenInfoListener.resetScreenInfo()
-        screenInfoListener.resetScreenInfoCounter()
-        rule.finishActivity()
-        FragmentManagerStateHandler.instance?.clear()
-    }
+        windowLayoutInfoConsumer.runAction {
+            resetOrientation()
+        }
 
-    private fun switchFragmentManagerStateToSingleScreen() {
-        switchFromDualToSingleScreen()
+        FragmentManagerStateHandler.instance?.clear()
+        windowLayoutInfoConsumer.reset()
     }
 
     @Test
     fun testFragmentManagerStateHandler() {
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromSingleToDualScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromDualToSingleScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromDualToSingleScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromSingleToDualScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
-
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
     }
 
     @Test
     fun testFragmentManagerStateHandlerWithRotation270() {
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
+        windowLayoutInfoConsumer.runAction {
+            setOrientationRight()
+        }
 
-        setOrientationRight()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromSingleToDualScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromDualToSingleScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromDualToSingleScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromSingleToDualScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
-
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
     }
 
     @Test
     fun testFragmentManagerStateHandlerWithRotation90() {
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
+        windowLayoutInfoConsumer.runAction {
+            setOrientationLeft()
+        }
 
-        setOrientationLeft()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromSingleToDualScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromDualToSingleScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromDualToSingleScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
 
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        windowLayoutInfoConsumer.runAction {
+            switchFromSingleToDualScreen()
+        }
 
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
-
-        assertThat(rule.lastSavedInstanceState).isNotNull()
-        assertThat(rule.fragmentManagerState).isNotNull()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.lastSavedInstanceState).isNotNull()
+            assertThat(activity.fragmentManagerState).isNotNull()
+        }
     }
 }
 
-private val ActivityTestRule<SampleActivity>.lastSavedInstanceState: Bundle?
-    get() = activity.lastSavedInstanceState
-
-private val ActivityTestRule<SampleActivity>.fragmentManagerState: Parcelable?
-    get() = activity.lastSavedInstanceState?.getParcelable(FragmentManagerStateWrapper.BUNDLE_SAVED_STATE_REGISTRY_KEY)
+private val SampleActivity.fragmentManagerState: Parcelable?
+    get() = lastSavedInstanceState?.getParcelable(FragmentManagerStateWrapper.BUNDLE_SAVED_STATE_REGISTRY_KEY)

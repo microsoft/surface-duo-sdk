@@ -6,13 +6,13 @@
 
 package com.microsoft.device.dualscreen.fragmentshandler
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
-import com.microsoft.device.dualscreen.ScreenManagerProvider
 import com.microsoft.device.dualscreen.fragmentshandler.utils.SampleActivity
-import com.microsoft.device.dualscreen.fragmentshandler.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.fragmentshandler.utils.runAction
+import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight
@@ -20,78 +20,88 @@ import com.microsoft.device.dualscreen.utils.test.switchFromDualToSingleScreen
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
-import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.MethodSorters
 
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class FragmentOnCreateViewTests {
-    @Rule
-    @JvmField
-    var rule: ActivityTestRule<SampleActivity> = ActivityTestRule(SampleActivity::class.java, false, false)
-    private var screenInfoListener = ScreenInfoListenerImpl()
+    @get:Rule
+    val activityScenarioRule = ActivityScenarioRule(SampleActivity::class.java)
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @Before
     fun before() {
-        ScreenManagerProvider.getScreenManager().addScreenInfoListener(screenInfoListener)
-        rule.launchActivity(null)
+        activityScenarioRule.scenario.onActivity {
+            windowLayoutInfoConsumer.register(it)
+        }
+
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
     }
 
     @After
     fun after() {
-        ScreenManagerProvider.getScreenManager().clear()
-        resetOrientation()
-        screenInfoListener.resetScreenInfo()
-        screenInfoListener.resetScreenInfoCounter()
-        rule.finishActivity()
+        windowLayoutInfoConsumer.run {
+            resetOrientation()
+        }
+
         FragmentManagerStateHandler.instance?.clear()
+        windowLayoutInfoConsumer.reset()
     }
 
     @Test
     fun testOnCreateView() {
-        screenInfoListener.waitForScreenInfoChanges()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.singleScreenFragment.onCreateViewWasCalled).isTrue()
+            assertThat(activity.dualScreenStartFragment.onCreateViewWasCalled).isFalse()
+            assertThat(activity.dualScreenEndFragment.onCreateViewWasCalled).isFalse()
 
-        assertThat(rule.activity.singleScreenFragment.onCreateViewWasCalled).isTrue()
-        assertThat(rule.activity.dualScreenStartFragment.onCreateViewWasCalled).isFalse()
-        assertThat(rule.activity.dualScreenEndFragment.onCreateViewWasCalled).isFalse()
+            activity.resetFragments()
+        }
 
-        rule.activity.resetFragments()
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromSingleToDualScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+        windowLayoutInfoConsumer.run {
+            switchFromSingleToDualScreen()
+        }
 
-        assertThat(rule.activity.singleScreenFragment.onCreateViewWasCalled).isFalse()
-        assertThat(rule.activity.dualScreenStartFragment.onCreateViewWasCalled).isTrue()
-        assertThat(rule.activity.dualScreenEndFragment.onCreateViewWasCalled).isTrue()
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.singleScreenFragment.onCreateViewWasCalled).isFalse()
+            assertThat(activity.dualScreenStartFragment.onCreateViewWasCalled).isTrue()
+            assertThat(activity.dualScreenEndFragment.onCreateViewWasCalled).isTrue()
 
-        rule.activity.resetFragments()
-        screenInfoListener.resetScreenInfoCounter()
-        switchFromDualToSingleScreen()
-        screenInfoListener.waitForScreenInfoChanges()
+            activity.resetFragments()
+        }
 
-        assertThat(rule.activity.singleScreenFragment.onCreateViewWasCalled).isTrue()
-        assertThat(rule.activity.dualScreenStartFragment.onCreateViewWasCalled).isFalse()
-        assertThat(rule.activity.dualScreenEndFragment.onCreateViewWasCalled).isFalse()
+        windowLayoutInfoConsumer.run {
+            switchFromDualToSingleScreen()
+        }
+
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertThat(activity.singleScreenFragment.onCreateViewWasCalled).isTrue()
+            assertThat(activity.dualScreenStartFragment.onCreateViewWasCalled).isFalse()
+            assertThat(activity.dualScreenEndFragment.onCreateViewWasCalled).isFalse()
+        }
     }
 
     @Test
     fun testOnCreateViewWithRotation270() {
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
-        rule.activity.resetFragments()
-        setOrientationRight()
+        activityScenarioRule.scenario.onActivity { activity ->
+            activity.resetFragments()
+        }
+
+        windowLayoutInfoConsumer.runAction {
+            setOrientationRight()
+        }
+
         testOnCreateView()
     }
 
     @Test
     fun testOnCreateViewWithRotation90() {
-        screenInfoListener.waitForScreenInfoChanges()
-        screenInfoListener.resetScreenInfoCounter()
-        setOrientationLeft()
+        windowLayoutInfoConsumer.runAction {
+            setOrientationLeft()
+        }
+
         testOnCreateView()
     }
 }
