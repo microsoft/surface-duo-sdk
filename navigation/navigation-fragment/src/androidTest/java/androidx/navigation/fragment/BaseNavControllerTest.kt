@@ -25,7 +25,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.FoldableNavController
 import androidx.navigation.FoldableNavDeepLinkBuilder
 import androidx.navigation.FoldableNavigation
@@ -295,7 +295,7 @@ abstract class BaseNavControllerTest<A : BaseNavigationActivity>(
  * You must call [FoldableNavController.setGraph]
  * to set the appropriate graph for your test.
  */
-abstract class BaseNavigationActivity : FragmentActivity() {
+abstract class BaseNavigationActivity : AppCompatActivity() {
 
     val navController: FoldableNavController
         get() = FoldableNavigation.findNavController(this, R.id.nav_host)

@@ -10,10 +10,11 @@ import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
-import com.microsoft.device.dualscreen.navigation.utils.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.navigation.utils.SimpleFragmentBackStackListener
 import com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity
 import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
+import com.microsoft.device.dualscreen.utils.test.CurrentActivityDelegate
+import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
@@ -28,20 +29,28 @@ class FragmentExtensionsTests {
     val activityScenarioRule = activityScenarioRule<SurfaceDuoSimpleActivity>()
     private val fragmentBackStackListener = SimpleFragmentBackStackListener()
     private val currentActivityDelegate = CurrentActivityDelegate()
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @Before
     fun setup() {
         currentActivityDelegate.setup(activityScenarioRule)
+        activityScenarioRule.scenario.onActivity {
+            windowLayoutInfoConsumer.register(it)
+        }
     }
 
     @After
     fun clear() {
         currentActivityDelegate.clear(activityScenarioRule)
+        windowLayoutInfoConsumer.reset()
     }
 
     @Test
     fun testIsOnStartContainer() {
+        windowLayoutInfoConsumer.reset()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
+
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
@@ -63,7 +72,10 @@ class FragmentExtensionsTests {
 
     @Test
     fun testIsOnEndContainer() {
+        windowLayoutInfoConsumer.reset()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
+
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
@@ -76,7 +88,10 @@ class FragmentExtensionsTests {
                 }
             }
 
-            foldableFragmentManager.beginTransaction(androidx.navigation.testutils.EmptyFragment(), navOptions).commit()
+            foldableFragmentManager.beginTransaction(
+                androidx.navigation.testutils.EmptyFragment(),
+                navOptions
+            ).commit()
             val fragment = androidx.navigation.testutils.EmptyFragment()
             foldableFragmentManager.beginTransaction(fragment, navOptions).commit()
             fragmentBackStackListener.waitForChanges()

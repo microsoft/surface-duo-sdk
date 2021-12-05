@@ -23,8 +23,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.fragment.app.testing.withFragment
 import androidx.lifecycle.SavedStateHandle
@@ -141,7 +141,7 @@ class NavGraphViewModelLazyTest {
     }
 }
 
-class NavGraphActivity : FragmentActivity(R.layout.activity_nav_graph)
+class NavGraphActivity : AppCompatActivity(R.layout.activity_nav_graph)
 
 class TestVMFragment : Fragment() {
     val viewModel: TestViewModel by foldableNavGraphViewModels(R.id.vm_graph)

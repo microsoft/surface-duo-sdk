@@ -52,7 +52,7 @@ dependencies {
     implementation androidxDependencies.lifecycleRuntimeKtx
     implementation androidxDependencies.coreKtx
 
-    api "androidx.window:window-java:1.0.0-beta02"
+    api androidxDependencies.windowManager
     api project(':utils:wm-utils')
 
     testImplementation testDependencies.junit
@@ -63,6 +63,6 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.testRunner
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation commonDependencies.googleTruth
 }

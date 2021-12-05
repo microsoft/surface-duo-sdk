@@ -8,15 +8,19 @@ package com.microsoft.device.dualscreen.layouts
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.SmallTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FrameLayoutActivity
 import com.microsoft.device.dualscreen.layouts.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.layouts.utils.isFrameLayoutOnScreen
+import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,18 +30,39 @@ import org.junit.runner.RunWith
 class FrameLayoutTestForSurfaceDuo {
 
     @get:Rule
-    val activityTestRule = ActivityTestRule(FrameLayoutActivity::class.java)
+    val activityTestRule = ActivityScenarioRule(FrameLayoutActivity::class.java)
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
+
+    @Before
+    fun before() {
+        resetOrientation()
+
+        activityTestRule.scenario.onActivity {
+            windowLayoutInfoConsumer.register(it)
+        }
+    }
+
+    @After
+    fun after() {
+        windowLayoutInfoConsumer.reset()
+    }
 
     @Test
     fun testDisplayPositionFromLayout() {
+        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
+
         onView(withId(R.id.duo_wrapper))
             .check(matches(isFrameLayoutOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
     fun testDisplayPositionEnd() {
+        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
+
         onView(withId(R.id.duo_wrapper))
             .perform(changeDisplayPosition(DisplayPosition.END))
         onView(withId(R.id.duo_wrapper))
@@ -46,7 +71,10 @@ class FrameLayoutTestForSurfaceDuo {
 
     @Test
     fun testDisplayPositionDual() {
+        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
+
         onView(withId(R.id.duo_wrapper))
             .perform(changeDisplayPosition(DisplayPosition.DUAL))
         onView(withId(R.id.duo_wrapper))
@@ -55,7 +83,10 @@ class FrameLayoutTestForSurfaceDuo {
 
     @Test
     fun testDisplayPositionStart() {
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
+
         onView(withId(R.id.duo_wrapper))
             .perform(changeDisplayPosition(DisplayPosition.START))
         onView(withId(R.id.duo_wrapper))
