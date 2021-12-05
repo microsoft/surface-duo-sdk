@@ -12,10 +12,10 @@ import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.screenmanager.tests.R
 import com.microsoft.device.dualscreen.screenmanager.tests.utils.TransparentFirstActivity
-import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.test.utils.resetOrientation
-import com.microsoft.device.dualscreen.test.utils.switchFromDualToSingleScreen
-import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.utils.test.resetOrientation
+import com.microsoft.device.dualscreen.utils.test.switchFromDualToSingleScreen
+import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

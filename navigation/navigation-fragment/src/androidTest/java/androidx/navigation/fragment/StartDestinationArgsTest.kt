@@ -24,8 +24,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.test.R
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -54,7 +54,7 @@ class StartDestinationArgsTest {
     }
 }
 
-class StartDestinationArgsActivity : FragmentActivity() {
+class StartDestinationArgsActivity : AppCompatActivity() {
 
     internal var startArgs: Bundle? = null
 

@@ -23,8 +23,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.FoldableNavController
 import androidx.navigation.fragment.test.R
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -68,7 +68,7 @@ class EmbeddedXmlTest {
  * You must call [FoldableNavController.setGraph]
  * to set the appropriate graph for your test.
  */
-class EmbeddedXmlActivity : FragmentActivity() {
+class EmbeddedXmlActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -55,5 +55,5 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation instrumentationTestDependencies.espressoContrib
     androidTestImplementation instrumentationTestDependencies.supportTestRules
-    androidTestImplementation project(':test-utils')
+    androidTestImplementation project(':utils:test-utils')
 }

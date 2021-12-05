@@ -18,7 +18,7 @@
 
 package androidx.navigation.fragment.test
 
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findFoldableNavController
 import java.util.concurrent.CountDownLatch
 
@@ -30,7 +30,7 @@ class NavigationActivityWithFragmentTag : NavigationBaseActivity(
 
 class NavigationActivityMultiNavHost : NavigationBaseActivity(R.layout.navigation_activity_nav_host)
 
-open class NavigationBaseActivity(contentLayoutId: Int) : FragmentActivity(contentLayoutId) {
+open class NavigationBaseActivity(contentLayoutId: Int) : AppCompatActivity(contentLayoutId) {
     val navController get() = findFoldableNavController(R.id.nav_host)
 
     val finishCountDownLatch = CountDownLatch(1)

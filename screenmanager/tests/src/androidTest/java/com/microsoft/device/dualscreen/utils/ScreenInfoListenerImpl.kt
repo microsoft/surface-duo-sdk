@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.test.utils
+package com.microsoft.device.dualscreen.utils
 
 import com.microsoft.device.dualscreen.ScreenInfo
 import com.microsoft.device.dualscreen.ScreenInfoListener
