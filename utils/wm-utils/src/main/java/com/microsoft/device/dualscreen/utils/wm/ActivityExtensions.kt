@@ -23,6 +23,22 @@ fun Context.getWindowRect(): Rect {
 }
 
 /**
+ * Retrieve the overall visible display size in which the window this view is attached to has been positioned in.
+ * This takes into account screen decorations above the window,
+ * for both cases where the window itself is being position inside of them or the window is being placed
+ * under then and covered insets are used for the window to position its content inside.
+ * In effect, this tells you the available area where content can be placed and remain visible to users.
+ */
+fun Context.getWindowVisibleDisplayFrame(): Rect {
+    val activity = getActivityFromContext()
+    return activity?.let {
+        val visibleFrame = Rect()
+        activity.window.decorView.getWindowVisibleDisplayFrame(visibleFrame)
+        visibleFrame
+    } ?: Rect(0, 0, 0, 0)
+}
+
+/**
  * Casts a [Context] to an [Activity] if it is possible.
  */
 private fun Context.getActivityFromContext(): Activity? {

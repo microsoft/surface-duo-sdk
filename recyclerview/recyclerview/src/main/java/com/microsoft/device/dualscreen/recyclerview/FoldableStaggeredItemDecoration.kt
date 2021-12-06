@@ -10,6 +10,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.window.layout.WindowLayoutInfo
+import com.microsoft.device.dualscreen.recyclerview.utils.DeltaCalculator
 import com.microsoft.device.dualscreen.utils.wm.ScreenPosition
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
@@ -22,6 +23,7 @@ import com.microsoft.device.dualscreen.utils.wm.isInDualMode
 class FoldableStaggeredItemDecoration(
     private val windowLayoutInfo: WindowLayoutInfo
 ) : RecyclerView.ItemDecoration() {
+    private val deltaCalculator = DeltaCalculator()
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -38,8 +40,10 @@ class FoldableStaggeredItemDecoration(
             val layoutParams = view.layoutParams as StaggeredGridLayoutManager.LayoutParams
 
             when (layoutParams.spanIndex) {
-                ScreenPosition.START_SCREEN.index -> outRect.right += hingeWidth / 2
-                ScreenPosition.END_SCREEN.index -> outRect.left += hingeWidth / 2
+                ScreenPosition.START_SCREEN.index ->
+                    outRect.right += hingeWidth / 2 - deltaCalculator.delta(parent)
+                ScreenPosition.END_SCREEN.index ->
+                    outRect.left += hingeWidth / 2 + deltaCalculator.delta(parent)
             }
         }
     }
