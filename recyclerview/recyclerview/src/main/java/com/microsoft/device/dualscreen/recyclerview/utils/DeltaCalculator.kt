@@ -8,6 +8,11 @@ package com.microsoft.device.dualscreen.recyclerview.utils
 import android.view.View
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 
+/**
+ * Utility class used to calculate the RecyclerView item offset when it's not displayed on the entire display area,
+ * for example when the navigation bar is displayed on the left or right,
+ * or the device is in landscape and has the frontal camera inside the screen
+ */
 internal class DeltaCalculator {
     private var _delta = Int.MIN_VALUE
     fun delta(parent: View): Int {
