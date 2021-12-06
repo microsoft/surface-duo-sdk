@@ -19,8 +19,8 @@
 package androidx.navigation.fragment
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.FoldableNavOptions
@@ -775,7 +775,7 @@ class FragmentNavigatorTest {
     }
 }
 
-class EmptyActivity : FragmentActivity() {
+class EmptyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.empty_activity)

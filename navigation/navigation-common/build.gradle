@@ -71,7 +71,6 @@ dependencies {
     androidTestImplementation instrumentationTestDependencies.navigationTesting
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation androidxDependencies.appCompat
-    androidTestImplementation project(commonDependencies.screenManager)
     androidTestImplementation project(':navigation:navigation-fragment-ktx')
     androidTestImplementation project(':navigation:navigation-test-utils')
     androidTestImplementation project(':utils:test-utils')

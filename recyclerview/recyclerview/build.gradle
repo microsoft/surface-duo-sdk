@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    api "androidx.window:window-java:1.0.0-beta02"
+    api androidxDependencies.windowManager
     api project(':utils:wm-utils')
     api androidxDependencies.recyclerView
     implementation kotlinDependencies.kotlinStdlib

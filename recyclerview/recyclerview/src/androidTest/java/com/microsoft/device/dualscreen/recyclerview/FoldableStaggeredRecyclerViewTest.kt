@@ -17,8 +17,8 @@ import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
 import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import com.microsoft.device.dualscreen.recyclerview.activities.StaggeredRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
-import com.microsoft.device.dualscreen.recyclerview.utils.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
+import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight

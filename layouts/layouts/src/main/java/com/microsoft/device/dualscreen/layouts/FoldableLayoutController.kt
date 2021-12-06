@@ -136,8 +136,7 @@ internal class FoldableLayoutController constructor(
             )?.let { screenRectList ->
                 addDualScreenContent(
                     VERTICAL,
-                    screenRectList[0],
-                    screenRectList[1]
+                    screenRectList[0]
                 )
             }
         }
@@ -178,8 +177,7 @@ internal class FoldableLayoutController constructor(
             )?.let { screenRectList ->
                 addDualScreenContent(
                     HORIZONTAL,
-                    screenRectList[0],
-                    screenRectList[1]
+                    screenRectList[0]
                 )
             }
         }
@@ -190,18 +188,15 @@ internal class FoldableLayoutController constructor(
      *
      * @param layoutOrientation The [FoldableLayout] orientation
      * @param startScreenRect The bounds for the first display area
-     * @param endScreenRect The bounds for the second display area
      */
     private fun addDualScreenContent(
         layoutOrientation: Int,
-        startScreenRect: Rect,
-        endScreenRect: Rect
+        startScreenRect: Rect
     ) {
         rootView.orientation = layoutOrientation
         updateDimensionsForDualScreen(
             layoutOrientation,
-            startScreenRect,
-            endScreenRect
+            startScreenRect
         )
 
         layoutConfig.dualScreenStartLayoutId
@@ -255,12 +250,10 @@ internal class FoldableLayoutController constructor(
      *
      * @param linearLayoutOrientation The [FoldableLayout] orientation
      * @param startScreenRect The bounds for the first display area
-     * @param endScreenRect The bounds for the second display area
      */
     private fun updateDimensionsForDualScreen(
         linearLayoutOrientation: Int,
-        startScreenRect: Rect,
-        endScreenRect: Rect
+        startScreenRect: Rect
     ) {
         if (linearLayoutOrientation == VERTICAL) {
             resetContainersDimensions()
@@ -269,7 +262,7 @@ internal class FoldableLayoutController constructor(
                 updateDimensionsForDualLandscape()
             }
         } else {
-            updateDimensionsForDualPortrait(startScreenRect, endScreenRect)
+            updateDimensionsForDualPortrait(startScreenRect)
         }
     }
 
@@ -277,18 +270,16 @@ internal class FoldableLayoutController constructor(
      * Updates the containers dimensions corresponding to the dual screen mode in portrait orientation
      *
      * @param startScreenRect The bounds for the first screen
-     * @param endScreenRect The bounds for the second screen
      */
     private fun updateDimensionsForDualPortrait(
-        startScreenRect: Rect,
-        endScreenRect: Rect
+        startScreenRect: Rect
     ) {
         firstContainer.updateLayoutParams<LinearLayout.LayoutParams> {
             width = startScreenRect.width()
             height = MATCH_PARENT
         }
         secondContainer.updateLayoutParams<LinearLayout.LayoutParams> {
-            width = endScreenRect.width()
+            width = MATCH_PARENT
             height = MATCH_PARENT
         }
     }

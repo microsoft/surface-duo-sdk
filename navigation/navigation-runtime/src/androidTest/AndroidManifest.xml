@@ -13,12 +13,14 @@
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
+  ~
+  ~ Portions Copyright (c) Microsoft Corporation
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="androidx.navigation">
 
-    <application>
+    <application android:theme="@style/Theme.AppCompat.Light">
         <activity android:name="androidx.navigation.ActivityNavigatorActivity"/>
         <activity android:name="androidx.navigation.TargetActivity"/>
         <activity android:name="androidx.navigation.NavControllerActivity"/>

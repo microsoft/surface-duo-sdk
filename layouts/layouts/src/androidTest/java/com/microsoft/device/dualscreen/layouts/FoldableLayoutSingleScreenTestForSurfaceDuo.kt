@@ -12,16 +12,18 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.rule.ActivityTestRule
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutSingleScreenActivity
 import com.microsoft.device.dualscreen.layouts.utils.isViewOnScreen
+import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.utils.test.resetOrientation
 import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
 import com.microsoft.device.dualscreen.utils.test.setOrientationRight
 import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,11 +33,21 @@ import org.junit.runner.RunWith
 class FoldableLayoutSingleScreenTestForSurfaceDuo {
 
     @get:Rule
-    val activityTestRule = ActivityTestRule(FoldableLayoutSingleScreenActivity::class.java)
+    val activityScenarioRule = ActivityScenarioRule(FoldableLayoutSingleScreenActivity::class.java)
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @Before
     fun before() {
         resetOrientation()
+
+        activityScenarioRule.scenario.onActivity {
+            windowLayoutInfoConsumer.register(it)
+        }
+    }
+
+    @After
+    fun after() {
+        windowLayoutInfoConsumer.reset()
     }
 
     @Test
@@ -46,7 +58,9 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
 
     @Test
     fun testLayoutSingleScreenLandscape() {
+        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         setOrientationRight()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.textViewSingle)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewSingle)).check(matches(withText(R.string.single_screen_mode)))
@@ -54,7 +68,9 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenLandscape() {
+        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         switchFromSingleToDualScreen()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualStart)).check(
@@ -75,7 +91,9 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
     fun testLayoutDualScreenPortrait() {
         switchFromSingleToDualScreen()
 
+        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         setOrientationLeft()
+        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualStart)).check(

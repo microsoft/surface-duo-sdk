@@ -15,10 +15,10 @@ import com.microsoft.device.dualscreen.ScreenMode.SINGLE_SCREEN
 import com.microsoft.device.dualscreen.isPortrait
 import com.microsoft.device.dualscreen.isSpannedInDualScreen
 import com.microsoft.device.dualscreen.screenmanager.tests.utils.SampleActivity
-import com.microsoft.device.dualscreen.test.utils.ScreenInfoListenerImpl
-import com.microsoft.device.dualscreen.test.utils.setOrientationRight
-import com.microsoft.device.dualscreen.test.utils.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.test.utils.unfreezeRotation
+import com.microsoft.device.dualscreen.utils.ScreenInfoListenerImpl
+import com.microsoft.device.dualscreen.utils.test.setOrientationRight
+import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test

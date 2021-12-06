@@ -18,9 +18,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="androidx.navigation.common">
 
-    <application android:name="com.microsoft.device.dualscreen.test.utils.TestApplication">
+    <application>
         <activity
             android:name="com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity"
-            android:theme="@style/Theme.AppCompat" />
+            android:theme="@style/Theme.AppCompat.Light" />
     </application>
 </manifest>

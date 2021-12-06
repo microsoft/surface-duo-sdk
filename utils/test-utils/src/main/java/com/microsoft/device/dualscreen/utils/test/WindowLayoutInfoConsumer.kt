@@ -3,11 +3,17 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.recyclerview.utils
+package com.microsoft.device.dualscreen.utils.test
 
+import android.os.Handler
+import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
+import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
+import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
 import androidx.window.layout.WindowLayoutInfo
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
 class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
@@ -15,6 +21,22 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
     val windowLayoutInfo: WindowLayoutInfo?
         get() = _windowLayoutInfo
     private var windowLayoutInfoLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)
+
+    private var adapter: WindowInfoRepositoryCallbackAdapter? = null
+    private val runOnUiThreadExecutor = Executor { command: Runnable? ->
+        command?.let {
+            Handler(Looper.getMainLooper()).post(it)
+        }
+    }
+
+    fun register(activity: AppCompatActivity) {
+        adapter = WindowInfoRepositoryCallbackAdapter(activity.windowInfoRepository())
+        adapter?.addWindowLayoutInfoListener(runOnUiThreadExecutor, this)
+    }
+
+    fun unregister() {
+        adapter?.removeWindowLayoutInfoListener(this)
+    }
 
     override fun accept(windowLayoutInfo: WindowLayoutInfo) {
         _windowLayoutInfo = windowLayoutInfo
@@ -50,8 +72,14 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
         }
     }
 
+    fun reset() {
+        unregister()
+        resetWindowInfoLayout()
+        resetWindowInfoLayoutCounter()
+    }
+
     companion object {
         private const val COUNT_DOWN_LATCH_COUNT = 1
-        private const val TIMEOUT_IN_SECONDS = 10L
+        private const val TIMEOUT_IN_SECONDS = 3L
     }
 }
