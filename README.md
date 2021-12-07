@@ -55,7 +55,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Layouts**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta6"
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta7"
     ```
 
     **Tabs**
@@ -67,7 +67,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **RecyclerView**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta5"
     ```
 
     **Ink**
