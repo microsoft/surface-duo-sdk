@@ -25,16 +25,16 @@ jobs:
     strategy:
       matrix:
         projects: [
-          "screenmanager:screenmanager-core",
-          "screenmanager:dm:screenmanager-displaymask",
-          "screenmanager:wm:screenmanager-windowmanager",
-          "screenmanager:screenmanager-utils",
-          "layouts:layouts",
-          "fragmentshandler:fragmentshandler",
-          "bottomnavigation:bottomnavigation",
-          "tabs:tabs",
-          "recyclerview:recyclerview",
-          "utils:wm-utils"
+            "screenmanager:screenmanager-core",
+            "screenmanager:dm:screenmanager-displaymask",
+            "screenmanager:wm:screenmanager-windowmanager",
+            "screenmanager:screenmanager-utils",
+            "layouts:layouts",
+            "fragmentshandler:fragmentshandler",
+            "bottomnavigation:bottomnavigation",
+            "tabs:tabs",
+            "recyclerview:recyclerview",
+            "utils:wm-utils"
         ]
       fail-fast: false
 
@@ -74,6 +74,10 @@ jobs:
         # Generates other artifacts
       - name: Source jar
         run: ./gradlew :${{matrix.projects}}:androidSourcesJar
+
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :${{matrix.projects}}:dokkaHtmlJar
 
         # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
       - name: Publish to MavenCentral
