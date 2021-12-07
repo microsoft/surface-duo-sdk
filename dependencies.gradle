@@ -47,6 +47,7 @@ ext {
     //Config Android sdk, plugins and libraries version
     gradlePluginVersion = "7.0.2"
     kotlinVersion = "1.5.0"
+    dokkaVersion = "1.6.0"
     compileSdkVersion = 29
     compileSdkVersion2 = 31
     buildToolsVersion = '30.0.3'
@@ -57,11 +58,15 @@ ext {
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner"
+            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner",
     ]
 
     kotlinDependencies = [
-            kotlinStdlib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+            kotlinStdlib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion",
+    ]
+
+    dokkaDependencies = [
+            dokkaGradlePlugin: "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
     ]
 
     //AndroidX versions

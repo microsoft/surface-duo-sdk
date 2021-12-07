@@ -9,6 +9,7 @@ buildscript {
     apply from: 'dependencies.gradle'
     ext {
         kotlin_version = rootProject.ext.kotlinVersion
+        dokka_version = rootProject.ext.dokkaVersion
     }
     repositories {
         google()
@@ -18,6 +19,7 @@ buildscript {
     dependencies {
         classpath config.gradlePlugin
         classpath config.kotlinGradlePlugin
+        classpath dokkaDependencies.dokkaGradlePlugin
     }
 }
 
