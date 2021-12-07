@@ -71,6 +71,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :${{matrix.projects}}:androidSourcesJar
 
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :${{matrix.projects}}:dokkaHtmlJar
+
         # Runs upload to ADO
       - name: Publish to ADO
         run: ./gradlew  :${{matrix.projects}}:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
