@@ -57,6 +57,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :recyclerview:recyclerview:androidSourcesJar
 
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :recyclerview:recyclerview:dokkaHtmlJar
+
         # Runs upload to ADO
       - name: Publish to ADO
         run: ./gradlew  :recyclerview:recyclerview:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
