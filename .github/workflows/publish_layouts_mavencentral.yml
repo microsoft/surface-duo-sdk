@@ -58,6 +58,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :layouts:layouts:androidSourcesJar
 
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :layouts:layouts:dokkaHtmlJar
+
         # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
       - name: Publish to MavenCentral
         run: ./gradlew  :layouts:layouts:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1

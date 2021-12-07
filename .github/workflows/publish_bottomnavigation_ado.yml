@@ -57,6 +57,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :bottomnavigation:bottomnavigation:androidSourcesJar
 
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :bottomnavigation:bottomnavigation:dokkaHtmlJar
+
         # Runs upload to ADO
       - name: Publish to ADO
         run: ./gradlew  :bottomnavigation:bottomnavigation:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1

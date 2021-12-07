@@ -58,6 +58,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :inksdk:ink:androidSourcesJar
 
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :inksdk:ink:dokkaHtmlJar
+
         # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
       - name: Publish to MavenCentral
         run: ./gradlew  :inksdk:ink:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1

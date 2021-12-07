@@ -1,39 +1,25 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: publish-navigation-component-ado
-# This workflow builds and publishes in ADO the Foldable Navigation Component artifacts (all of them).
+name: publish-fragmentshandler-ado
+# This workflow builds and publishes in ADO the FragmentHandler artifact.
 
 on:
   push:
     tags:
-      - 'navigation*'
+      - 'fragmentshandler*'
 
   workflow_dispatch:
     inputs:
       name:
-        description: 'Triggers publication to ADO - Foldable Navigation Component'
+        description: 'Triggers publication to ADO - FragmentsHandler'
       home:
         description: 'location'
         required: false
 
 jobs:
-  publish-NavigationComponent:
+  publish-FragmentsHandler-ADO:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        projects: [
-            "navigation:navigation-common",
-            "navigation:navigation-common-ktx",
-            "navigation:navigation-runtime",
-            "navigation:navigation-runtime-ktx",
-            "navigation:navigation-fragment",
-            "navigation:navigation-fragment-ktx",
-            "navigation:navigation-ui",
-            "navigation:navigation-ui-ktx"
-        ]
-      fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -61,23 +47,23 @@ jobs:
         run: chmod +x gradlew
 
       - name: clean
-        run: ./gradlew :${{matrix.projects}}:clean
+        run: ./gradlew :fragmentshandler:fragmentshandler:clean
 
         # Builds the release artifacts of the library
       - name: Release build
-        run: ./gradlew :${{matrix.projects}}:assembleRelease
+        run: ./gradlew :fragmentshandler:fragmentshandler:assembleRelease
 
         # Generates other artifacts
       - name: Source jar
-        run: ./gradlew :${{matrix.projects}}:androidSourcesJar
+        run: ./gradlew :fragmentshandler:fragmentshandler:androidSourcesJar
 
       # Generates docs artifact
       - name: Docs jar
-        run: ./gradlew :${{matrix.projects}}:dokkaHtmlJar
+        run: ./gradlew :fragmentshandler:fragmentshandler:dokkaHtmlJar
 
         # Runs upload to ADO
       - name: Publish to ADO
-        run: ./gradlew  :${{matrix.projects}}:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
+        run: ./gradlew  :fragmentshandler:fragmentshandler:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
         env:
           ADO_URL: ${{ secrets.ADO_URL }}
           ADO_USER: ${{ secrets.ADO_USER }}

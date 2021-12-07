@@ -57,6 +57,10 @@ jobs:
       - name: Source jar
         run: ./gradlew :inksdk:ink:androidSourcesJar
 
+      # Generates docs artifact
+      - name: Docs jar
+        run: ./gradlew :inksdk:ink:dokkaHtmlJar
+
         # Runs upload to ADO
       - name: Publish to ADO
         run: ./gradlew  :inksdk:ink:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
