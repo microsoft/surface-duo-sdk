@@ -34,28 +34,28 @@ class FragmentManagerStateWrapperTestForOldAppCompatLibrary {
         val bundle = bundleOf(FragmentManagerStateWrapper.SUPPORT_FRAGMENTS_KEY to singleScreenFragmentState)
 
         // Switch to dual screen
-        fragmentManagerState.swapSingleToDual(bundle)
-        assertThat(fragmentManagerState.singleScreenFragmentManagerState).isEqualTo(singleScreenFragmentState)
-        assertThat(fragmentManagerState.dualScreenFragmentManagerState).isNull()
+        fragmentManagerState.swapFirstToSecond(bundle)
+        assertThat(fragmentManagerState.firstFragmentManagerState).isEqualTo(singleScreenFragmentState)
+        assertThat(fragmentManagerState.secondFragmentManagerState).isNull()
         assertThat(bundle.fragmentManagerState).isEqualTo(null)
 
         // Switch to single screen
         bundle.putParcelable(FragmentManagerStateWrapper.SUPPORT_FRAGMENTS_KEY, dualScreenFragmentState)
-        fragmentManagerState.swapDualToSingle(bundle)
-        assertThat(fragmentManagerState.singleScreenFragmentManagerState).isEqualTo(singleScreenFragmentState)
-        assertThat(fragmentManagerState.dualScreenFragmentManagerState).isEqualTo(dualScreenFragmentState)
+        fragmentManagerState.swapSecondToFirst(bundle)
+        assertThat(fragmentManagerState.firstFragmentManagerState).isEqualTo(singleScreenFragmentState)
+        assertThat(fragmentManagerState.secondFragmentManagerState).isEqualTo(dualScreenFragmentState)
         assertThat(bundle.fragmentManagerState).isEqualTo(singleScreenFragmentState)
 
         // Switch to dual screen
-        fragmentManagerState.swapSingleToDual(bundle)
-        assertThat(fragmentManagerState.singleScreenFragmentManagerState).isEqualTo(singleScreenFragmentState)
-        assertThat(fragmentManagerState.dualScreenFragmentManagerState).isEqualTo(dualScreenFragmentState)
+        fragmentManagerState.swapFirstToSecond(bundle)
+        assertThat(fragmentManagerState.firstFragmentManagerState).isEqualTo(singleScreenFragmentState)
+        assertThat(fragmentManagerState.secondFragmentManagerState).isEqualTo(dualScreenFragmentState)
         assertThat(bundle.fragmentManagerState).isEqualTo(dualScreenFragmentState)
 
         // Switch to single screen
-        fragmentManagerState.swapDualToSingle(bundle)
-        assertThat(fragmentManagerState.singleScreenFragmentManagerState).isEqualTo(singleScreenFragmentState)
-        assertThat(fragmentManagerState.dualScreenFragmentManagerState).isEqualTo(dualScreenFragmentState)
+        fragmentManagerState.swapSecondToFirst(bundle)
+        assertThat(fragmentManagerState.firstFragmentManagerState).isEqualTo(singleScreenFragmentState)
+        assertThat(fragmentManagerState.secondFragmentManagerState).isEqualTo(dualScreenFragmentState)
         assertThat(bundle.fragmentManagerState).isEqualTo(singleScreenFragmentState)
     }
 }

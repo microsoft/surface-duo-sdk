@@ -15,30 +15,47 @@ import androidx.annotation.VisibleForTesting
  */
 internal class FragmentManagerStateWrapper {
     @VisibleForTesting
-    var singleScreenFragmentManagerState: Any? = null
+    var firstFragmentManagerState: Any? = null
 
     @VisibleForTesting
-    var dualScreenFragmentManagerState: Any? = null
+    var secondFragmentManagerState: Any? = null
+    private var usefirstFragmentManagerState = true
+
+    fun swap(bundle: Bundle) {
+        when {
+            usefirstFragmentManagerState -> swapFirstToSecond(bundle)
+            else -> swapSecondToFirst(bundle)
+        }
+
+        usefirstFragmentManagerState = usefirstFragmentManagerState.not()
+    }
 
     /**
      * Swap single screen mode FragmentManagerState with dual screen mode FragmentManagerState
      */
-    fun swapSingleToDual(bundle: Bundle) {
+    @VisibleForTesting
+    fun swapFirstToSecond(bundle: Bundle) {
         when {
             // AppCompat 1.1.0
             bundle.containsKey(SUPPORT_FRAGMENTS_KEY) -> {
                 bundle.getParcelable<Parcelable>(SUPPORT_FRAGMENTS_KEY)?.let {
-                    singleScreenFragmentManagerState = it
+                    firstFragmentManagerState = it
                 }
-                bundle.putParcelable(SUPPORT_FRAGMENTS_KEY, dualScreenFragmentManagerState as? Parcelable)
+                bundle.putParcelable(
+                    SUPPORT_FRAGMENTS_KEY,
+                    secondFragmentManagerState as? Parcelable
+                )
             }
 
             // AppCompat 1.3.0
             bundle.containsKey(BUNDLE_SAVED_STATE_REGISTRY_KEY) -> {
                 bundle.getBundle(BUNDLE_SAVED_STATE_REGISTRY_KEY)?.let {
-                    singleScreenFragmentManagerState = it
+                    firstFragmentManagerState = it
                 }
-                bundle.putBundle(BUNDLE_SAVED_STATE_REGISTRY_KEY, dualScreenFragmentManagerState as? Bundle)
+                bundle.putBundle(
+                    BUNDLE_SAVED_STATE_REGISTRY_KEY,
+                    secondFragmentManagerState as? Bundle
+                )
             }
         }
     }
@@ -46,29 +63,37 @@ internal class FragmentManagerStateWrapper {
     /**
      * Swap dual screen mode FragmentManagerState with single screen mode FragmentManagerState
      */
-    fun swapDualToSingle(bundle: Bundle) {
+    @VisibleForTesting
+    fun swapSecondToFirst(bundle: Bundle) {
         when {
             // AppCompat 1.1.0
             bundle.containsKey(SUPPORT_FRAGMENTS_KEY) -> {
                 bundle.getParcelable<Parcelable>(SUPPORT_FRAGMENTS_KEY)?.let {
-                    dualScreenFragmentManagerState = it
+                    secondFragmentManagerState = it
                 }
-                bundle.putParcelable(SUPPORT_FRAGMENTS_KEY, singleScreenFragmentManagerState as? Parcelable)
+                bundle.putParcelable(
+                    SUPPORT_FRAGMENTS_KEY,
+                    firstFragmentManagerState as? Parcelable
+                )
             }
 
             // AppCompat 1.3.0
             bundle.containsKey(BUNDLE_SAVED_STATE_REGISTRY_KEY) -> {
                 bundle.getBundle(BUNDLE_SAVED_STATE_REGISTRY_KEY)?.let {
-                    dualScreenFragmentManagerState = it
+                    secondFragmentManagerState = it
                 }
-                bundle.putBundle(BUNDLE_SAVED_STATE_REGISTRY_KEY, singleScreenFragmentManagerState as? Bundle)
+                bundle.putBundle(
+                    BUNDLE_SAVED_STATE_REGISTRY_KEY,
+                    firstFragmentManagerState as? Bundle
+                )
             }
         }
     }
 
     companion object {
         @VisibleForTesting
-        const val BUNDLE_SAVED_STATE_REGISTRY_KEY = "androidx.lifecycle.BundlableSavedStateRegistry.key"
+        const val BUNDLE_SAVED_STATE_REGISTRY_KEY =
+            "androidx.lifecycle.BundlableSavedStateRegistry.key"
 
         @VisibleForTesting
         const val SUPPORT_FRAGMENTS_KEY = "android:support:fragments"

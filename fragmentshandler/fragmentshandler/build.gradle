@@ -7,7 +7,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
 }
 
 ext {
@@ -49,11 +49,11 @@ android {
 }
 
 dependencies {
-    api project(':screenmanager:screenmanager-utils')
-    compileOnly project(commonDependencies.screenManager)
+    implementation project(':utils:wm-utils')
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
+    implementation androidxDependencies.windowManager
 
     androidTestImplementation instrumentationTestDependencies.junitKtx
     androidTestImplementation instrumentationTestDependencies.espressoCore
@@ -61,8 +61,7 @@ dependencies {
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation androidxDependencies.coreKtx
     androidTestImplementation androidxDependencies.lifecycleViewmodel
-    androidTestImplementation project(':screenmanager:screenmanager-utils')
+    androidTestImplementation androidxDependencies.lifecycleRuntimeKtx
     androidTestImplementation project(':layouts:layouts')
-    androidTestImplementation project(commonDependencies.screenManager)
     androidTestImplementation project(':utils:test-utils')
 }

@@ -30,7 +30,7 @@ const val DUAL_SCREEN_WIDTH = SINGLE_SCREEN_WIDTH * SCREEN_COUNT + HINGE_WIDTH
 fun switchFromSingleToDualScreen() {
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     when (device.displayRotation) {
-        Surface.ROTATION_0 -> device.swipe(675, 1780, 1350, 900, 400)
+        Surface.ROTATION_0, Surface.ROTATION_180 -> device.swipe(675, 1780, 1350, 900, 400)
         Surface.ROTATION_270 -> device.swipe(1780, 675, 900, 1350, 400)
         Surface.ROTATION_90 -> device.swipe(1780, 2109, 900, 1400, 400)
     }
@@ -42,7 +42,7 @@ fun switchFromSingleToDualScreen() {
 fun switchFromDualToSingleScreen() {
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     when (device.displayRotation) {
-        Surface.ROTATION_0 -> device.swipe(1500, 1780, 650, 900, 400)
+        Surface.ROTATION_0, Surface.ROTATION_180 -> device.swipe(1500, 1780, 650, 900, 400)
         Surface.ROTATION_270 -> device.swipe(1780, 1500, 900, 650, 400)
         Surface.ROTATION_90 -> device.swipe(1780, 1250, 900, 1500, 400)
     }
