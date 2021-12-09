@@ -46,10 +46,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Fragments handler**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta3"
-    implementation "com.microsoft.device.dualscreen:screenmanager-windowmanager:1.0.0-beta4"
-    // Or, if you want to use the screen manager with display mask version
-    // implementation "com.microsoft.device.dualscreen:screenmanager-displaymask:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta4"
     ```
 
     **Layouts**

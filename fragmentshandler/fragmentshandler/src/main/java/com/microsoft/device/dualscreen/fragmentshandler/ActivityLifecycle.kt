@@ -3,7 +3,7 @@
  *  Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.utils.wm
+package com.microsoft.device.dualscreen.fragmentshandler
 
 import android.app.Activity
 import android.app.Application
