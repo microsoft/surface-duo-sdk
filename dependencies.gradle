@@ -20,7 +20,7 @@ ext {
     screenManagerWMVersionCode = 4
     screenManagerUtilsVersionCode = 4
     layoutsVersionCode = 7
-    fragmentsHandlerVersionCode = 3
+    fragmentsHandlerVersionCode = 4
     bottomNavigationVersionCode = 3
     tabsVersionCode = 3
     recyclerviewVersionCode = 5
