@@ -11,7 +11,7 @@ ext {
     // publish correctly a new version of each of our libraries.
     // e.g. screenManager library, you could have as a current version
     // 1.0.0-beta1, if you want to publish a new version you will have to increase in one the
-    //screenManagerCoreVersionCode and to bump the screenManagerCoreVersionName.
+    // screenManagerCoreVersionCode and to bump the screenManagerCoreVersionName.
 
     // SurfaceDuo SDK libraries version code.
     // If you want to publish a new version, bump in one (1) the specific line(s)
@@ -44,15 +44,13 @@ ext {
     navigationVersionName = "1.0.0-alpha1"
     // ----------------------------------
 
-    //Config Android sdk, plugins and libraries version
+    // Config Android sdk, plugins and libraries version
     gradlePluginVersion = "7.0.2"
     kotlinVersion = "1.5.0"
     dokkaVersion = "1.6.0"
-    compileSdkVersion = 29
-    compileSdkVersion2 = 31
+    compileSdkVersion = 31
     buildToolsVersion = '30.0.3'
     targetSdkVersion = compileSdkVersion
-    targetSdkVersion2 = compileSdkVersion2
     minSdkVersion = 21
 
     config = [

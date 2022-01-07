@@ -7,14 +7,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.surfaceduo.sample_surfaceduo_layout"
 
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 31
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode 1
         versionName "1.0"

@@ -8,14 +8,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.dualscreen.sample_fragmentshandler"
 
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 31
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode 1
         versionName "1.0"
@@ -32,7 +32,6 @@ dependencies {
     implementation androidxDependencies.lifecycleRuntimeKtx
     implementation project(':fragmentshandler:fragmentshandler')
     implementation project(':layouts:layouts')
-    implementation project(commonDependencies.screenManager)
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat

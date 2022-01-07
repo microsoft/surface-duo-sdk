@@ -19,12 +19,12 @@ ext {
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 31
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode rootProject.ext.wmUtilsVersionCode
         versionName rootProject.ext.wmUtilsVersionName
@@ -51,6 +51,5 @@ dependencies {
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.coreKtx
 
-    implementation "androidx.window:window:1.0.0-beta02"
-    implementation "androidx.window:window-java:1.0.0-beta02"
+    implementation androidxDependencies.windowManager
 }

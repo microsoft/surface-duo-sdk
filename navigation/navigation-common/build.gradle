@@ -18,12 +18,12 @@ ext {
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion2
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion2
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode rootProject.ext.navigationVersionCode
         versionName rootProject.ext.navigationVersionName
