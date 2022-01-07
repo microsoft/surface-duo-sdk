@@ -19,12 +19,12 @@ ext {
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 29
 
         versionCode rootProject.ext.screenManagerWMVersionCode
         versionName rootProject.ext.screenManagerWMVersionName
@@ -48,7 +48,7 @@ dependencies {
     api project(path: ':screenmanager:screenmanager-core')
 
     implementation kotlinDependencies.kotlinStdlib
-    implementation androidxDependencies.window
+    implementation androidxDependencies.windowAlpha
     implementation androidxDependencies.coreKtx
 
     testImplementation testDependencies.junit

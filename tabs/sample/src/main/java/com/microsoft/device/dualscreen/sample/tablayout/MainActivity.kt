@@ -6,27 +6,25 @@
 package com.microsoft.device.dualscreen.sample.tablayout
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Consumer
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager.widget.ViewPager
-import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.microsoft.device.dualscreen.sample.tablayout.databinding.ActivityMainBinding
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
-import java.util.concurrent.Executor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
-    private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
-    private lateinit var runOnUiThreadExecutor: Executor
 
     private lateinit var binding: ActivityMainBinding
 
@@ -42,29 +40,19 @@ class MainActivity : AppCompatActivity() {
         binding.tabLayout.allowFlingGesture = true
         binding.tabLayout.useTransparentBackground = true
 
-        initWindowLayoutInfo()
+        registerWindowInfoFlow()
     }
 
-    private fun initWindowLayoutInfo() {
-        adapter = WindowInfoRepositoryCallbackAdapter(windowInfoRepository())
-        runOnUiThreadExecutor = Executor { command: Runnable? ->
-            command?.let {
-                Handler(Looper.getMainLooper()).post(it)
+    private fun registerWindowInfoFlow() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                WindowInfoTracker.getOrCreate(this@MainActivity)
+                    .windowLayoutInfo(this@MainActivity)
+                    .collect { windowLayoutInfo ->
+                        setButtonsVisibility(windowLayoutInfo)
+                    }
             }
         }
-        consumerWindowLayoutInfo = Consumer { windowLayoutInfo ->
-            setButtonsVisibility(windowLayoutInfo)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter.addWindowLayoutInfoListener(runOnUiThreadExecutor, consumerWindowLayoutInfo)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter.removeWindowLayoutInfoListener(consumerWindowLayoutInfo)
     }
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {

@@ -11,7 +11,7 @@ ext {
     // publish correctly a new version of each of our libraries.
     // e.g. screenManager library, you could have as a current version
     // 1.0.0-beta1, if you want to publish a new version you will have to increase in one the
-    //screenManagerCoreVersionCode and to bump the screenManagerCoreVersionName.
+    // screenManagerCoreVersionCode and to bump the screenManagerCoreVersionName.
 
     // SurfaceDuo SDK libraries version code.
     // If you want to publish a new version, bump in one (1) the specific line(s)
@@ -19,14 +19,14 @@ ext {
     screenManagerDMVersionCode = 4
     screenManagerWMVersionCode = 4
     screenManagerUtilsVersionCode = 4
-    layoutsVersionCode = 7
-    fragmentsHandlerVersionCode = 4
-    bottomNavigationVersionCode = 3
-    tabsVersionCode = 3
-    recyclerviewVersionCode = 5
+    layoutsVersionCode = 8
+    fragmentsHandlerVersionCode = 5
+    bottomNavigationVersionCode = 4
+    tabsVersionCode = 4
+    recyclerviewVersionCode = 6
     inkSDKVersionCode = 6
-    wmUtilsVersionCode = 3
-    navigationVersionCode = 1
+    wmUtilsVersionCode = 4
+    navigationVersionCode = 2
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -34,25 +34,23 @@ ext {
     screenManagerDMVersionName = '1.0.0-beta4'
     screenManagerWMVersionName = '1.0.0-beta4'
     screenManagerUtilsVersionName = '1.0.0-beta4'
-    layoutsVersionName = '1.0.0-beta7'
-    fragmentsHandlerVersionName = '1.0.0-beta4'
-    bottomNavigationVersionName = '1.0.0-beta3'
-    tabsVersionName = '1.0.0-beta3'
-    recyclerviewVersionName = '1.0.0-beta5'
-    inkSDKVersionName = "1.0.0-alpha4"
-    wmUtilsVersionName = "1.0.0-beta3"
-    navigationVersionName = "1.0.0-alpha1"
+    layoutsVersionName = '1.0.0-beta8'
+    fragmentsHandlerVersionName = '1.0.0-beta5'
+    bottomNavigationVersionName = '1.0.0-beta4'
+    tabsVersionName = '1.0.0-beta4'
+    recyclerviewVersionName = '1.0.0-beta6'
+    inkSDKVersionName = "1.0.0-alpha6"
+    wmUtilsVersionName = "1.0.0-beta4"
+    navigationVersionName = "1.0.0-alpha2"
     // ----------------------------------
 
-    //Config Android sdk, plugins and libraries version
+    // Config Android sdk, plugins and libraries version
     gradlePluginVersion = "7.0.2"
     kotlinVersion = "1.5.0"
     dokkaVersion = "1.6.0"
-    compileSdkVersion = 29
-    compileSdkVersion2 = 31
+    compileSdkVersion = 31
     buildToolsVersion = '30.0.3'
     targetSdkVersion = compileSdkVersion
-    targetSdkVersion2 = compileSdkVersion2
     minSdkVersion = 21
 
     config = [
@@ -73,13 +71,13 @@ ext {
     appCompatVersion = "1.3.1"
     constraintLayoutVersion = "2.0.4"
     coreKtxVersion = "1.5.0"
-    windowVersion = "1.0.0-alpha01"
+    windowAlphaVersion = "1.0.0-alpha01"
     lifecycleVersion = "2.3.1"
     recyclerViewVersion = "1.2.0"
     lifecycleRuntimeKtxVersion = "2.4.0-rc01"
     annotationVersion = "1.1.0"
     fragmentKtxVersion = "1.3.1"
-    windowManagerVersion = '1.0.0-beta02'
+    windowManagerVersion = '1.0.0-SNAPSHOT'
     activityKtxVersion = "1.1.0"
     customViewVersion = "1.1.0"
     drawerLayoutVersion = "1.1.1"
@@ -89,7 +87,7 @@ ext {
             appCompat          : "androidx.appcompat:appcompat:$appCompatVersion",
             constraintLayout   : "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion",
             coreKtx            : "androidx.core:core-ktx:$coreKtxVersion",
-            window             : "androidx.window:window:$windowVersion",
+            windowAlpha        : "androidx.window:window:$windowAlphaVersion",
             lifecycleViewmodel : "androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion",
             recyclerView       : "androidx.recyclerview:recyclerview:$recyclerViewVersion",
             lifecycleRuntimeKtx: "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleRuntimeKtxVersion",

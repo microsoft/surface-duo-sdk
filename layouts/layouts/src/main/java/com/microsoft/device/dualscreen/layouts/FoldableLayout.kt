@@ -7,6 +7,7 @@
 
 package com.microsoft.device.dualscreen.layouts
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.TypedArray
@@ -18,21 +19,18 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -58,6 +56,7 @@ open class FoldableLayout @JvmOverloads constructor(
 
     private lateinit var layoutController: FoldableLayoutController
     private lateinit var viewModel: FoldableLayoutViewModel
+    private var job: Job? = null
 
     init {
         if (context !is ViewModelStoreOwner) {
@@ -90,16 +89,19 @@ open class FoldableLayout @JvmOverloads constructor(
     }
 
     private fun registerWindowInfoFlow() {
-        val activity = context as AppCompatActivity
-        val windowInfoRepository = activity.windowInfoRepository()
-        activity.lifecycleScope.launch(Dispatchers.Main) {
-            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                windowInfoRepository.windowLayoutInfo.collect { info ->
+        job = MainScope().launch {
+            WindowInfoTracker.getOrCreate(context)
+                .windowLayoutInfo(context as Activity)
+                .collect { info ->
                     viewModel.windowLayoutInfo = info
                     layoutController.foldingFeature = info.getFoldingFeature()
                 }
-            }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        job?.cancel()
     }
 
     /**

@@ -13,8 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.window.layout.FoldingFeature
-import androidx.window.layout.WindowInfoRepository
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
@@ -59,10 +58,9 @@ open class FoldableFrameLayout @JvmOverloads constructor(
     }
 
     private fun registerWindowInfoFlow() {
-        val windowInfoRepository: WindowInfoRepository =
-            (context as Activity).windowInfoRepository()
         job = MainScope().launch {
-            windowInfoRepository.windowLayoutInfo
+            WindowInfoTracker.getOrCreate(context)
+                .windowLayoutInfo(context as Activity)
                 .collect { info ->
                     foldingFeature = info.getFoldingFeature()
                     foldingFeature?.let {

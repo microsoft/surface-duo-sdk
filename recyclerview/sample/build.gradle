@@ -8,13 +8,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.dualscreen.sample_recyclerview"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 31
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
         versionCode 1
         versionName "1.0"
 
@@ -36,6 +37,7 @@ dependencies {
     implementation androidxDependencies.coreKtx
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.constraintLayout
+    implementation androidxDependencies.lifecycleRuntimeKtx
 
     testImplementation testDependencies.junit
     androidTestImplementation instrumentationTestDependencies.junit

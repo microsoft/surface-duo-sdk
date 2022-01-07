@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.fragmentshandler.test.R
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
@@ -74,14 +74,15 @@ class SampleActivity : AppCompatActivity() {
     }
 
     private fun registerWindowInfoFlow() {
-        val windowInfoRepository = windowInfoRepository()
         lifecycleScope.launch(Dispatchers.Main) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                windowInfoRepository.windowLayoutInfo.collectIndexed { index, info ->
-                    if (index == 0) {
-                        onWindowLayoutInfoChanged(info)
+                WindowInfoTracker.getOrCreate(this@SampleActivity)
+                    .windowLayoutInfo(this@SampleActivity)
+                    .collectIndexed { index, info ->
+                        if (index == 0) {
+                            onWindowLayoutInfoChanged(info)
+                        }
                     }
-                }
             }
         }
     }

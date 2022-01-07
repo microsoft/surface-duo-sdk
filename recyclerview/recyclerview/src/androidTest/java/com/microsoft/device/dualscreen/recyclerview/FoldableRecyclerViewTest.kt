@@ -13,8 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
-import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter
+import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.recyclerview.activities.SimpleRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
@@ -38,7 +38,7 @@ class FoldableRecyclerViewTest {
     val activityTestRule = ActivityTestRule(SimpleRecyclerViewActivity::class.java)
 
     private var windowLayoutInfoConsumerLatch = WindowLayoutInfoConsumer()
-    private var adapter: WindowInfoRepositoryCallbackAdapter? = null
+    private var adapter: WindowInfoTrackerCallbackAdapter? = null
     private val runOnUiThreadExecutor = Executor { command: Runnable? ->
         command?.let {
             Handler(Looper.getMainLooper()).post(it)
@@ -47,8 +47,13 @@ class FoldableRecyclerViewTest {
 
     private fun resetAdapterAndLatch() {
         windowLayoutInfoConsumerLatch.resetWindowInfoLayoutCounter()
-        adapter = WindowInfoRepositoryCallbackAdapter(activityTestRule.activity.windowInfoRepository())
-        adapter?.addWindowLayoutInfoListener(runOnUiThreadExecutor, windowLayoutInfoConsumerLatch)
+        adapter =
+            WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(activityTestRule.activity))
+        adapter?.addWindowLayoutInfoListener(
+            activityTestRule.activity,
+            runOnUiThreadExecutor,
+            windowLayoutInfoConsumerLatch
+        )
         windowLayoutInfoConsumerLatch.waitForWindowInfoLayoutChanges()
     }
 
