@@ -54,6 +54,7 @@ dependencies {
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.windowManager
+    implementation androidxDependencies.lifecycleRuntimeKtx
 
     androidTestImplementation instrumentationTestDependencies.junitKtx
     androidTestImplementation instrumentationTestDependencies.espressoCore

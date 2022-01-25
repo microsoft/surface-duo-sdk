@@ -70,7 +70,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Ink**
 
     ```gradle
-    implementation "com.microsoft.device:ink:1.0.0-alpha6"
+    implementation "com.microsoft.device:ink:1.0.0-alpha4"
     ```
 
     **Foldable Navigation Component**

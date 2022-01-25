@@ -39,7 +39,7 @@ ext {
     bottomNavigationVersionName = '1.0.0-beta4'
     tabsVersionName = '1.0.0-beta4'
     recyclerviewVersionName = '1.0.0-beta6'
-    inkSDKVersionName = "1.0.0-alpha6"
+    inkSDKVersionName = "1.0.0-alpha4"
     wmUtilsVersionName = "1.0.0-beta4"
     navigationVersionName = "1.0.0-alpha2"
     // ----------------------------------
@@ -71,6 +71,7 @@ ext {
     appCompatVersion = "1.3.1"
     constraintLayoutVersion = "2.0.4"
     coreKtxVersion = "1.5.0"
+    //This version of WindowManager is used only in the screen manager module that is deprecated.
     windowAlphaVersion = "1.0.0-alpha01"
     lifecycleVersion = "2.3.1"
     recyclerViewVersion = "1.2.0"
