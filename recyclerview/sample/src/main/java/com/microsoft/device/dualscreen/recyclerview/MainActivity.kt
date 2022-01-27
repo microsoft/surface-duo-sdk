@@ -7,29 +7,26 @@ package com.microsoft.device.dualscreen.recyclerview
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.util.Consumer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.R
 import com.microsoft.device.dualscreen.sample_duolayoutmanager.databinding.ActivityMainBinding
-import java.util.concurrent.Executor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
-    private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
-    private lateinit var runOnUiThreadExecutor: Executor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initRecyclerView()
-        initWindowLayoutInfo()
+        registerWindowInfoFlow()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -61,26 +58,16 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun initWindowLayoutInfo() {
-        adapter = WindowInfoRepositoryCallbackAdapter(windowInfoRepository())
-        runOnUiThreadExecutor = Executor { command: Runnable? ->
-            command?.let {
-                Handler(Looper.getMainLooper()).post(it)
+    private fun registerWindowInfoFlow() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                WindowInfoTracker.getOrCreate(this@MainActivity)
+                    .windowLayoutInfo(this@MainActivity)
+                    .collect { windowLayoutInfo ->
+                        onWindowLayoutInfoChanged(windowLayoutInfo)
+                    }
             }
         }
-        consumerWindowLayoutInfo = Consumer { windowLayoutInfo ->
-            onWindowLayoutInfoChanged(windowLayoutInfo)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter.addWindowLayoutInfoListener(runOnUiThreadExecutor, consumerWindowLayoutInfo)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter.removeWindowLayoutInfoListener(consumerWindowLayoutInfo)
     }
 
     private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {

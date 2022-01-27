@@ -23,8 +23,7 @@ import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import androidx.window.layout.FoldingFeature
-import androidx.window.layout.WindowInfoRepository
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -84,10 +83,9 @@ open class BottomNavigationView : BottomNavigationView {
     private var defaultChildWidth = -1
 
     private fun registerWindowInfoFlow() {
-        val windowInfoRepository: WindowInfoRepository =
-            (context as Activity).windowInfoRepository()
         job = MainScope().launch {
-            windowInfoRepository.windowLayoutInfo
+            WindowInfoTracker.getOrCreate(context)
+                .windowLayoutInfo(context as Activity)
                 .collect { info ->
                     windowLayoutInfo = info
                     onInfoLayoutChanged(info)

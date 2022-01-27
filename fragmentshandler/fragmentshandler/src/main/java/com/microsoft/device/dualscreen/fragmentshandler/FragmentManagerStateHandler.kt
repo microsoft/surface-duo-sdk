@@ -16,15 +16,12 @@ import android.os.Bundle
 import android.view.Surface
 import android.view.WindowManager
 import androidx.annotation.VisibleForTesting
-import androidx.core.content.ContextCompat
-import androidx.window.layout.WindowInfoRepository
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.screenMode
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 
@@ -59,19 +56,24 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
 
     private var fragmentManagerStateMap = mutableMapOf<String, FragmentManagerStateWrapper>()
 
-    private var job: Job? = null
+    private var jobs: HashMap<Int, Job> = hashMapOf()
     private fun registerWindowInfoFlow(activity: Activity) {
-        val executor = ContextCompat.getMainExecutor(activity)
-        val windowInfoRepository: WindowInfoRepository = activity.windowInfoRepository()
-        job?.cancel()
-        job = CoroutineScope(executor.asCoroutineDispatcher()).launch {
-            windowInfoRepository.windowLayoutInfo
+        val job = MainScope().launch {
+            WindowInfoTracker.getOrCreate(activity)
+                .windowLayoutInfo(activity)
                 .collectIndexed { index, info ->
                     if (index == 0 && !orientationWasChanged) {
                         checkForScreenModeChanges(info)
                     }
                 }
         }
+        jobs[activity.hashCode()] = job
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+        super.onActivityStopped(activity)
+        jobs[activity.hashCode()]?.cancel()
+        jobs.remove(activity.hashCode())
     }
 
     /**

@@ -6,26 +6,23 @@
 package com.microsoft.device.dualscreen.recyclerview.activities
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.core.util.Consumer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.microsoft.device.dualscreen.recyclerview.FoldableItemDecoration
 import com.microsoft.device.dualscreen.recyclerview.FoldableLayoutManager
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.NumbersAdapter
 import com.microsoft.device.dualscreen.recyclerview.utils.replaceItemDecorationAt
-import java.util.concurrent.Executor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class SimpleRecyclerViewActivity : BaseTestActivity() {
-
-    private lateinit var adapter: WindowInfoRepositoryCallbackAdapter
-    private lateinit var consumerWindowLayoutInfo: Consumer<WindowLayoutInfo>
-    private lateinit var runOnUiThreadExecutor: Executor
 
     override fun getContentViewLayoutResId(): Int {
         return R.layout.activity_simple_recyclerview
@@ -35,7 +32,7 @@ class SimpleRecyclerViewActivity : BaseTestActivity() {
         super.onCreate(savedInstanceState)
 
         initRecyclerView()
-        initWindowLayoutInfo()
+        registerWindowInfoFlow()
     }
 
     private fun initRecyclerView() {
@@ -45,26 +42,16 @@ class SimpleRecyclerViewActivity : BaseTestActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun initWindowLayoutInfo() {
-        adapter = WindowInfoRepositoryCallbackAdapter(windowInfoRepository())
-        runOnUiThreadExecutor = Executor { command: Runnable? ->
-            command?.let {
-                Handler(Looper.getMainLooper()).post(it)
+    private fun registerWindowInfoFlow() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                WindowInfoTracker.getOrCreate(this@SimpleRecyclerViewActivity)
+                    .windowLayoutInfo(this@SimpleRecyclerViewActivity)
+                    .collect { windowLayoutInfo ->
+                        onWindowLayoutInfoChanged(windowLayoutInfo)
+                    }
             }
         }
-        consumerWindowLayoutInfo = Consumer { windowLayoutInfo ->
-            onWindowLayoutInfoChanged(windowLayoutInfo)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter.addWindowLayoutInfoListener(runOnUiThreadExecutor, consumerWindowLayoutInfo)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter.removeWindowLayoutInfoListener(consumerWindowLayoutInfo)
     }
 
     private fun onWindowLayoutInfoChanged(windowLayoutInfo: WindowLayoutInfo) {

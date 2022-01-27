@@ -18,12 +18,12 @@ ext {
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion 31
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         versionCode rootProject.ext.recyclerviewVersionCode
         versionName rootProject.ext.recyclerviewVersionName
@@ -49,6 +49,7 @@ dependencies {
     api androidxDependencies.recyclerView
     implementation kotlinDependencies.kotlinStdlib
     implementation materialDependencies.material
+    implementation androidxDependencies.lifecycleRuntimeKtx
 
     testImplementation testDependencies.junit
 

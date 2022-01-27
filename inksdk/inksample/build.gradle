@@ -9,13 +9,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 29
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.microsoft.device.inksample"
         minSdkVersion inkSDK.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 29
+        
         versionCode rootProject.ext.inkSDKVersionCode
         versionName rootProject.ext.inkSDKVersionName
 

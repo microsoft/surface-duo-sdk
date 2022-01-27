@@ -18,7 +18,6 @@
 
 package androidx.navigation.fragment;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -46,15 +45,15 @@ import androidx.navigation.FoldableNavHost;
 import androidx.navigation.FoldableNavHostController;
 import androidx.navigation.FoldableNavigation;
 import androidx.navigation.FoldableNavigator;
-import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter;
-import androidx.window.layout.WindowInfoRepository;
+import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter;
+import androidx.window.layout.WindowInfoTracker;
 import androidx.window.layout.WindowLayoutInfo;
 
 import com.microsoft.device.dualscreen.layouts.FoldableLayout;
-import com.microsoft.device.dualscreen.navigation.RequestConfigListener;
-import com.microsoft.device.dualscreen.navigation.RequestConfigParams;
 import com.microsoft.device.dualscreen.navigation.FoldableFragmentManagerWrapper;
 import com.microsoft.device.dualscreen.navigation.FoldableLayoutKt;
+import com.microsoft.device.dualscreen.navigation.RequestConfigListener;
+import com.microsoft.device.dualscreen.navigation.RequestConfigParams;
 import com.microsoft.device.dualscreen.utils.wm.WindowLayoutInfoExtensionsKt;
 
 import org.jetbrains.annotations.NotNull;
@@ -170,7 +169,7 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
     private RequestConfigParams mRequestConfigParams;
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
     private final Executor mUiThreadExecutor = mUiHandler::post;
-    private WindowInfoRepositoryCallbackAdapter mWindowInfoAdapter;
+    private WindowInfoTrackerCallbackAdapter mWindowInfoAdapter;
     private final Consumer<WindowLayoutInfo> mWindowInfoConsumer = windowLayoutInfo -> {
         mFoldableFragmentManager.setScreenMode(WindowLayoutInfoExtensionsKt.getScreenMode(windowLayoutInfo));
     };
@@ -244,7 +243,8 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
                     .commit();
         }
 
-        mWindowInfoAdapter = new WindowInfoRepositoryCallbackAdapter(WindowInfoRepository.getOrCreate((Activity) context));
+        mWindowInfoAdapter =
+                new WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(requireActivity()));
     }
 
     @CallSuper
@@ -304,7 +304,7 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
     @Override
     public void onResume() {
         super.onResume();
-        mWindowInfoAdapter.addWindowLayoutInfoListener(mUiThreadExecutor, mWindowInfoConsumer);
+        mWindowInfoAdapter.addWindowLayoutInfoListener(requireActivity(), mUiThreadExecutor, mWindowInfoConsumer);
     }
 
     @Override

@@ -40,31 +40,31 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     **Bottom navigation**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta3"
+    implementation "com.microsoft.device.dualscreen:bottomnavigation:1.0.0-beta4"
     ```
 
     **Fragments handler**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta4"
+    implementation "com.microsoft.device.dualscreen:fragmentshandler:1.0.0-beta5"
     ```
 
     **Layouts**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta7"
+    implementation "com.microsoft.device.dualscreen:layouts:1.0.0-beta8"
     ```
 
     **Tabs**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-beta3"
+    implementation "com.microsoft.device.dualscreen:tabs:1.0.0-beta4"
     ```
 
     **RecyclerView**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta5"
+    implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta6"
     ```
 
     **Ink**
@@ -75,7 +75,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
 
     **Foldable Navigation Component**
     ```gradle
-    def nav_version = "1.0.0-alpha1"
+    def nav_version = "1.0.0-alpha2"
 
     // Java language implementation
     implementation "com.microsoft.device.dualscreen:navigation-fragment:$nav_version"

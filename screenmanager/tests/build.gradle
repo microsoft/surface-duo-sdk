@@ -9,13 +9,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 31
     buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.microsoft.device.dualscreen.screenmanager.tests"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 29
+
         versionCode 1
         versionName "1.0"
 
@@ -50,6 +51,10 @@ dependencies {
     implementation androidxDependencies.lifecycleViewmodel
     implementation androidxDependencies.constraintLayout
 
+    implementation instrumentationTestDependencies.uiAutomator
+    implementation instrumentationTestDependencies.espressoCore
+    implementation commonDependencies.mockitoCore
+
     testImplementation project(commonDependencies.screenManager)
     testImplementation testDependencies.junit
     testImplementation commonDependencies.googleTruth
@@ -62,6 +67,5 @@ dependencies {
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation androidxDependencies.appCompat
-    androidTestImplementation project(':utils:test-utils')
     androidTestImplementation project(commonDependencies.screenManager)
 }

@@ -9,8 +9,8 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
-import androidx.window.java.layout.WindowInfoRepositoryCallbackAdapter
-import androidx.window.layout.WindowInfoRepository.Companion.windowInfoRepository
+import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter
+import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executor
@@ -22,7 +22,7 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
         get() = _windowLayoutInfo
     private var windowLayoutInfoLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)
 
-    private var adapter: WindowInfoRepositoryCallbackAdapter? = null
+    private var adapter: WindowInfoTrackerCallbackAdapter? = null
     private val runOnUiThreadExecutor = Executor { command: Runnable? ->
         command?.let {
             Handler(Looper.getMainLooper()).post(it)
@@ -30,11 +30,11 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
     }
 
     fun register(activity: AppCompatActivity) {
-        adapter = WindowInfoRepositoryCallbackAdapter(activity.windowInfoRepository())
-        adapter?.addWindowLayoutInfoListener(runOnUiThreadExecutor, this)
+        adapter = WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(activity))
+        adapter?.addWindowLayoutInfoListener(activity, runOnUiThreadExecutor, this)
     }
 
-    fun unregister() {
+    private fun unregister() {
         adapter?.removeWindowLayoutInfoListener(this)
     }
 

@@ -14,7 +14,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-
     }
     dependencies {
         classpath config.gradlePlugin
@@ -22,7 +21,6 @@ buildscript {
         classpath dokkaDependencies.dokkaGradlePlugin
     }
 }
-
 
 allprojects {
     repositories {
