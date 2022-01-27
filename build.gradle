@@ -22,15 +22,10 @@ buildscript {
     }
 }
 
-
 allprojects {
     repositories {
         google()
         jcenter()
-        mavenCentral()
-        maven {
-            url 'https://androidx.dev/snapshots/builds/8078099/artifacts/repository/'
-        }
     }
     apply from: "$rootDir/ktlint.gradle"
 

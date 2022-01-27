@@ -78,7 +78,7 @@ ext {
     lifecycleRuntimeKtxVersion = "2.4.0-rc01"
     annotationVersion = "1.1.0"
     fragmentKtxVersion = "1.3.1"
-    windowManagerVersion = '1.0.0-SNAPSHOT'
+    windowManagerVersion = '1.0.0'
     activityKtxVersion = "1.1.0"
     customViewVersion = "1.1.0"
     drawerLayoutVersion = "1.1.1"

@@ -56,9 +56,9 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
 
     private var fragmentManagerStateMap = mutableMapOf<String, FragmentManagerStateWrapper>()
 
-    private var job: Job? = null
+    private var jobs: HashMap<Int, Job> = hashMapOf()
     private fun registerWindowInfoFlow(activity: Activity) {
-        job = MainScope().launch {
+        val job = MainScope().launch {
             WindowInfoTracker.getOrCreate(activity)
                 .windowLayoutInfo(activity)
                 .collectIndexed { index, info ->
@@ -67,12 +67,15 @@ class FragmentManagerStateHandler private constructor(app: Application) : Activi
                     }
                 }
         }
+        jobs[activity.hashCode()] = job
     }
 
     override fun onActivityStopped(activity: Activity) {
         super.onActivityStopped(activity)
-        job?.cancel()
+        jobs[activity.hashCode()]?.cancel()
+        jobs.remove(activity.hashCode())
     }
+
     /**
      * Clears the internal data.
      */
