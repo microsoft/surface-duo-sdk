@@ -67,13 +67,13 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     implementation "com.microsoft.device.dualscreen:recyclerview:1.0.0-beta6"
     ```
 
-    **Ink**
+   **Ink**
 
     ```gradle
     implementation "com.microsoft.device:ink:1.0.0-alpha4"
     ```
-
-    **Foldable Navigation Component**
+   
+   **Foldable Navigation Component**
     ```gradle
     def nav_version = "1.0.0-alpha2"
 
@@ -84,6 +84,12 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     // Kotlin
     implementation "com.microsoft.device.dualscreen:navigation-fragment-ktx:$nav_version"
     implementation "com.microsoft.device.dualscreen:navigation-ui-ktx:$nav_version"
+    ```
+
+   **Testing**
+
+    ```gradle
+    implementation "com.microsoft.device.dualscreen.testing:testng-kotlin:1.0.0-alpha1"
     ```
 
 ### Useful links
