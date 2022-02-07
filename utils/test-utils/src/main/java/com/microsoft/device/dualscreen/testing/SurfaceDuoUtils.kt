@@ -10,7 +10,10 @@ import android.view.Surface
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 
-//Surface Duo 1 dimensions
+/**
+ * Surface Duo 1 dimensions as they can be seen on:
+ * https://docs.microsoft.com/dual-screen/android/surface-duo-dimensions
+ */
 object SurfaceDuo1_dimens {
     val START_SCREEN_RECT = Rect(0, 0, 1350, 1800)
     val END_SCREEN_RECT = Rect(1434, 0, 2784, 1800)
@@ -24,7 +27,10 @@ object SurfaceDuo1_dimens {
     const val DUAL_SCREEN_WIDTH = SINGLE_SCREEN_WIDTH * SCREEN_COUNT + HINGE_WIDTH
 }
 
-//Surface Duo 2 dimensions
+/**
+ * Surface Duo 2 dimensions as they can be seen on:
+ * https://docs.microsoft.com/dual-screen/android/surface-duo-dimensions
+ */
 object SurfaceDuo2_dimens {
     val START_SCREEN_RECT = Rect(0, 0, 1344, 1892)
     val END_SCREEN_RECT = Rect(1410, 0, 2754, 1892)

@@ -1,4 +1,4 @@
-package com.microsoft.device.dualscreen.utils.test
+package com.microsoft.device.dualscreen.testing
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice

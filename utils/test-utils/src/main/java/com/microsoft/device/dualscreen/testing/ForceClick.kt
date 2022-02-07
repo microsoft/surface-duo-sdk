@@ -14,18 +14,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 
-
-/**
- * Returns an action that clicks the view without checking the coordinates on the screen.
- * Seems that ViewActions.click() finds coordinates of the view on the screen, and then performs the tap on the coordinates.
- * Seems that changing the screen rotations affects these coordinates and ViewActions.click() throws exceptions.
- */
-fun forceClick(): ViewAction = ForceClick()
-
 /**
  * Click action without checking the coordinates for the view on the screen. when device is rotated.
- * ViewActions.click() finds coordinates of the view on the screen, and then performs
- * the tap on the coordinates.
+ * ViewActions.click() finds coordinates of the view on the screen, and then performs the tap on the coordinates.
  * It seems that changing the screen rotations affects these coordinates and ViewActions.click() throws exceptions.
  */
 class ForceClick : ViewAction {
