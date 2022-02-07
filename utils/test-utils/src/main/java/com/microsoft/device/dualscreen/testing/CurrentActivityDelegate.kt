@@ -13,6 +13,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+/**
+ * Activity delegate that is used to setup the Activity test scenario and to handle the different @see Activity
+ * lifecycle events.
+ *
+ * @constructor Create empty Current activity delegate
+ */
 class CurrentActivityDelegate {
     private var activityStartedCountDownLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)
 
