@@ -7,8 +7,8 @@ package com.microsoft.device.dualscreen.navigation.sample
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
-import com.microsoft.device.dualscreen.utils.test.switchFromDualToSingleScreen
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.switchFromDualToSingleScreen
+import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

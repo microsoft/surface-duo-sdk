@@ -15,9 +15,9 @@ import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FrameLayoutActivity
 import com.microsoft.device.dualscreen.layouts.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.layouts.utils.isFrameLayoutOnScreen
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.utils.test.resetOrientation
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.resetOrientation
+import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.junit.After
 import org.junit.Before

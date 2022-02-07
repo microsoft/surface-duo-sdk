@@ -20,10 +20,10 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
-import com.microsoft.device.dualscreen.utils.test.setOrientationRight
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
+import com.microsoft.device.dualscreen.testing.setOrientationLeft
+import com.microsoft.device.dualscreen.testing.setOrientationRight
+import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.unfreezeRotation
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers.not
 import org.junit.Rule

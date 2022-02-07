@@ -13,9 +13,9 @@ import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.navigation.utils.SimpleFragmentBackStackListener
 import com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity
 import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
-import com.microsoft.device.dualscreen.utils.test.CurrentActivityDelegate
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

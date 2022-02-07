@@ -20,10 +20,10 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
-import com.microsoft.device.dualscreen.utils.test.setOrientationRight
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
-import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
+import com.microsoft.device.dualscreen.testing.setOrientationLeft
+import com.microsoft.device.dualscreen.testing.setOrientationRight
+import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.unfreezeRotation
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers
 import org.junit.Before
