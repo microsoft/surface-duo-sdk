@@ -17,7 +17,6 @@ import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 
-
 fun changeDisplayPosition(pos: DisplayPosition): ViewAction =
     object : ViewAction {
         override fun getConstraints(): Matcher<View> {

@@ -91,7 +91,7 @@ private fun <A : ComponentActivity> TestRule.createFoldingFeature(
     }
 }
 
-//----- Market devices FoldingFeature recreation -----//
+// ----- Market devices FoldingFeature recreation -----//
 
 /**
  * Create Surface Duo 1 folding feature

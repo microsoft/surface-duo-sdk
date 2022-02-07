@@ -86,12 +86,12 @@ fun areCoordinatesOnTargetScreen(
     return when (targetScreenPosition) {
         DisplayPosition.DUAL ->
             xStart in 0..firstDisplayWith &&
-                    xEnd in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith
+                xEnd in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith
         DisplayPosition.START ->
             xStart in 0..firstDisplayWith &&
-                    xEnd in 0..firstDisplayWith
+                xEnd in 0..firstDisplayWith
         DisplayPosition.END ->
             xStart in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith &&
-                    xEnd in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith
+                xEnd in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith
     }
 }
