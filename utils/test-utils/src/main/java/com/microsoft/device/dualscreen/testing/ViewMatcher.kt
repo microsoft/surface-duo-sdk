@@ -17,16 +17,16 @@ import org.hamcrest.TypeSafeMatcher
  *
  * @param position: target position.
  * @param orientation: orientation of the display. See Configuration {@see Configuration}.
- * @param firstDisplayWith : width of the left/start/first display area
- * @param totalDisplayWith : width of the right/end/second/total display area
+ * @param firstDisplayWidth : width of the left/start/first display area
+ * @param totalDisplayWidth : width of the right/end/second/total display area
  * @param foldingFeatureWidth : width of the FoldingFeature {@see FoldingFeature} if any.
  * @return
  */
 fun isViewOnScreen(
     position: DisplayPosition,
     orientation: Int,
-    firstDisplayWith: Int,
-    totalDisplayWith: Int,
+    firstDisplayWidth: Int,
+    totalDisplayWidth: Int,
     foldingFeatureWidth: Int = 0
 ): Matcher<View> =
     object : TypeSafeMatcher<View>() {
@@ -56,8 +56,8 @@ fun isViewOnScreen(
                 targetScreenPosition = position,
                 xStart = start,
                 xEnd = end,
-                firstDisplayWith = firstDisplayWith,
-                totalDisplayWith = totalDisplayWith,
+                firstDisplayWidth = firstDisplayWidth,
+                totalDisplayWidth = totalDisplayWidth,
                 foldingFeatureWidth = foldingFeatureWidth
             )
         }
@@ -70,8 +70,8 @@ fun isViewOnScreen(
  * @param targetScreenPosition : the target position you want to check.
  * @param xStart : the start of the screen in the x-axis
  * @param xEnd : the end of the screen in the y-axis
- * @param firstDisplayWith : the width of the first display.
- * @param totalDisplayWith : the width of the total display area.
+ * @param firstDisplayWidth : the width of the first display.
+ * @param totalDisplayWidth : the width of the total display area.
  * @param foldingFeatureWidth : the width of the folding feature (if any).
  * @return
  */
@@ -79,19 +79,19 @@ fun areCoordinatesOnTargetScreen(
     targetScreenPosition: DisplayPosition,
     xStart: Int,
     xEnd: Int,
-    firstDisplayWith: Int,
-    totalDisplayWith: Int,
+    firstDisplayWidth: Int,
+    totalDisplayWidth: Int,
     foldingFeatureWidth: Int = 0
 ): Boolean {
     return when (targetScreenPosition) {
         DisplayPosition.DUAL ->
-            xStart in 0..firstDisplayWith &&
-                xEnd in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith
+            xStart in 0..firstDisplayWidth &&
+                xEnd in (firstDisplayWidth + foldingFeatureWidth)..totalDisplayWidth
         DisplayPosition.START ->
-            xStart in 0..firstDisplayWith &&
-                xEnd in 0..firstDisplayWith
+            xStart in 0..firstDisplayWidth &&
+                xEnd in 0..firstDisplayWidth
         DisplayPosition.END ->
-            xStart in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith &&
-                xEnd in (firstDisplayWith + foldingFeatureWidth)..totalDisplayWith
+            xStart in (firstDisplayWidth + foldingFeatureWidth)..totalDisplayWidth &&
+                xEnd in (firstDisplayWidth + foldingFeatureWidth)..totalDisplayWidth
     }
 }
