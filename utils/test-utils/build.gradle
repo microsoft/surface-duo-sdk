@@ -9,6 +9,16 @@ plugins {
     id 'kotlin-android'
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen.testing'
+    PUBLISH_ARTIFACT_ID = 'testing-kotlin'
+    LIBRARY_DESCRIPTION = 'Utility library used to facilitate instrumentation testing through Espresso ' +
+            'and UiAutomator on foldable devices, and with specific helpers to change app-display configuration ' +
+            'on Surface Duo devices'
+    LIBRARY_VERSION = rootProject.ext.testingVersionName
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -38,11 +48,13 @@ android {
 }
 
 dependencies {
+    implementation project(':utils:wm-utils')
     implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.windowManager
+    implementation commonDependencies.mockitoCore
     implementation instrumentationTestDependencies.uiAutomator
     implementation instrumentationTestDependencies.espressoCore
-    implementation androidxDependencies.appCompat
-    implementation commonDependencies.mockitoCore
     implementation instrumentationTestDependencies.junitKtx
-    implementation androidxDependencies.windowManager
+    implementation instrumentationTestDependencies.windowManagerTest
 }

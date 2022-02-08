@@ -15,9 +15,9 @@ import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FrameLayoutActivity
 import com.microsoft.device.dualscreen.layouts.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.layouts.utils.isFrameLayoutOnScreen
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.utils.test.resetOrientation
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.resetOrientation
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.junit.After
 import org.junit.Before
@@ -50,7 +50,7 @@ class FrameLayoutTestForSurfaceDuo {
     @Test
     fun testDisplayPositionFromLayout() {
         windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.duo_wrapper))
@@ -60,7 +60,7 @@ class FrameLayoutTestForSurfaceDuo {
     @Test
     fun testDisplayPositionEnd() {
         windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.duo_wrapper))
@@ -72,7 +72,7 @@ class FrameLayoutTestForSurfaceDuo {
     @Test
     fun testDisplayPositionDual() {
         windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.duo_wrapper))
@@ -84,7 +84,7 @@ class FrameLayoutTestForSurfaceDuo {
     @Test
     fun testDisplayPositionStart() {
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.duo_wrapper))

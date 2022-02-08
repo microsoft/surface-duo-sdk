@@ -27,6 +27,7 @@ ext {
     inkSDKVersionCode = 6
     wmUtilsVersionCode = 4
     navigationVersionCode = 2
+    testingVersionCode = 1
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -42,6 +43,7 @@ ext {
     inkSDKVersionName = "1.0.0-alpha4"
     wmUtilsVersionName = "1.0.0-beta4"
     navigationVersionName = "1.0.0-alpha2"
+    testingVersionName = "1.0.0-alpha1"
     // ----------------------------------
 
     // Config Android sdk, plugins and libraries version
@@ -167,7 +169,8 @@ ext {
             lifecycleRuntimeTesting: "androidx.lifecycle:lifecycle-runtime-testing:$lifecycleRuntimeTestingVersion",
             supportTestRules       : "com.android.support.test:rules:$supportTestRulesVersion",
             espressoIntents        : "androidx.test.espresso:espresso-intents:$espressoIntentsVersion",
-            espressoContrib        : "androidx.test.espresso:espresso-contrib:$espressoContribVersion"
+            espressoContrib        : "androidx.test.espresso:espresso-contrib:$espressoContribVersion",
+            windowManagerTest      : "androidx.window:window-testing:$windowManagerVersion",
     ]
 
     mlKitVersion = "16.1.0"

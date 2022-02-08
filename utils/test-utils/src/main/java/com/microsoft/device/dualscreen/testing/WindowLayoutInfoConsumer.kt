@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.utils.test
+package com.microsoft.device.dualscreen.testing
 
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +16,13 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
+/**
+ * Extends a Consumer<WindowLayoutInfo> {@see Consumer<WindowLayoutInfo>} that an Activity {@see AppCompatActivity}
+ * can use to reset previous WindowLayoutInfo {@see WindowLayoutInfo} data and to wait for new WindowLayoutInfo
+ * changes.
+ *
+ * @constructor Create empty Window layout info consumer
+ */
 class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
     private var _windowLayoutInfo: WindowLayoutInfo? = null
     val windowLayoutInfo: WindowLayoutInfo?
@@ -29,15 +36,28 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
         }
     }
 
+    /**
+     * Register a listener to consume WindowLayoutInfo values.
+     *
+     * @param activity : a valid Context
+     */
     fun register(activity: AppCompatActivity) {
         adapter = WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(activity))
         adapter?.addWindowLayoutInfoListener(activity, runOnUiThreadExecutor, this)
     }
 
+    /**
+     * Unregister the current instance from the WindowInfoTrackerCallbackAdapter.
+     */
     private fun unregister() {
         adapter?.removeWindowLayoutInfoListener(this)
     }
 
+    /**
+     * Accepts a WindowLayoutInfo {@see WindowLayoutInfo} with the new information that will handle.
+     *
+     * @param windowLayoutInfo : with new window layout information
+     */
     override fun accept(windowLayoutInfo: WindowLayoutInfo) {
         _windowLayoutInfo = windowLayoutInfo
         windowLayoutInfoLatch.countDown()
@@ -72,12 +92,19 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
         }
     }
 
+    /**
+     * Resets current used instance to its original state.
+     *
+     */
     fun reset() {
         unregister()
         resetWindowInfoLayout()
         resetWindowInfoLayoutCounter()
     }
 
+    /**
+     * Constants that this class uses in order to wait for changes.
+     */
     companion object {
         private const val COUNT_DOWN_LATCH_COUNT = 1
         private const val TIMEOUT_IN_SECONDS = 3L

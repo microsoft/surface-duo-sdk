@@ -6,7 +6,7 @@
 
 package com.microsoft.device.dualscreen.fragmentshandler.utils
 
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 
 fun WindowLayoutInfoConsumer.runAction(action: () -> Unit) {
     resetWindowInfoLayoutCounter()

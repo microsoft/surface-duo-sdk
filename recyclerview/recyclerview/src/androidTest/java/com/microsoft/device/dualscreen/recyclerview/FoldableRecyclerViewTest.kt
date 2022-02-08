@@ -18,11 +18,11 @@ import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.recyclerview.activities.SimpleRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.utils.test.resetOrientation
-import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
-import com.microsoft.device.dualscreen.utils.test.setOrientationRight
-import com.microsoft.device.dualscreen.utils.test.unfreezeRotation
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.resetOrientation
+import com.microsoft.device.dualscreen.testing.setOrientationLeft
+import com.microsoft.device.dualscreen.testing.setOrientationRight
+import com.microsoft.device.dualscreen.testing.unfreezeRotation
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

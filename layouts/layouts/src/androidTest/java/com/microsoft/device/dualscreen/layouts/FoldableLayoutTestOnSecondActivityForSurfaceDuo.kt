@@ -17,12 +17,12 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutTestOnSecondActivity
-import com.microsoft.device.dualscreen.utils.test.CurrentActivityDelegate
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.utils.test.forceClick
-import com.microsoft.device.dualscreen.utils.test.resetOrientation
-import com.microsoft.device.dualscreen.utils.test.setOrientationRight
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
+import com.microsoft.device.dualscreen.testing.ForceClick
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.resetOrientation
+import com.microsoft.device.dualscreen.testing.setOrientationRight
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -74,7 +74,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         currentActivityDelegate.resetActivityCounter()
-        onView(withId(R.id.start)).perform(forceClick())
+        onView(withId(R.id.start)).perform(ForceClick())
         currentActivityDelegate.waitForActivity()
 
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
@@ -89,7 +89,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenLandscape() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         currentActivityDelegate.resetActivityCounter()
         onView(withId(R.id.start)).perform(click())
@@ -109,11 +109,11 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenPortrait() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         setOrientationRight()
 
         currentActivityDelegate.resetActivityCounter()
-        onView(withId(R.id.start)).perform(forceClick())
+        onView(withId(R.id.start)).perform(ForceClick())
         currentActivityDelegate.waitForActivity()
 
         assertThat(currentActivityDelegate.currentActivity).isNotNull()

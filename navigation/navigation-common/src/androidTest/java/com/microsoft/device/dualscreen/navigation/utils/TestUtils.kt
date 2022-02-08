@@ -7,7 +7,7 @@ package com.microsoft.device.dualscreen.navigation.utils
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import com.microsoft.device.dualscreen.utils.test.CurrentActivityDelegate
+import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 
 inline fun FragmentActivity.runWithBackStackListener(
     backStackListener: FragmentManager.OnBackStackChangedListener,

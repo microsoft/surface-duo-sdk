@@ -5,4 +5,4 @@
   ~
   -->
 
-<manifest package="com.microsoft.device.dualscreen.utils.test" />
+<manifest package="com.microsoft.device.dualscreen.testing" />

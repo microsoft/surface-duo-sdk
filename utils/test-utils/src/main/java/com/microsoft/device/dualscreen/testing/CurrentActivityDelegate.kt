@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-package com.microsoft.device.dualscreen.utils.test
+package com.microsoft.device.dualscreen.testing
 
 import android.app.Activity
 import android.app.Application
@@ -13,6 +13,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+/**
+ * Activity delegate that is used to setup the Activity test scenario and to handle the different Activity
+ * {@see AppCompatActivity} lifecycle events.
+ *
+ * @constructor Create empty Current activity delegate
+ */
 class CurrentActivityDelegate {
     private var activityStartedCountDownLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)
 
@@ -38,12 +44,24 @@ class CurrentActivityDelegate {
         }
     }
 
+    /**
+     * Setup using a given ActivityScenarioRule {@see ActivityScenarioRule}
+     *
+     * @param T : of Activity type
+     * @param activityScenarioRule : new scenario rule
+     */
     fun <T : Activity> setup(activityScenarioRule: ActivityScenarioRule<T>) {
         activityScenarioRule.scenario.onActivity {
             it.application.registerActivityLifecycleCallbacks(activityLifecycleCallback)
         }
     }
 
+    /**
+     * Clear
+     *
+     * @param T : of Activity type.
+     * @param activityScenarioRule : currently used ActivityScenarioRule
+     */
     fun <T : Activity> clear(activityScenarioRule: ActivityScenarioRule<T>) {
         activityScenarioRule.scenario.onActivity {
             it.application.unregisterActivityLifecycleCallbacks(activityLifecycleCallback)

@@ -16,12 +16,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutSingleScreenActivity
-import com.microsoft.device.dualscreen.layouts.utils.isViewOnScreen
-import com.microsoft.device.dualscreen.utils.test.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.utils.test.resetOrientation
-import com.microsoft.device.dualscreen.utils.test.setOrientationLeft
-import com.microsoft.device.dualscreen.utils.test.setOrientationRight
-import com.microsoft.device.dualscreen.utils.test.switchFromSingleToDualScreen
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.isViewOnScreen
+import com.microsoft.device.dualscreen.testing.resetOrientation
+import com.microsoft.device.dualscreen.testing.setOrientationLeft
+import com.microsoft.device.dualscreen.testing.setOrientationRight
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.junit.After
 import org.junit.Before
@@ -69,7 +69,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
     @Test
     fun testLayoutDualScreenLandscape() {
         windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
@@ -77,19 +77,35 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
             matches(withText(R.string.dual_portrait_start))
         )
         onView(withId(R.id.textViewDualStart)).check(
-            matches(isViewOnScreen(DisplayPosition.START, ORIENTATION_LANDSCAPE))
+            matches(
+                isViewOnScreen(
+                    position = DisplayPosition.START,
+                    orientation = ORIENTATION_LANDSCAPE,
+                    firstDisplayWidth = SurfaceDuo1.SINGLE_SCREEN_WIDTH,
+                    totalDisplayWidth = SurfaceDuo1.DUAL_SCREEN_WIDTH,
+                    foldingFeatureWidth = SurfaceDuo1.HINGE_WIDTH
+                )
+            )
         )
 
         onView(withId(R.id.textViewDualEnd)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualEnd)).check(matches(withText(R.string.dual_portrait_end)))
         onView(withId(R.id.textViewDualEnd)).check(
-            matches(isViewOnScreen(DisplayPosition.END, ORIENTATION_LANDSCAPE))
+            matches(
+                isViewOnScreen(
+                    position = DisplayPosition.END,
+                    orientation = ORIENTATION_LANDSCAPE,
+                    firstDisplayWidth = SurfaceDuo1.SINGLE_SCREEN_WIDTH,
+                    totalDisplayWidth = SurfaceDuo1.DUAL_SCREEN_WIDTH,
+                    foldingFeatureWidth = SurfaceDuo1.HINGE_WIDTH
+                )
+            )
         )
     }
 
     @Test
     fun testLayoutDualScreenPortrait() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
         setOrientationLeft()
@@ -100,13 +116,29 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
             matches(withText(R.string.dual_landscape_start))
         )
         onView(withId(R.id.textViewDualStart)).check(
-            matches(isViewOnScreen(DisplayPosition.START, ORIENTATION_PORTRAIT))
+            matches(
+                isViewOnScreen(
+                    position = DisplayPosition.START,
+                    orientation = ORIENTATION_PORTRAIT,
+                    firstDisplayWidth = SurfaceDuo1.SINGLE_SCREEN_WIDTH,
+                    totalDisplayWidth = SurfaceDuo1.DUAL_SCREEN_WIDTH,
+                    foldingFeatureWidth = SurfaceDuo1.HINGE_WIDTH
+                )
+            )
         )
 
         onView(withId(R.id.textViewDualEnd)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualEnd)).check(matches(withText(R.string.dual_landscape_end)))
         onView(withId(R.id.textViewDualEnd)).check(
-            matches(isViewOnScreen(DisplayPosition.END, ORIENTATION_PORTRAIT))
+            matches(
+                isViewOnScreen(
+                    position = DisplayPosition.END,
+                    orientation = ORIENTATION_PORTRAIT,
+                    firstDisplayWidth = SurfaceDuo1.SINGLE_SCREEN_WIDTH,
+                    totalDisplayWidth = SurfaceDuo1.DUAL_SCREEN_WIDTH,
+                    foldingFeatureWidth = SurfaceDuo1.HINGE_WIDTH
+                )
+            )
         )
     }
 }
