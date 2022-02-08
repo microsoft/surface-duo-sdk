@@ -13,9 +13,9 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import com.microsoft.device.dualscreen.tabs.TabLayout
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1_dimens.DUAL_SCREEN_WIDTH
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1_dimens.HINGE_WIDTH
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1_dimens.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1.DUAL_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1.HINGE_WIDTH
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1.SINGLE_SCREEN_WIDTH
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher

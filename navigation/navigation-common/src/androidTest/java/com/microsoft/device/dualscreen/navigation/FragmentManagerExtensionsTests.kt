@@ -15,8 +15,8 @@ import com.microsoft.device.dualscreen.navigation.utils.SimpleFragmentBackStackL
 import com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity
 import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -74,7 +74,7 @@ class FragmentManagerExtensionsTests {
     fun testIsTransitionToSingleScreenPossible() {
         fragmentBackStackListener.resetCounter(2)
         windowLayoutInfoConsumer.reset()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
@@ -102,7 +102,7 @@ class FragmentManagerExtensionsTests {
     fun testIsPopOnDualScreenPossible() {
         fragmentBackStackListener.resetCounter(2)
         windowLayoutInfoConsumer.reset()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
@@ -129,7 +129,7 @@ class FragmentManagerExtensionsTests {
     @Test
     fun testTopFragment() {
         windowLayoutInfoConsumer.reset()
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         assertThat(currentActivityDelegate.currentActivity).isNotNull()

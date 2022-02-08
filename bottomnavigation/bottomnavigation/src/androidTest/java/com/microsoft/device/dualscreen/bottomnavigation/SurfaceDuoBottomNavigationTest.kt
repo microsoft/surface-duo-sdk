@@ -20,9 +20,9 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.setOrientationLeft
 import com.microsoft.device.dualscreen.testing.setOrientationRight
-import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import com.microsoft.device.dualscreen.testing.unfreezeRotation
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers
@@ -45,62 +45,62 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testDisplayPositionFromLayout() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
     fun testDisplayPositionStart() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(DisplayPosition.START)
     }
 
     @Test
     fun testDisplayPositionEnd() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
 
     @Test
     fun testDisplayPositionDual() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit0_5() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     fun testButtonSplit1_4() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(1, 4, DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit2_3() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(2, 3, DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit5_0() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     fun testButtonSplit_invalid() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         arrangeButtonsAndCheckPosition(5, 0, DisplayPosition.START)
         arrangeButtonsAndCheckPosition(5, 5, DisplayPosition.START)
     }
 
     @Test
     fun testSwipeLeft() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -110,7 +110,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testSwipeRight() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -120,7 +120,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testMultipleSwipes() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -142,7 +142,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testTransparentBackground() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.nav_view)).check(matches(Matchers.not(hasHalfTransparentBackground())))
@@ -158,7 +158,7 @@ class SurfaceDuoBottomNavigationTest {
     fun testOrientationChanges() {
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 

@@ -12,12 +12,11 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.fragmentshandler.utils.SampleActivity
 import com.microsoft.device.dualscreen.fragmentshandler.utils.runAction
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.resetOrientation
 import com.microsoft.device.dualscreen.testing.setOrientationLeft
 import com.microsoft.device.dualscreen.testing.setOrientationRight
-import com.microsoft.device.dualscreen.testing.switchFromDualToSingleScreen
-import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -61,7 +60,7 @@ class FragmentOnCreateViewTests {
         }
 
         windowLayoutInfoConsumer.run {
-            switchFromSingleToDualScreen()
+            SurfaceDuo1.switchFromSingleToDualScreen()
         }
 
         activityScenarioRule.scenario.onActivity { activity ->
@@ -73,7 +72,7 @@ class FragmentOnCreateViewTests {
         }
 
         windowLayoutInfoConsumer.run {
-            switchFromDualToSingleScreen()
+            SurfaceDuo1.switchFromDualToSingleScreen()
         }
 
         activityScenarioRule.scenario.onActivity { activity ->

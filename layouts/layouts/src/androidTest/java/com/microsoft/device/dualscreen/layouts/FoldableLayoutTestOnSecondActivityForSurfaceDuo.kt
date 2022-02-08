@@ -19,10 +19,10 @@ import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutTestOnSecondActivity
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.testing.ForceClick
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.resetOrientation
 import com.microsoft.device.dualscreen.testing.setOrientationRight
-import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -89,7 +89,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenLandscape() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
 
         currentActivityDelegate.resetActivityCounter()
         onView(withId(R.id.start)).perform(click())
@@ -109,7 +109,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenPortrait() {
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         setOrientationRight()
 
         currentActivityDelegate.resetActivityCounter()

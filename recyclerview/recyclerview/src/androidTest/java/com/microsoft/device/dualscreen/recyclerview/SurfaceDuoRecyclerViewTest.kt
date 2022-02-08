@@ -18,12 +18,11 @@ import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.recyclerview.activities.SimpleRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
+import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.resetOrientation
 import com.microsoft.device.dualscreen.testing.setOrientationLeft
 import com.microsoft.device.dualscreen.testing.setOrientationRight
-import com.microsoft.device.dualscreen.testing.switchFromDualToSingleScreen
-import com.microsoft.device.dualscreen.testing.switchFromSingleToDualScreen
 import com.microsoft.device.dualscreen.testing.unfreezeRotation
 import org.junit.After
 import org.junit.Before
@@ -77,7 +76,7 @@ class SurfaceDuoRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }
@@ -88,7 +87,7 @@ class SurfaceDuoRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
@@ -105,7 +104,7 @@ class SurfaceDuoRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
@@ -122,7 +121,7 @@ class SurfaceDuoRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
@@ -157,25 +156,25 @@ class SurfaceDuoRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromDualToSingleScreen()
+        SurfaceDuo1.switchFromDualToSingleScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromSingleToDualScreen()
+        SurfaceDuo1.switchFromSingleToDualScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        switchFromDualToSingleScreen()
+        SurfaceDuo1.switchFromDualToSingleScreen()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }
