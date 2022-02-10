@@ -66,4 +66,22 @@ object SurfaceDuo2 {
     const val HINGE_WIDTH = 66
     const val SCREEN_COUNT = 2
     const val DUAL_SCREEN_WIDTH = SINGLE_SCREEN_WIDTH * SCREEN_COUNT + HINGE_WIDTH
+
+    fun switchFromSingleToDualScreen() {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        when (device.displayRotation) {
+            Surface.ROTATION_0, Surface.ROTATION_180 -> device.swipe(672, 1870, 1344, 946, 400)
+            Surface.ROTATION_270 -> device.swipe(1870, 672, 946, 1344, 400)
+            Surface.ROTATION_90 -> device.swipe(1870, 2082, 946, 1344, 400)
+        }
+    }
+
+    fun switchFromDualToSingleScreen() {
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        when (device.displayRotation) {
+            Surface.ROTATION_0, Surface.ROTATION_180 -> device.swipe(2082, 1870, 672, 946, 400)
+            Surface.ROTATION_270 -> device.swipe(1870, 2082, 946, 672, 400)
+            Surface.ROTATION_90 -> device.swipe(1870, 1244, 946, 1500, 400)
+        }
+    }
 }
