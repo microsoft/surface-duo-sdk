@@ -45,7 +45,7 @@ Removes a given ActivityScenarioRule from the delegate
 
 `fun resetActivity()`
 
-Resets the last started Activity to `null`
+Resets the last started Activity to *null*.
 
 `fun resetActivityCounter()`
 
