@@ -14,10 +14,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * Activity delegate that is used to setup the Activity test scenario and to handle the different Activity
- * {@see AppCompatActivity} lifecycle events.
- *
- * @constructor Create empty Current activity delegate
+ * Activity delegate used to setup and support a test scenario.
+ * This class is useful whenever you want to ensure that the Activity is running
+ * before use any view action or assertion.
  */
 class CurrentActivityDelegate {
     private var activityStartedCountDownLatch = CountDownLatch(COUNT_DOWN_LATCH_COUNT)

@@ -13,7 +13,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 /**
- * Checks if view given its position {@see DisplayPosition} is on the display given its dimensions.
+ * Returns a Matcher that checks if a View is shown in the display area given its position and screen dimensions.
  *
  * @param position: target position.
  * @param orientation: orientation of the display. See Configuration {@see Configuration}.
@@ -64,8 +64,8 @@ fun isViewOnScreen(
     }
 
 /**
- * Checks in the given coordinates {@see targetScreenPosition} are on target screen defined by
- * {@see xStart}, {@see xEnd}, {@see firstDisplayWith}, {@see totalDisplayWith} and {@see foldingFeatureWidth}.
+ * Checks whether a specific screen-position is the screen defined by {@param xStart}, {@param xEnd},
+ * {@param firstDisplayWith}, {@param totalDisplayWith} and {@param foldingFeatureWidth}.
  *
  * @param targetScreenPosition : the target position you want to check.
  * @param xStart : the start of the screen in the x-axis
