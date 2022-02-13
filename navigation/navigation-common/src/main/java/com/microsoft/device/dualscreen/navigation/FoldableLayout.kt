@@ -17,6 +17,10 @@ import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 fun FoldableLayout.changeConfiguration(params: RequestConfigParams) {
     val hasSingleContainer = params.launchScreen == LaunchScreen.BOTH
     if (params.screenMode == ScreenMode.DUAL_SCREEN && hasSingleContainer) {
+        if (this.hasSingleContainer) {
+            return
+        }
+
         updateConfigCreator().apply {
             isDualLandscapeSingleContainer(hasSingleContainer)
             isDualPortraitSingleContainer(hasSingleContainer)
@@ -48,3 +52,10 @@ private val FoldableLayout.screenMode: ScreenMode
 private fun FoldableLayout.isInScreenMode(screenMode: ScreenMode): Boolean {
     return screenMode == this.screenMode
 }
+
+/**
+ * Returns [true] if the current configuration has only one container, [false] otherwise
+ */
+private val FoldableLayout.hasSingleContainer: Boolean
+    get() = currentConfiguration.isDualLandscapeSingleContainer &&
+        currentConfiguration.isDualPortraitSingleContainer
