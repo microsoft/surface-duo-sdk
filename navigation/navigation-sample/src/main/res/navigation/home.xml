@@ -31,7 +31,7 @@
             app:destination="@id/aboutScreen"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
-            app:launchScreen="end"
+            app:launchScreen="start"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
     </fragment>

@@ -25,19 +25,5 @@
         android:id="@+id/register"
         android:name="com.microsoft.device.dualscreen.navigation.sample.formscreen.RegisterFragment"
         android:label="@string/title_register"
-        tools:layout="@layout/fragment_register">
-        <action
-            android:id="@+id/action_register_to_registered"
-            app:destination="@id/registered"
-            app:enterAnim="@anim/slide_up"
-            app:exitAnim="@anim/slide_down"
-            app:launchScreen="start"
-            app:popEnterAnim="@anim/slide_up"
-            app:popExitAnim="@anim/slide_down" />
-    </fragment>
-    <fragment
-        android:id="@+id/registered"
-        android:name="com.microsoft.device.dualscreen.navigation.sample.formscreen.RegisteredFragment"
-        android:label="Registered"
-        tools:layout="@layout/fragment_registered" />
+        tools:layout="@layout/fragment_register"/>
 </navigation>
