@@ -441,9 +441,10 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
             }
         }
 
-        if (mRequestConfigParams != null) {
+        RequestConfigParams requestConfigParams = mRequestConfigParams;
+        if (requestConfigParams != null) {
             if (view instanceof FoldableLayout) {
-                FoldableLayoutKt.changeConfiguration((FoldableLayout) view, mRequestConfigParams);
+                view.post(() -> FoldableLayoutKt.changeConfiguration((FoldableLayout) view, requestConfigParams));
             }
             mRequestConfigParams = null;
         }
@@ -505,7 +506,7 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
         }
 
         if (view instanceof FoldableLayout) {
-            FoldableLayoutKt.changeConfiguration((FoldableLayout) view, params);
+            view.post(() -> FoldableLayoutKt.changeConfiguration((FoldableLayout) view, params));
         }
     }
 }

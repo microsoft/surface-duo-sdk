@@ -31,7 +31,7 @@ import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 
 /**
@@ -94,9 +94,11 @@ open class FoldableLayout @JvmOverloads constructor(
         job = MainScope().launch {
             WindowInfoTracker.getOrCreate(context)
                 .windowLayoutInfo(context as Activity)
-                .collect { info ->
-                    viewModel.windowLayoutInfo = info
-                    layoutController.foldingFeature = info.getFoldingFeature()
+                .collectIndexed { index, info ->
+                    if (index == 0) {
+                        viewModel.windowLayoutInfo = info
+                        layoutController.foldingFeature = info.getFoldingFeature()
+                    }
                 }
         }
     }
