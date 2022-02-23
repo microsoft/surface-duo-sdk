@@ -66,12 +66,13 @@ dependencies {
     testImplementation commonDependencies.mockitoCore
 
     // Espresso UI Testing
-    androidTestImplementation instrumentationTestDependencies.junitKtx
-    androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.navigationTesting
-    androidTestImplementation commonDependencies.googleTruth
-    androidTestImplementation androidxDependencies.appCompat
     androidTestImplementation project(':navigation:navigation-fragment-ktx')
     androidTestImplementation project(':navigation:navigation-test-utils')
     androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation instrumentationTestDependencies.navigationTesting
+    androidTestImplementation androidxDependencies.appCompat
+    androidTestImplementation commonDependencies.googleTruth
+    androidTestImplementation instrumentationTestDependencies.junitKtx
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

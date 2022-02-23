@@ -12,18 +12,18 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.UiDevice
 import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter
 import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.recyclerview.activities.StaggeredRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.resetOrientation
-import com.microsoft.device.dualscreen.testing.setOrientationLeft
-import com.microsoft.device.dualscreen.testing.setOrientationRight
-import com.microsoft.device.dualscreen.testing.unfreezeRotation
+import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.testing.unspanToStart
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,6 +37,8 @@ class SurfaceDuoStaggeredRecyclerViewTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(StaggeredRecyclerViewActivity::class.java)
+
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     private var windowLayoutInfoConsumerLatch = WindowLayoutInfoConsumer()
     private var adapter: WindowInfoTrackerCallbackAdapter? = null
@@ -67,7 +69,7 @@ class SurfaceDuoStaggeredRecyclerViewTest {
     fun after() {
         windowLayoutInfoConsumerLatch.resetWindowInfoLayoutCounter()
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
-        resetOrientation()
+        uiDevice.resetOrientation()
     }
 
     @Test
@@ -76,7 +78,7 @@ class SurfaceDuoStaggeredRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }
@@ -87,13 +89,13 @@ class SurfaceDuoStaggeredRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        setOrientationLeft()
+        uiDevice.setOrientationLeft()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }
@@ -104,13 +106,13 @@ class SurfaceDuoStaggeredRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        setOrientationRight()
+        uiDevice.setOrientationRight()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }
@@ -121,31 +123,31 @@ class SurfaceDuoStaggeredRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        setOrientationRight()
+        uiDevice.setOrientationRight()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        setOrientationLeft()
+        uiDevice.setOrientationLeft()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        setOrientationRight()
+        uiDevice.setOrientationRight()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        unfreezeRotation()
+        uiDevice.unfreezeRotation()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }
@@ -156,25 +158,19 @@ class SurfaceDuoStaggeredRecyclerViewTest {
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromDualToSingleScreen()
+        uiDevice.unspanToStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
 
         adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
-        resetAdapterAndLatch()
-        onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
-
-        adapter?.removeWindowLayoutInfoListener(windowLayoutInfoConsumerLatch)
-
-        SurfaceDuo1.switchFromDualToSingleScreen()
+        uiDevice.spanFromStart()
         resetAdapterAndLatch()
         onView(withId(R.id.recyclerView)).check(matches(areItemsDisplayed()))
     }

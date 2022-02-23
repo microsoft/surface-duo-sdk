@@ -11,7 +11,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import com.microsoft.device.dualscreen.layouts.FoldableFrameLayout
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.areCoordinatesOnTargetScreen
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
@@ -54,11 +54,11 @@ fun isFrameLayoutOnScreen(pos: DisplayPosition): Matcher<View> =
             child.getLocationInWindow(startArray)
             return areCoordinatesOnTargetScreen(
                 targetScreenPosition = pos,
-                xStart = startArray[0],
-                xEnd = startArray[0] + child.width,
-                firstDisplayWidth = SurfaceDuo1.SINGLE_SCREEN_WIDTH,
-                totalDisplayWidth = SurfaceDuo1.DUAL_SCREEN_WIDTH,
-                foldingFeatureWidth = SurfaceDuo1.HINGE_WIDTH
+                start = startArray[0],
+                end = startArray[0] + child.width,
+                firstDisplay = DeviceModel.SurfaceDuo.paneWidth,
+                totalDisplay = DeviceModel.SurfaceDuo.totalDisplay,
+                foldingFeature = DeviceModel.SurfaceDuo.foldWidth
             )
         }
     }

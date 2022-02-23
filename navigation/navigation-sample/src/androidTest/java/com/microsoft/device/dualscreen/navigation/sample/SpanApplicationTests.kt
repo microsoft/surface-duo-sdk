@@ -6,8 +6,11 @@ package com.microsoft.device.dualscreen.navigation.sample
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
+import androidx.test.uiautomator.UiDevice
+import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.testing.unspanToStart
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,6 +20,7 @@ import org.junit.runner.RunWith
 class SpanApplicationTests : BaseTest() {
     @get:Rule
     val rule = ActivityTestRule(MainActivity::class.java, false, false)
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Before
     fun launchActivity() {
@@ -26,22 +30,22 @@ class SpanApplicationTests : BaseTest() {
     @Test
     fun testSpanDashboard() {
         checkIfFirstContainerIsDisplayed()
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         checkIfSecondContainerIsDisplayed()
-        SurfaceDuo1.switchFromDualToSingleScreen()
+        uiDevice.unspanToStart()
         checkIfFirstContainerIsDisplayed()
     }
 
     @Test
     fun testSpanRegister() {
         checkIfFirstContainerIsDisplayed()
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         checkIfSecondContainerIsDisplayed()
         goToRegisterPage()
         checkRegisterPage(isDisplayed())
         goToRegistrationDone()
         checkRegistrationDonePage(isDisplayed())
-        SurfaceDuo1.switchFromDualToSingleScreen()
+        uiDevice.unspanToStart()
         checkRegisterPage(isDisplayed())
         checkRegistrationDonePage(isDisplayed())
     }
@@ -49,13 +53,13 @@ class SpanApplicationTests : BaseTest() {
     @Test
     fun testSpanWelcome() {
         checkIfFirstContainerIsDisplayed()
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         checkIfSecondContainerIsDisplayed()
         goToWelcomePage()
         checkWelcomePage(isDisplayed())
         goToAboutPage()
         checkAboutPage(isDisplayed())
-        SurfaceDuo1.switchFromDualToSingleScreen()
+        uiDevice.unspanToStart()
         checkWelcomePage(isDisplayed())
         checkAboutPage(isDisplayed())
     }
@@ -63,12 +67,12 @@ class SpanApplicationTests : BaseTest() {
     @Test
     fun testSpanPersons() {
         checkIfFirstContainerIsDisplayed()
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         checkIfSecondContainerIsDisplayed()
         checkPersonsPage(isDisplayed())
         goToProfilePage()
         checkProfilePage(isDisplayed())
-        SurfaceDuo1.switchFromDualToSingleScreen()
+        uiDevice.unspanToStart()
         checkPersonsPage(isDisplayed())
         checkProfilePage(isDisplayed())
     }

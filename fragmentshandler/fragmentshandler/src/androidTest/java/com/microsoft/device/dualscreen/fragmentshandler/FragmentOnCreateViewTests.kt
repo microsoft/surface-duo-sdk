@@ -9,14 +9,15 @@ package com.microsoft.device.dualscreen.fragmentshandler
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.fragmentshandler.utils.SampleActivity
 import com.microsoft.device.dualscreen.fragmentshandler.utils.runAction
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.resetOrientation
-import com.microsoft.device.dualscreen.testing.setOrientationLeft
-import com.microsoft.device.dualscreen.testing.setOrientationRight
+import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.testing.unspanToStart
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -28,6 +29,8 @@ import org.junit.runner.RunWith
 class FragmentOnCreateViewTests {
     @get:Rule
     val activityScenarioRule = ActivityScenarioRule(SampleActivity::class.java)
+
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @Before
@@ -42,7 +45,7 @@ class FragmentOnCreateViewTests {
     @After
     fun after() {
         windowLayoutInfoConsumer.run {
-            resetOrientation()
+            uiDevice.resetOrientation()
         }
 
         FragmentManagerStateHandler.instance?.clear()
@@ -60,7 +63,7 @@ class FragmentOnCreateViewTests {
         }
 
         windowLayoutInfoConsumer.run {
-            SurfaceDuo1.switchFromSingleToDualScreen()
+            uiDevice.spanFromStart()
         }
 
         activityScenarioRule.scenario.onActivity { activity ->
@@ -72,7 +75,7 @@ class FragmentOnCreateViewTests {
         }
 
         windowLayoutInfoConsumer.run {
-            SurfaceDuo1.switchFromDualToSingleScreen()
+            uiDevice.unspanToStart()
         }
 
         activityScenarioRule.scenario.onActivity { activity ->
@@ -89,7 +92,7 @@ class FragmentOnCreateViewTests {
         }
 
         windowLayoutInfoConsumer.runAction {
-            setOrientationRight()
+            uiDevice.setOrientationRight()
         }
 
         testOnCreateView()
@@ -98,7 +101,7 @@ class FragmentOnCreateViewTests {
     @Test
     fun testOnCreateViewWithRotation90() {
         windowLayoutInfoConsumer.runAction {
-            setOrientationLeft()
+            uiDevice.setOrientationLeft()
         }
 
         testOnCreateView()

@@ -14,9 +14,7 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1.DUAL_SCREEN_WIDTH
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1.HINGE_WIDTH
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1.SINGLE_SCREEN_WIDTH
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -85,13 +83,15 @@ fun areTabsOnScreen(pos: DisplayPosition): Matcher<View> =
             val xStart = firstChild.translationX.toInt() + firstChild.left
             val xEnd = (lastChild.translationX + lastChild.left + lastChild.width).toInt()
 
-            return when (pos) {
-                DisplayPosition.DUAL ->
-                    xStart in 0..SINGLE_SCREEN_WIDTH && xEnd in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH
-                DisplayPosition.START ->
-                    xStart in 0..SINGLE_SCREEN_WIDTH && xEnd in 0..SINGLE_SCREEN_WIDTH
-                DisplayPosition.END ->
-                    xStart in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH && xEnd in (SINGLE_SCREEN_WIDTH + HINGE_WIDTH)..DUAL_SCREEN_WIDTH
+            with(DeviceModel.SurfaceDuo) {
+                return when (pos) {
+                    DisplayPosition.DUAL ->
+                        xStart in 0..paneWidth && xEnd in (paneWidth + foldWidth)..totalDisplay
+                    DisplayPosition.START ->
+                        xStart in 0..paneWidth && xEnd in 0..paneWidth
+                    DisplayPosition.END ->
+                        xStart in (paneWidth + foldWidth)..totalDisplay && xEnd in (paneWidth + foldWidth)..totalDisplay
+                }
             }
         }
     }
