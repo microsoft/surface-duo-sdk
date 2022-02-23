@@ -102,9 +102,12 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
 
 - [Kotlin samples](https://github.com/microsoft/surface-duo-sdk-samples-kotlin)
 - [Java samples](https://github.com/microsoft/surface-duo-sdk-samples)
+- [Dual Screen Experience Example](https://github.com/microsoft/surface-duo-dual-screen-experience-example)
 
 ### Other Surface Duo developer samples
 
+- [Window Manager samples](https://github.com/microsoft/surface-duo-window-manager-samples)
+- [Jetpack Compose samples](https://github.com/microsoft/surface-duo-compose-samples)
 - [Android app samples](https://github.com/microsoft/surface-duo-app-samples)
 - [Xamarin samples](https://github.com/microsoft/surface-duo-sdk-xamarin-samples)
 - [Unity samples](https://github.com/microsoft/surface-duo-sdk-unity-samples)
