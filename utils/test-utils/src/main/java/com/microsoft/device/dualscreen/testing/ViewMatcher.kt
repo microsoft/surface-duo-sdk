@@ -13,21 +13,25 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 /**
- * Returns a Matcher that checks if a View is shown in the display area given its position and screen dimensions.
+ * Returns a Matcher that checks if a View is shown in the display area given its position
+ * and screen dimensions.
  *
  * @param position: target position.
  * @param orientation: orientation of the display. See Configuration {@see Configuration}.
- * @param firstDisplayWidth : width of the left/start/first display area
- * @param totalDisplayWidth : width of the right/end/second/total display area
- * @param foldingFeatureWidth : width of the FoldingFeature {@see FoldingFeature} if any.
+ * @param firstDisplay : width or height (depending on the device orientation) of the
+ * left/start/first display area
+ * @param totalDisplay : width or height (depending on the device orientation) of the
+ * total display area
+ * @param foldingFeature : width or height (depending on the device orientation) of the
+ * FoldingFeature {@see FoldingFeature} if any.
  * @return
  */
 fun isViewOnScreen(
     position: DisplayPosition,
     orientation: Int,
-    firstDisplayWidth: Int,
-    totalDisplayWidth: Int,
-    foldingFeatureWidth: Int = 0
+    firstDisplay: Int,
+    totalDisplay: Int,
+    foldingFeature: Int = 0
 ): Matcher<View> =
     object : TypeSafeMatcher<View>() {
         override fun describeTo(description: Description?) {
@@ -54,44 +58,47 @@ fun isViewOnScreen(
             }
             return areCoordinatesOnTargetScreen(
                 targetScreenPosition = position,
-                xStart = start,
-                xEnd = end,
-                firstDisplayWidth = firstDisplayWidth,
-                totalDisplayWidth = totalDisplayWidth,
-                foldingFeatureWidth = foldingFeatureWidth
+                start = start,
+                end = end,
+                firstDisplay = firstDisplay,
+                totalDisplay = totalDisplay,
+                foldingFeature = foldingFeature
             )
         }
     }
 
 /**
- * Checks whether a specific screen-position is the screen defined by {@param xStart}, {@param xEnd},
- * {@param firstDisplayWith}, {@param totalDisplayWith} and {@param foldingFeatureWidth}.
+ * Checks whether a specific screen-position is the screen defined by {@param start}, {@param end},
+ * {@param firstDisplay}, {@param totalDisplay} and {@param foldingFeature}.
  *
  * @param targetScreenPosition : the target position you want to check.
- * @param xStart : the start of the screen in the x-axis
- * @param xEnd : the end of the screen in the y-axis
- * @param firstDisplayWidth : the width of the first display.
- * @param totalDisplayWidth : the width of the total display area.
- * @param foldingFeatureWidth : the width of the folding feature (if any).
+ * @param start : the start of the screen in the x or y axis depending on the device orientation.
+ * @param end : the end of the screen in the x or y axis depending on the device orientation.
+ * @param firstDisplay : width or height (depending on the device orientation) of the
+ * left/start/first display area
+ * @param totalDisplay : width or height (depending on the device orientation) of the
+ * total display area
+ * @param foldingFeature : width or height (depending on the device orientation) of the
+ * FoldingFeature {@see FoldingFeature} if any.
  * @return
  */
 fun areCoordinatesOnTargetScreen(
     targetScreenPosition: DisplayPosition,
-    xStart: Int,
-    xEnd: Int,
-    firstDisplayWidth: Int,
-    totalDisplayWidth: Int,
-    foldingFeatureWidth: Int = 0
+    start: Int,
+    end: Int,
+    firstDisplay: Int,
+    totalDisplay: Int,
+    foldingFeature: Int = 0
 ): Boolean {
     return when (targetScreenPosition) {
         DisplayPosition.DUAL ->
-            xStart in 0..firstDisplayWidth &&
-                xEnd in (firstDisplayWidth + foldingFeatureWidth)..totalDisplayWidth
+            start in 0..firstDisplay &&
+                end in (firstDisplay + foldingFeature)..totalDisplay
         DisplayPosition.START ->
-            xStart in 0..firstDisplayWidth &&
-                xEnd in 0..firstDisplayWidth
+            start in 0..firstDisplay &&
+                end in 0..firstDisplay
         DisplayPosition.END ->
-            xStart in (firstDisplayWidth + foldingFeatureWidth)..totalDisplayWidth &&
-                xEnd in (firstDisplayWidth + foldingFeatureWidth)..totalDisplayWidth
+            start in (firstDisplay + foldingFeature)..totalDisplay &&
+                end in (firstDisplay + foldingFeature)..totalDisplay
     }
 }
