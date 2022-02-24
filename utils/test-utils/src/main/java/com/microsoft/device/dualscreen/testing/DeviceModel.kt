@@ -50,7 +50,7 @@ enum class DeviceModel(
     val unspanSteps: Int = 200,
     val switchSteps: Int = 100,
     val closeSteps: Int = 50,
-    val totalDisplay : Int = paneWidth * 2 + foldWidth
+    val totalDisplay: Int = paneWidth * 2 + foldWidth
 ) {
     SurfaceDuo(paneWidth = 1350, paneHeight = 1800, foldWidth = 84, bottomY = 1780),
     SurfaceDuo2(paneWidth = 1344, paneHeight = 1892, foldWidth = 66, bottomY = 1870),

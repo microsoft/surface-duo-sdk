@@ -6,8 +6,6 @@
 package com.microsoft.device.dualscreen.testing
 
 import android.view.Surface
-import androidx.annotation.VisibleForTesting
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 
 /**

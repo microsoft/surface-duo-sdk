@@ -14,7 +14,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.tabs.test.R
 import com.microsoft.device.dualscreen.tabs.utils.SimpleTabActivity

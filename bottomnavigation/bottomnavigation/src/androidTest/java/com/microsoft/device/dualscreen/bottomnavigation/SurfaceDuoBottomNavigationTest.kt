@@ -36,9 +36,8 @@ class SurfaceDuoBottomNavigationTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleBottomNavigationActivity::class.java)
-
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    
+
     @Before
     fun before() {
         onView(withId(R.id.nav_view)).perform(disableAnimation())

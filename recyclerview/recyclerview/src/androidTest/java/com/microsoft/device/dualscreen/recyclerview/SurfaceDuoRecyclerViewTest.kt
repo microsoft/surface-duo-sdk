@@ -20,7 +20,10 @@ import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.recyclerview.activities.SimpleRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
-import com.microsoft.device.dualscreen.testing.*
+import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.resetOrientation
+import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.testing.unspanToStart
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,7 +37,6 @@ class SurfaceDuoRecyclerViewTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleRecyclerViewActivity::class.java)
-    
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     private var windowLayoutInfoConsumerLatch = WindowLayoutInfoConsumer()

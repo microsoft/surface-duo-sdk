@@ -33,7 +33,7 @@ class FrameLayoutTestForSurfaceDuo {
 
     @get:Rule
     val activityTestRule = ActivityScenarioRule(FrameLayoutActivity::class.java)
-    
+
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 

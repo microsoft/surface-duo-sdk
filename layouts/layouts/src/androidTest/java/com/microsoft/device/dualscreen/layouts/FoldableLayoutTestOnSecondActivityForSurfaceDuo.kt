@@ -35,7 +35,7 @@ import org.junit.runner.RunWith
 class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
     @get:Rule
     val activityScenarioRule = ActivityScenarioRule(FoldableLayoutTestOnSecondActivity::class.java)
-    
+
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
     private val currentActivityDelegate = CurrentActivityDelegate()
