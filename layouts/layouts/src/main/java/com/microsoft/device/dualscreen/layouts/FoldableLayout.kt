@@ -31,7 +31,7 @@ import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 
 /**
@@ -57,6 +57,8 @@ open class FoldableLayout @JvmOverloads constructor(
     private lateinit var layoutController: FoldableLayoutController
     private lateinit var viewModel: FoldableLayoutViewModel
     private var job: Job? = null
+    val currentConfiguration: FoldableLayout.Config
+        get() = viewModel.layoutConfig ?: config
 
     init {
         if (context !is ViewModelStoreOwner) {
@@ -77,12 +79,12 @@ open class FoldableLayout @JvmOverloads constructor(
             val styledAttributes = readAttributes(context, attrs)
 
             if (this.isInEditMode) {
-                createAndroidStudioPreview(styledAttributes, config)
+                createAndroidStudioPreview(styledAttributes, currentConfiguration)
             } else {
-                createView(config)
+                createView(currentConfiguration)
             }
         } else {
-            createView(config)
+            createView(currentConfiguration)
         }
 
         registerWindowInfoFlow()
@@ -92,9 +94,11 @@ open class FoldableLayout @JvmOverloads constructor(
         job = MainScope().launch {
             WindowInfoTracker.getOrCreate(context)
                 .windowLayoutInfo(context as Activity)
-                .collect { info ->
-                    viewModel.windowLayoutInfo = info
-                    layoutController.foldingFeature = info.getFoldingFeature()
+                .collectIndexed { index, info ->
+                    if (index == 0) {
+                        viewModel.windowLayoutInfo = info
+                        layoutController.foldingFeature = info.getFoldingFeature()
+                    }
                 }
         }
     }

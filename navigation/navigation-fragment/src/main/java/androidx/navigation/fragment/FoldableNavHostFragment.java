@@ -51,7 +51,7 @@ import androidx.window.layout.WindowLayoutInfo;
 
 import com.microsoft.device.dualscreen.layouts.FoldableLayout;
 import com.microsoft.device.dualscreen.navigation.FoldableFragmentManagerWrapper;
-import com.microsoft.device.dualscreen.navigation.FoldableLayoutKt;
+import com.microsoft.device.dualscreen.navigation.FoldableLayoutExtensionsKt;
 import com.microsoft.device.dualscreen.navigation.RequestConfigListener;
 import com.microsoft.device.dualscreen.navigation.RequestConfigParams;
 import com.microsoft.device.dualscreen.utils.wm.WindowLayoutInfoExtensionsKt;
@@ -441,9 +441,10 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
             }
         }
 
-        if (mRequestConfigParams != null) {
+        RequestConfigParams requestConfigParams = mRequestConfigParams;
+        if (requestConfigParams != null) {
             if (view instanceof FoldableLayout) {
-                FoldableLayoutKt.changeConfiguration((FoldableLayout) view, mRequestConfigParams);
+                view.post(() -> FoldableLayoutExtensionsKt.changeConfiguration((FoldableLayout) view, requestConfigParams));
             }
             mRequestConfigParams = null;
         }
@@ -505,7 +506,7 @@ public class FoldableNavHostFragment extends Fragment implements FoldableNavHost
         }
 
         if (view instanceof FoldableLayout) {
-            FoldableLayoutKt.changeConfiguration((FoldableLayout) view, params);
+            view.post(() -> FoldableLayoutExtensionsKt.changeConfiguration((FoldableLayout) view, params));
         }
     }
 }

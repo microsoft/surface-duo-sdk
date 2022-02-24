@@ -45,6 +45,18 @@ public final class FoldableNavOptions implements Parcelable {
     private int mPopExitAnim;
     private LaunchScreen mLaunchScreen;
 
+    @Override
+    public String toString() {
+        return "[singleTop = " + mSingleTop +
+                ", popupTo = " + mPopUpTo +
+                ", popupToInclusive = " + mPopUpToInclusive +
+                ", enterAnim = " + mEnterAnim +
+                ", exitAnim = " + mExitAnim +
+                ", popEnterAnim = " + mPopEnterAnim +
+                ", popExitAnim = " + mPopExitAnim +
+                ", launchScreen = " + mLaunchScreen.name() + "]";
+    }
+
     FoldableNavOptions(boolean singleTop, @IdRes int popUpTo, boolean popUpToInclusive,
                        @AnimRes @AnimatorRes int enterAnim, @AnimRes @AnimatorRes int exitAnim,
                        @AnimRes @AnimatorRes int popEnterAnim, @AnimRes @AnimatorRes int popExitAnim, LaunchScreen openOn) {
