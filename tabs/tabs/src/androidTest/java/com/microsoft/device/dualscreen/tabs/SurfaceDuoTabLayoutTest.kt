@@ -22,8 +22,6 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.testing.createWindowLayoutInfoPublisherRule
-import com.microsoft.device.dualscreen.testing.simulateSurfaceDuo1
 import com.microsoft.device.dualscreen.testing.spanFromStart
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers.not
@@ -39,17 +37,9 @@ class SurfaceDuoTabLayoutTest {
     val activityTestRule = ActivityScenarioRule(SimpleTabActivity::class.java)
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-    val rule = createWindowLayoutInfoPublisherRule()
-
     @Test
     fun testDisplayPositionFromLayout() {
         uiDevice.spanFromStart()
-        onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
-    }
-
-    @Test
-    fun testCesar() {
-        rule.simulateSurfaceDuo1(activityTestRule)
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 

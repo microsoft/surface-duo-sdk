@@ -28,8 +28,6 @@ Since we think that there is value on these utilities to be shared with the deve
 
 # API reference
 
-The library is divided into a few classes that cover just one specific purpose:
-
 ## UiDevice Extensions
 
 These functions can be used in dual-screen UI tests to simulate swipe gestures that affect app display. The swipes are simulated using UiDevice, and the coordinates are calculated based on the display width/height of the testing device. They can be used only on dual-screen devices, not foldable devices or large screen devices.
