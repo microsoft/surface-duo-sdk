@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ *
+ */
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
+    PUBLISH_ARTIFACT_ID = 'snackbar'
+    LIBRARY_DESCRIPTION = 'Extension of the Snackbar that handles different foldable configurations easily'
+    LIBRARY_VERSION = rootProject.ext.tabsVersionName
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode rootProject.ext.snackbarVersionCode
+        versionName rootProject.ext.snackbarVersionName
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.coreKtx
+    api materialDependencies.material
+
+    api project(':utils:wm-utils')
+    api androidxDependencies.windowManager
+}

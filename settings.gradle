@@ -34,6 +34,8 @@ include ':inksdk:inksample'
 include ':utils:wm-utils'
 include ':utils:test-utils'
 
+include ':snackbar:snackbar'
+
 include ':navigation:navigation-common'
 include ':navigation:navigation-common-ktx'
 include ':navigation:navigation-runtime'
@@ -46,3 +48,4 @@ include ':navigation:navigation-test-utils'
 include ':navigation:navigation-sample'
 
 rootProject.name='DuoSDK'
+include ':snackbar:sample'
