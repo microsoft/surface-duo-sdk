@@ -24,7 +24,6 @@
             app:destination="@id/form"
             app:enterAnim="@anim/slide_up"
             app:exitAnim="@anim/slide_down"
-            app:launchScreen="start"
             app:popEnterAnim="@anim/slide_up"
             app:popExitAnim="@anim/slide_down" />
 
@@ -33,17 +32,31 @@
             app:destination="@id/home"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
-            app:launchScreen="end"
+            app:launchScreen="start"
             app:popEnterAnim="@anim/slide_in_right"
             app:popExitAnim="@anim/slide_out_left" />
 
         <action
-            app:launchScreen="both"
             android:id="@+id/action_persons"
             app:destination="@id/list"
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
+            app:launchScreen="both"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
+
+        <action
+            android:id="@+id/action_register_to_registered"
+            app:destination="@id/registered"
+            app:enterAnim="@anim/slide_up"
+            app:exitAnim="@anim/slide_down"
+            app:popEnterAnim="@anim/slide_up"
+            app:popExitAnim="@anim/slide_down" />
     </fragment>
+
+    <fragment
+        android:id="@+id/registered"
+        android:name="com.microsoft.device.dualscreen.navigation.sample.formscreen.RegisteredFragment"
+        android:label="Registered"
+        tools:layout="@layout/fragment_registered" />
 </navigation>

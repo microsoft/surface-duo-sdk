@@ -43,6 +43,7 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.signupBtn.setOnClickListener {
+            findFoldableNavController().popBackStack(false)
             findFoldableNavController().navigate(R.id.action_register_to_registered)
         }
     }
