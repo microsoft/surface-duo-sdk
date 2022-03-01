@@ -50,10 +50,12 @@ dependencies {
     api androidxDependencies.windowManager
 
     testImplementation testDependencies.junit
+
+    androidTestImplementation project(':utils:test-utils')
     androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
-    androidTestImplementation commonDependencies.mockitoDexMaker
-    androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation project(':utils:test-utils')
 }

@@ -11,7 +11,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.bottomnavigation.test.R
 import com.microsoft.device.dualscreen.bottomnavigation.utils.SimpleBottomNavigationActivity
 import com.microsoft.device.dualscreen.bottomnavigation.utils.areTabsOnScreen
@@ -20,10 +22,7 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
-import com.microsoft.device.dualscreen.testing.setOrientationLeft
-import com.microsoft.device.dualscreen.testing.setOrientationRight
-import com.microsoft.device.dualscreen.testing.unfreezeRotation
+import com.microsoft.device.dualscreen.testing.spanFromStart
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers
 import org.junit.Before
@@ -37,6 +36,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @get:Rule
     val activityTestRule = ActivityTestRule(SimpleBottomNavigationActivity::class.java)
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Before
     fun before() {
@@ -45,62 +45,62 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testDisplayPositionFromLayout() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
     fun testDisplayPositionStart() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.START)
     }
 
     @Test
     fun testDisplayPositionEnd() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
 
     @Test
     fun testDisplayPositionDual() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit0_5() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     fun testButtonSplit1_4() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(1, 4, DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit2_3() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(2, 3, DisplayPosition.DUAL)
     }
 
     @Test
     fun testButtonSplit5_0() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     fun testButtonSplit_invalid() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(5, 0, DisplayPosition.START)
         arrangeButtonsAndCheckPosition(5, 5, DisplayPosition.START)
     }
 
     @Test
     fun testSwipeLeft() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -110,7 +110,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testSwipeRight() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -120,7 +120,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testMultipleSwipes() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
 
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -142,7 +142,7 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     fun testTransparentBackground() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
 
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.nav_view)).check(matches(Matchers.not(hasHalfTransparentBackground())))
@@ -158,17 +158,17 @@ class SurfaceDuoBottomNavigationTest {
     fun testOrientationChanges() {
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
 
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
-        setOrientationLeft()
+        uiDevice.setOrientationLeft()
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
-        setOrientationRight()
+        uiDevice.setOrientationRight()
         onView(withId(R.id.nav_view)).check(matches(checkChildCount(5)))
 
-        unfreezeRotation()
+        uiDevice.unfreezeRotation()
     }
 
     private fun arrangeButtonsAndCheckPosition(

@@ -49,12 +49,11 @@ android {
 
 dependencies {
     implementation project(':utils:wm-utils')
-    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.coreKtx
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.windowManager
-    implementation commonDependencies.mockitoCore
+    implementation instrumentationTestDependencies.windowManagerTest
+    implementation instrumentationTestDependencies.junitKtx
     implementation instrumentationTestDependencies.uiAutomator
     implementation instrumentationTestDependencies.espressoCore
-    implementation instrumentationTestDependencies.junitKtx
-    implementation instrumentationTestDependencies.windowManagerTest
 }

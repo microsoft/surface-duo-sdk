@@ -46,15 +46,15 @@ dependencies {
     api project(':utils:wm-utils')
     implementation kotlinDependencies.kotlinStdlib
     api materialDependencies.material
-
     api androidxDependencies.windowManager
 
     testImplementation testDependencies.junit
+
     androidTestImplementation project(':utils:test-utils')
-    androidTestImplementation instrumentationTestDependencies.junit
-    androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

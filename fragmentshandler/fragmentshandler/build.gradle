@@ -56,13 +56,14 @@ dependencies {
     implementation androidxDependencies.windowManager
     implementation androidxDependencies.lifecycleRuntimeKtx
 
-    androidTestImplementation instrumentationTestDependencies.junitKtx
-    androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation project(':layouts:layouts')
+    androidTestImplementation project(':utils:test-utils')
     androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation androidxDependencies.coreKtx
     androidTestImplementation androidxDependencies.lifecycleViewmodel
     androidTestImplementation androidxDependencies.lifecycleRuntimeKtx
-    androidTestImplementation project(':layouts:layouts')
-    androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation instrumentationTestDependencies.junitKtx
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

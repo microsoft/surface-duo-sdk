@@ -44,8 +44,8 @@ android {
 }
 
 dependencies {
-    api androidxDependencies.windowManager
     api project(':utils:wm-utils')
+    api androidxDependencies.windowManager
     api androidxDependencies.recyclerView
     implementation kotlinDependencies.kotlinStdlib
     implementation materialDependencies.material
@@ -53,8 +53,9 @@ dependencies {
 
     testImplementation testDependencies.junit
 
-    androidTestImplementation instrumentationTestDependencies.junit
-    androidTestImplementation instrumentationTestDependencies.espressoCore
-    androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

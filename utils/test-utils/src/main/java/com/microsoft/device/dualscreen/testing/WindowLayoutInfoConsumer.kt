@@ -5,9 +5,9 @@
 
 package com.microsoft.device.dualscreen.testing
 
+import android.app.Activity
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Consumer
 import androidx.window.java.layout.WindowInfoTrackerCallbackAdapter
 import androidx.window.layout.WindowInfoTracker
@@ -41,7 +41,7 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
      *
      * @param activity : a valid Context
      */
-    fun register(activity: AppCompatActivity) {
+    fun register(activity: Activity) {
         adapter = WindowInfoTrackerCallbackAdapter(WindowInfoTracker.getOrCreate(activity))
         adapter?.addWindowLayoutInfoListener(activity, runOnUiThreadExecutor, this)
     }
@@ -94,7 +94,6 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
 
     /**
      * Resets current used instance to its original state.
-     *
      */
     fun reset() {
         unregister()

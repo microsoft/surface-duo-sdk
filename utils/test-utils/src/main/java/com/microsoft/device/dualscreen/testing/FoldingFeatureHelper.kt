@@ -5,7 +5,7 @@
 
 package com.microsoft.device.dualscreen.testing
 
-import androidx.activity.ComponentActivity
+import androidx.core.app.ComponentActivity
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.window.layout.FoldingFeature
 import androidx.window.testing.layout.FoldingFeature
@@ -14,53 +14,57 @@ import androidx.window.testing.layout.WindowLayoutInfoPublisherRule
 import org.junit.rules.TestRule
 
 /**
+ * FOLDINGFEATURE HELPER
+ * -----------------------------------------------------------------------------------------------
  * These functions can be used in foldable UI tests to simulate the present of vertical and
  * horizontal foldingFeatures(folds/hinges). The foldingFeatures are simulated using TestWindowLayoutInfo.
- * We have added as well specific mock-FoldingFeatures that mirror Surface Duo and other well known foldable devices'
- * folding features.
- *
- * Most of this code has been taken from our Foldable Jetpack Compose testing library to make it available to this
- * library too without the need for you to add Jetpack Compose specific dependencies.
- * If you are looking for Jetpack Compose specific FoldingFeature (and other) utilities, please have a look at
- * our Jetpack Compose Testing library: https://github.com/microsoft/surface-duo-compose-sdk/tree/main/ComposeTesting
  */
 
 /**
- * Create a vertical foldingFeature
+ * Return WindowLayoutInfoPublisherRule which allows you to push through different WindowLayoutInfo
+ * values on demand from Window.testing to test
+ *
+ */
+fun createWindowLayoutInfoPublisherRule(): TestRule {
+    return WindowLayoutInfoPublisherRule()
+}
+
+/**
+ * Simulate a vertical foldingFeature
  *
  * @param activityRule: test activity rule
  * @param center: location of center of foldingFeature
  * @param size: size of foldingFeature
  * @param state: state of foldingFeature
  */
-fun <A : ComponentActivity> TestRule.createVerticalFoldingFeature(
+fun <A : ComponentActivity> TestRule.simulateVerticalFoldingFeature(
     activityRule: ActivityScenarioRule<A>,
     center: Int = -1,
     size: Int = 0,
     state: FoldingFeature.State = FoldingFeature.State.HALF_OPENED
 ) {
-    createFoldingFeature(activityRule, center, size, state, FoldingFeature.Orientation.VERTICAL)
+    simulateFoldingFeature(activityRule, center, size, state, FoldingFeature.Orientation.VERTICAL)
 }
 
 /**
- * Create a horizontal foldingFeature
+ * Simulate a horizontal foldingFeature
  *
  * @param activityRule: test activity rule
  * @param center: location of center of foldingFeature
  * @param size: size of foldingFeature
  * @param state: state of foldingFeature
  */
-fun <A : ComponentActivity> TestRule.createHorizontalFoldingFeature(
+fun <A : ComponentActivity> TestRule.simulateHorizontalFoldingFeature(
     activityRule: ActivityScenarioRule<A>,
     center: Int = -1,
     size: Int = 0,
     state: FoldingFeature.State = FoldingFeature.State.HALF_OPENED
 ) {
-    createFoldingFeature(activityRule, center, size, state, FoldingFeature.Orientation.HORIZONTAL)
+    simulateFoldingFeature(activityRule, center, size, state, FoldingFeature.Orientation.HORIZONTAL)
 }
 
 /**
- * Create a foldingFeature with the given properties
+ * Simulate a foldingFeature with the given properties
  *
  * @param activityRule: test activity rule
  * @param center: location of center of foldingFeature
@@ -68,7 +72,7 @@ fun <A : ComponentActivity> TestRule.createHorizontalFoldingFeature(
  * @param state: state of foldingFeature
  * @param orientation: orientation of foldingFeature
  */
-private fun <A : ComponentActivity> TestRule.createFoldingFeature(
+private fun <A : ComponentActivity> TestRule.simulateFoldingFeature(
     activityRule: ActivityScenarioRule<A>,
     center: Int,
     size: Int,
@@ -91,57 +95,61 @@ private fun <A : ComponentActivity> TestRule.createFoldingFeature(
     }
 }
 
-// ----- Market devices FoldingFeature recreation -----//
+// ----- Market devices FoldingFeature simulation -----//
 
 /**
- * Create Surface Duo 1 folding feature
+ * Simulate Surface Duo 1 folding feature
  *
  * @param activityRule :  Activity scenario rule
  * @param state : FLAT or HALF_OPENED. Default value is FLAT.
+ * @param orientation : VERTICAL or HORIZONTAL (dual-portrait or dual-landscape)
  */
-fun <A : ComponentActivity> TestRule.createSurfaceDuo1FoldingFeature(
+fun <A : ComponentActivity> TestRule.simulateSurfaceDuo1(
     activityRule: ActivityScenarioRule<A>,
-    state: FoldingFeature.State = FoldingFeature.State.FLAT
+    state: FoldingFeature.State = FoldingFeature.State.FLAT,
+    orientation: FoldingFeature.Orientation = FoldingFeature.Orientation.VERTICAL
 ) {
-    createFoldingFeature(
+    simulateFoldingFeature(
         activityRule = activityRule,
         center = -1,
-        size = 84,
+        size = DeviceModel.SurfaceDuo.foldWidth,
         state = state,
-        orientation = FoldingFeature.Orientation.VERTICAL
+        orientation = orientation
     )
 }
 
 /**
- * Create Surface Duo 2 folding feature
+ * Simulate Surface Duo 2 folding feature
  *
  * @param activityRule :  Activity scenario rule
  * @param state : FLAT or HALF_OPENED. Default value is FLAT.
+ * @param orientation : VERTICAL or HORIZONTAL (dual-portrait or dual-landscape)
  */
-fun <A : ComponentActivity> TestRule.createSurfaceDuo2FoldingFeature(
+fun <A : ComponentActivity> TestRule.simulateSurfaceDuo2(
     activityRule: ActivityScenarioRule<A>,
-    state: FoldingFeature.State = FoldingFeature.State.FLAT
+    state: FoldingFeature.State = FoldingFeature.State.FLAT,
+    orientation: FoldingFeature.Orientation = FoldingFeature.Orientation.VERTICAL
 ) {
-    createFoldingFeature(
+    simulateFoldingFeature(
         activityRule = activityRule,
         center = -1,
-        size = 66,
+        size = DeviceModel.SurfaceDuo2.foldWidth,
         state = state,
-        orientation = FoldingFeature.Orientation.VERTICAL
+        orientation = orientation
     )
 }
 
 /**
- * Create Market released foldable folding feature with a vertical FoldingFeature of 0px.
+ * Simulate Fold device with a vertical FoldingFeature of 0px.
  *
  * @param activityRule :  Activity scenario rule
  * @param state : FLAT or HALF_OPENED. Default value is HALF_OPENED.
  */
-fun <A : ComponentActivity> TestRule.createFoldWithVerticalFoldingFeature(
+fun <A : ComponentActivity> TestRule.simulateFoldDevice(
     activityRule: ActivityScenarioRule<A>,
     state: FoldingFeature.State = FoldingFeature.State.HALF_OPENED
 ) {
-    createFoldingFeature(
+    simulateFoldingFeature(
         activityRule = activityRule,
         center = -1,
         size = 0,
@@ -151,20 +159,20 @@ fun <A : ComponentActivity> TestRule.createFoldWithVerticalFoldingFeature(
 }
 
 /**
- * Simulate Market released foldable folding feature with an horizontal FoldingFeature of 0px.
+ * Simulate Flip device with an horizontal FoldingFeature of 0px.
  *
  * @param activityRule :  Activity scenario rule
  * @param state : FLAT or HALF_OPENED. Default value is HALF_OPENED.
  */
-fun <A : ComponentActivity> TestRule.createFoldWithHorizontalFoldingFeature(
+fun <A : ComponentActivity> TestRule.simulateFlipDevice(
     activityRule: ActivityScenarioRule<A>,
     state: FoldingFeature.State = FoldingFeature.State.HALF_OPENED
 ) {
-    createFoldingFeature(
+    simulateFoldingFeature(
         activityRule = activityRule,
         center = -1,
         size = 0,
         state = state,
-        orientation = FoldingFeature.Orientation.VERTICAL
+        orientation = FoldingFeature.Orientation.HORIZONTAL
     )
 }

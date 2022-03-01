@@ -57,12 +57,13 @@ dependencies {
 
     testImplementation testDependencies.junit
 
+    androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation commonDependencies.googleTruth
     androidTestImplementation instrumentationTestDependencies.junitKtx
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation instrumentationTestDependencies.testRunner
-    androidTestImplementation commonDependencies.mockitoDexMaker
-    androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation project(':utils:test-utils')
-    androidTestImplementation commonDependencies.googleTruth
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

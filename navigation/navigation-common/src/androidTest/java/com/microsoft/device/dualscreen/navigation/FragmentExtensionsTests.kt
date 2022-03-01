@@ -9,13 +9,15 @@ import androidx.navigation.foldableNavOptions
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.navigation.utils.SimpleFragmentBackStackListener
 import com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity
 import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.spanFromStart
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,6 +29,8 @@ import org.junit.runner.RunWith
 class FragmentExtensionsTests {
     @get:Rule
     val activityScenarioRule = activityScenarioRule<SurfaceDuoSimpleActivity>()
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
     private val fragmentBackStackListener = SimpleFragmentBackStackListener()
     private val currentActivityDelegate = CurrentActivityDelegate()
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
@@ -48,7 +52,7 @@ class FragmentExtensionsTests {
     @Test
     fun testIsOnStartContainer() {
         windowLayoutInfoConsumer.reset()
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
@@ -73,7 +77,7 @@ class FragmentExtensionsTests {
     @Test
     fun testIsOnEndContainer() {
         windowLayoutInfoConsumer.reset()
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         assertThat(currentActivityDelegate.currentActivity).isNotNull()

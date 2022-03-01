@@ -14,15 +14,16 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutTestOnSecondActivity
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.testing.ForceClick
-import com.microsoft.device.dualscreen.testing.SurfaceDuo1
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.resetOrientation
-import com.microsoft.device.dualscreen.testing.setOrientationRight
+import com.microsoft.device.dualscreen.testing.spanFromStart
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,12 +35,14 @@ import org.junit.runner.RunWith
 class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
     @get:Rule
     val activityScenarioRule = ActivityScenarioRule(FoldableLayoutTestOnSecondActivity::class.java)
+
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
     private val currentActivityDelegate = CurrentActivityDelegate()
 
     @Before
     fun before() {
-        resetOrientation()
+        uiDevice.resetOrientation()
 
         currentActivityDelegate.setup(activityScenarioRule)
         activityScenarioRule.scenario.onActivity {
@@ -70,7 +73,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
     @Test
     fun testLayoutSingleScreenLandscape() {
         windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        setOrientationRight()
+        uiDevice.setOrientationRight()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         currentActivityDelegate.resetActivityCounter()
@@ -89,7 +92,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenLandscape() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
+        uiDevice.spanFromStart()
 
         currentActivityDelegate.resetActivityCounter()
         onView(withId(R.id.start)).perform(click())
@@ -109,8 +112,8 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     fun testLayoutDualScreenPortrait() {
-        SurfaceDuo1.switchFromSingleToDualScreen()
-        setOrientationRight()
+        uiDevice.spanFromStart()
+        uiDevice.setOrientationRight()
 
         currentActivityDelegate.resetActivityCounter()
         onView(withId(R.id.start)).perform(ForceClick())

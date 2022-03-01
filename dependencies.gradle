@@ -27,7 +27,7 @@ ext {
     inkSDKVersionCode = 6
     wmUtilsVersionCode = 4
     navigationVersionCode = 2
-    testingVersionCode = 1
+    testingVersionCode = 2
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -43,7 +43,7 @@ ext {
     inkSDKVersionName = "1.0.0-alpha4"
     wmUtilsVersionName = "1.0.0-beta4"
     navigationVersionName = "1.0.0-alpha2"
-    testingVersionName = "1.0.0-alpha1"
+    testingVersionName = "1.0.0-alpha2"
     // ----------------------------------
 
     // Config Android sdk, plugins and libraries version
