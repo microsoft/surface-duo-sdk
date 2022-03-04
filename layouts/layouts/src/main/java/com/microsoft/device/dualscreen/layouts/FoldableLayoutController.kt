@@ -27,6 +27,8 @@ import com.microsoft.device.dualscreen.utils.wm.getScreenRectangles
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 import com.microsoft.device.dualscreen.utils.wm.normalizeWindowRect
 
+const val OCCLUSION_THRESHOLD = 1
+
 /**
  * Class responsible for the logic of displaying the layout containers depending on the screen state.
  * The class automatically handles the resize of the layout containers if the device rotates and
@@ -336,10 +338,25 @@ private fun ViewGroup.addContent(@LayoutRes layoutResId: Int): View? {
 private fun FoldingFeature.generateHingeView(context: Context): View {
     return View(context).apply {
         id = R.id.hinge_id
-        layoutParams = FrameLayout.LayoutParams(bounds.width(), bounds.height())
+        layoutParams = FrameLayout.LayoutParams(
+            normalizeFoldingFeatureThickness(bounds.width()),
+            normalizeFoldingFeatureThickness(bounds.height())
+        )
         background = ColorDrawable(ContextCompat.getColor(context, R.color.black))
     }
 }
+
+/**
+ * When the FoldingFeature thickness is >1px we need to keep the thickness of the FoldingFeature because, most likely, we are dealing with a hinge devices.
+ * When the FoldingFeature thickness is <1px we need to set the thickness of the FoldingFeature to 0 so it will not interfere with the application UI because we are dealing with a continuously folding screen.
+ * We can't remove the FoldingFeature because other components depend on it.
+ */
+private fun normalizeFoldingFeatureThickness(thickness: Int) =
+    if (thickness <= OCCLUSION_THRESHOLD) {
+        0
+    } else {
+        thickness
+    }
 
 /**
  * Returns [ScreenMode.SINGLE_SCREEN] when there is no folding feature, [ScreenMode.DUAL_SCREEN] otherwise.
