@@ -186,6 +186,29 @@ open class FoldableLayout @JvmOverloads constructor(
         layoutController = FoldableLayoutController(this, config)
     }
 
+    fun addContentChangedListener(listener: ContentChangedListener) {
+        layoutController.addContentChangedListener(listener)
+    }
+
+    fun removeContentChangedListener(callback: ContentChangedListener) {
+        layoutController.removeContentChangedListener(callback)
+    }
+
+    fun doAfterContentChanged(runnable: Runnable) {
+        if (layoutController.isChangingContent) {
+            addContentChangedListener(
+                object : ContentChangedListener {
+                    override fun contentChanged() {
+                        runnable.run()
+                        removeContentChangedListener(this)
+                    }
+                }
+            )
+        } else {
+            runnable.run()
+        }
+    }
+
     /**
      * Creates the preview that is visible in Android Studio
      */
@@ -499,5 +522,10 @@ open class FoldableLayout @JvmOverloads constructor(
 
         fun isDualLandscapeSingleContainer(isDualLandscapeSingleContainer: Boolean): T =
             apply { config.isDualLandscapeSingleContainer = isDualLandscapeSingleContainer } as T
+    }
+
+    @FunctionalInterface
+    interface ContentChangedListener {
+        fun contentChanged()
     }
 }
