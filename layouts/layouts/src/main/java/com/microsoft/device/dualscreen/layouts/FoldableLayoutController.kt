@@ -57,6 +57,24 @@ internal class FoldableLayoutController constructor(
             addContent(value.screenMode)
         }
 
+    internal val isChangingContent: Boolean
+        get() = _isChangingContent
+    private var _isChangingContent = false
+    private val contentChangedListeners = mutableListOf<FoldableLayout.ContentChangedListener?>()
+
+    internal fun addContentChangedListener(listener: FoldableLayout.ContentChangedListener?) {
+        contentChangedListeners.add(listener)
+    }
+
+    internal fun removeContentChangedListener(listener: FoldableLayout.ContentChangedListener?) {
+        contentChangedListeners.remove(listener)
+    }
+
+    private fun contentChanged() {
+        contentChangedListeners.forEach { it?.contentChanged() }
+        _isChangingContent = false
+    }
+
     /**
      * Add content depending on the given [ScreenMode]
      * @param screenMode The given [ScreenMode]
@@ -245,6 +263,7 @@ internal class FoldableLayoutController constructor(
             width = WRAP_CONTENT
             height = MATCH_PARENT
         }
+        contentChanged()
     }
 
     /**
@@ -284,6 +303,7 @@ internal class FoldableLayoutController constructor(
             width = MATCH_PARENT
             height = MATCH_PARENT
         }
+        contentChanged()
     }
 
     /**
@@ -303,6 +323,7 @@ internal class FoldableLayoutController constructor(
                 height = MATCH_PARENT
             }
         }
+        contentChanged()
     }
 
     /**

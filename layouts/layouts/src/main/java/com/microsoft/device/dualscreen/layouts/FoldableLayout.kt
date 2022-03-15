@@ -7,7 +7,6 @@
 
 package com.microsoft.device.dualscreen.layouts
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.TypedArray
@@ -19,18 +18,22 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
+import androidx.activity.ComponentActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
 
@@ -91,15 +94,19 @@ open class FoldableLayout @JvmOverloads constructor(
     }
 
     private fun registerWindowInfoFlow() {
-        job = MainScope().launch {
-            WindowInfoTracker.getOrCreate(context)
-                .windowLayoutInfo(context as Activity)
-                .collectIndexed { index, info ->
-                    if (index == 0) {
-                        viewModel.windowLayoutInfo = info
-                        layoutController.foldingFeature = info.getFoldingFeature()
+        val activity = (context as? ComponentActivity)
+            ?: throw RuntimeException("Context must implement androidx.activity.ComponentActivity!")
+        job = activity.lifecycleScope.launch(Dispatchers.Main) {
+            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                WindowInfoTracker.getOrCreate(activity)
+                    .windowLayoutInfo(activity)
+                    .collectIndexed { index, info ->
+                        if (index == 0) {
+                            viewModel.windowLayoutInfo = info
+                            layoutController.foldingFeature = info.getFoldingFeature()
+                        }
                     }
-                }
+            }
         }
     }
 
@@ -177,6 +184,29 @@ open class FoldableLayout @JvmOverloads constructor(
      */
     private fun createView(config: Config) {
         layoutController = FoldableLayoutController(this, config)
+    }
+
+    fun addContentChangedListener(listener: ContentChangedListener) {
+        layoutController.addContentChangedListener(listener)
+    }
+
+    fun removeContentChangedListener(callback: ContentChangedListener) {
+        layoutController.removeContentChangedListener(callback)
+    }
+
+    fun doAfterContentChanged(runnable: Runnable) {
+        if (layoutController.isChangingContent) {
+            addContentChangedListener(
+                object : ContentChangedListener {
+                    override fun contentChanged() {
+                        runnable.run()
+                        removeContentChangedListener(this)
+                    }
+                }
+            )
+        } else {
+            runnable.run()
+        }
     }
 
     /**
@@ -492,5 +522,10 @@ open class FoldableLayout @JvmOverloads constructor(
 
         fun isDualLandscapeSingleContainer(isDualLandscapeSingleContainer: Boolean): T =
             apply { config.isDualLandscapeSingleContainer = isDualLandscapeSingleContainer } as T
+    }
+
+    @FunctionalInterface
+    interface ContentChangedListener {
+        fun contentChanged()
     }
 }
