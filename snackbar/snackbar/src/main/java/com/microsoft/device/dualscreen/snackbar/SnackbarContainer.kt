@@ -7,14 +7,18 @@ package com.microsoft.device.dualscreen.snackbar
 
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.snackbar.Snackbar
@@ -25,8 +29,8 @@ import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -50,28 +54,83 @@ class SnackbarContainer @JvmOverloads constructor(
     val coordinatorLayout: CoordinatorLayout by lazy { CoordinatorLayout(context) }
     private var job: Job? = null
     private var windowLayoutInfo: WindowLayoutInfo? = null
+    private val requiredActivity: ComponentActivity by lazy {
+        getActivityFromContext() ?: throw RuntimeException("Context must implement androidx.activity.ComponentActivity!")
+    }
+    private val onReadyListeners = mutableListOf<OnReadyListener?>()
 
     init {
         addView(coordinatorLayout, LayoutParams(MATCH_PARENT, WRAP_CONTENT))
         registerWindowInfoFlow()
     }
 
-    private fun requireActivity(): Activity = (context as? Activity)
-        ?: throw RuntimeException("Context must implement android.app.Activity")
+    /**
+     * Add a listener that will be called when the container is ready to be used.
+     *
+     * @param listener The listener that will be called when the container is ready to be used.
+     */
+    fun addOnReadyListener(listener: OnReadyListener) {
+        onReadyListeners.add(listener)
+    }
+
+    /**
+     * Remove a listener for layout changes.
+     * @param listener – The listener for layout changes.
+     */
+    fun removeOnReadyListener(listener: OnReadyListener) {
+        onReadyListeners.remove(listener)
+    }
+
+    /**
+     * Performs the given action when the container is ready to be used.
+     * The action will only be invoked once the container is ready and then removed.
+     */
+    fun doWhenIsReady(runnable: Runnable) {
+        if (windowLayoutInfo == null) {
+            addOnReadyListener(
+                object : OnReadyListener {
+                    override fun onReady() {
+                        runnable.run()
+                        removeOnReadyListener(this)
+                    }
+                }
+            )
+        } else {
+            runnable.run()
+        }
+    }
 
     private fun registerWindowInfoFlow() {
-        job = MainScope().launch {
-            WindowInfoTracker.getOrCreate(context)
-                .windowLayoutInfo(requireActivity())
-                .collect {
-                    windowLayoutInfo = it
-                }
+        job = requiredActivity.lifecycleScope.launch(Dispatchers.Main) {
+            requiredActivity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                WindowInfoTracker.getOrCreate(requiredActivity)
+                    .windowLayoutInfo(requiredActivity)
+                    .collect {
+                        windowLayoutInfo = it
+                        notifyContainerReadyListeners()
+                    }
+            }
         }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         job?.cancel()
+    }
+
+    /**
+     * Unwrap the hierarchy of [ContextWrapper]-s until [Activity] is reached.
+     * @return Base [Activity] context or [null] if not available.
+     */
+    private fun getActivityFromContext(): ComponentActivity? {
+        var contextBuffer = context
+        while (contextBuffer is ContextWrapper) {
+            if (contextBuffer is ComponentActivity) {
+                return contextBuffer
+            }
+            contextBuffer = contextBuffer.baseContext
+        }
+        return null
     }
 
     /**
@@ -89,11 +148,17 @@ class SnackbarContainer @JvmOverloads constructor(
         }
     }
 
+    private fun notifyContainerReadyListeners() {
+        onReadyListeners.forEach {
+            it?.onReady()
+        }
+    }
+
     /**
      * Updates the position for the [CoordinatorLayout] child when the device is in single screen mode.
      */
     private fun updatePositionForSingleScreen() {
-        val screenWidth = requireActivity().getWindowRect().width()
+        val screenWidth = requiredActivity.getWindowRect().width()
         val widthValue = screenWidth - 2 * COORDINATOR_LAYOUT_MARGIN
         coordinatorLayout.updateLayoutParams<LayoutParams> {
             gravity = Gravity.BOTTOM
@@ -112,7 +177,7 @@ class SnackbarContainer @JvmOverloads constructor(
      */
     private fun updatePositionWhenHorizontalFoldingFeature(position: SnackbarPosition) {
         val foldingFeatureRect = windowLayoutInfo.extractFoldingFeatureRect()
-        val screenWidth = requireActivity().getWindowRect().width()
+        val screenWidth = requiredActivity.getWindowRect().width()
 
         val rightMarginValue = when (position) {
             START -> foldingFeatureRect.left - COORDINATOR_LAYOUT_MARGIN
@@ -154,9 +219,8 @@ class SnackbarContainer @JvmOverloads constructor(
      * @param position the given [SnackbarPosition]
      */
     private fun updatePositionWhenVerticalFoldingFeature(position: SnackbarPosition) {
-        val activity = context as AppCompatActivity
         val foldingFeatureRect = windowLayoutInfo.extractFoldingFeatureRect()
-        val screenHeight = activity.getWindowRect().height()
+        val screenHeight = requiredActivity.getWindowRect().height()
 
         val bottomMarginValue = when (position) {
             START -> screenHeight - foldingFeatureRect.top + COORDINATOR_LAYOUT_MARGIN
@@ -170,5 +234,16 @@ class SnackbarContainer @JvmOverloads constructor(
             rightMargin = COORDINATOR_LAYOUT_MARGIN
             bottomMargin = bottomMarginValue
         }
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when the container is ready to be used.
+     */
+    @FunctionalInterface
+    interface OnReadyListener {
+        /**
+         * Called when the container can be used.
+         */
+        fun onReady()
     }
 }
