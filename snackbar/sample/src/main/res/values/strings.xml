@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <string name="app_name">Snackbar Sample</string>
+    <string name="start_screen_snackbar">Start Screen Snackbar</string>
+    <string name="end_screen_snackbar">End Screen Snackbar</string>
+    <string name="both_screens_snackbar">Both Screens Snackbar</string>
+    <string name="cancel">Cancel</string>
+    <string name="snackbar_to_start">Snackbar sample on the first display area</string>
+    <string name="snackbar_to_end">Snackbar sample on the second display area</string>
+    <string name="snackbar_to_both">Snackbar sample to the entire display area</string>
+</resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SampleActivity">
+
+    <Button
+        android:id="@+id/show_snackbar_to_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/start_screen_snackbar"
+        app:layout_constraintBottom_toTopOf="@id/show_snackbar_to_end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/show_snackbar_to_end"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/end_screen_snackbar"
+        app:layout_constraintBottom_toTopOf="@id/show_snackbar_to_both"
+        app:layout_constraintEnd_toEndOf="@id/show_snackbar_to_start"
+        app:layout_constraintStart_toStartOf="@id/show_snackbar_to_start"
+        app:layout_constraintTop_toBottomOf="@id/show_snackbar_to_start" />
+
+    <Button
+        android:id="@+id/show_snackbar_to_both"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/both_screens_snackbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/show_snackbar_to_start"
+        app:layout_constraintStart_toStartOf="@id/show_snackbar_to_start"
+        app:layout_constraintTop_toBottomOf="@id/show_snackbar_to_end" />
+
+    <com.microsoft.device.dualscreen.snackbar.SnackbarContainer
+        android:id="@+id/snackbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

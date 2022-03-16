@@ -34,6 +34,9 @@ include ':inksdk:inksample'
 include ':utils:wm-utils'
 include ':utils:test-utils'
 
+include ':snackbar:snackbar'
+include ':snackbar:sample'
+
 include ':navigation:navigation-common'
 include ':navigation:navigation-common-ktx'
 include ':navigation:navigation-runtime'
