@@ -26,7 +26,6 @@ import androidx.navigation.testutils.withActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Test
@@ -44,12 +43,10 @@ class MultiNavHostFragmentTest {
             val navController = withActivity {
                 findFoldableNavController(R.id.nav_host_fragment)
             }
-
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            withActivity {
                 navController.setGraph(R.navigation.nav_nav_host)
                 navController.navigate(R.id.nav_host_1)
             }
-
             val rootNavController = withActivity {
                 val navHostFragment = supportFragmentManager
                     .findFragmentById(R.id.nav_host_fragment)!!
@@ -68,7 +65,7 @@ class MultiNavHostFragmentTest {
                 findFoldableNavController(R.id.nav_host_fragment)
             }
 
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            withActivity {
                 navController.setGraph(R.navigation.nav_nav_host)
                 navController.navigate(R.id.nav_host_1)
             }
@@ -103,7 +100,7 @@ class MultiNavHostFragmentTest {
                 findFoldableNavController(R.id.nav_host_fragment)
             }
 
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            withActivity {
                 navController.setGraph(R.navigation.nav_nav_host)
                 navController.navigate(R.id.nav_host_1)
             }

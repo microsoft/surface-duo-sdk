@@ -938,11 +938,6 @@ public class FoldableNavController {
         }
         @IdRes int destId = resId;
         FoldableNavAction navAction = currentNode.getAction(resId);
-        if (navAction == null && getPreviousBackStackEntry() != null) {
-            navigateUp(false);
-            navigate(resId, args, navOptions, navigatorExtras);
-            return;
-        }
         Bundle combinedArgs = null;
         if (navAction != null) {
             if (navOptions == null) {
@@ -975,15 +970,21 @@ public class FoldableNavController {
 
         FoldableNavDestination node = findDestination(destId);
         if (node == null) {
-            final String dest = FoldableNavDestination.getDisplayName(mContext, destId);
-            if (navAction != null) {
-                throw new IllegalArgumentException("Navigation destination " + dest
-                        + " referenced from action "
-                        + FoldableNavDestination.getDisplayName(mContext, resId)
-                        + " cannot be found from the current destination " + currentNode);
+            if (getPreviousBackStackEntry() != null) {
+                navigateUp(false);
+                navigate(resId, args, navOptions, navigatorExtras);
+                return;
             } else {
-                throw new IllegalArgumentException("Navigation action/destination " + dest
-                        + " cannot be found from the current destination " + currentNode);
+                final String dest = FoldableNavDestination.getDisplayName(mContext, destId);
+                if (navAction != null) {
+                    throw new IllegalArgumentException("Navigation destination " + dest
+                            + " referenced from action "
+                            + FoldableNavDestination.getDisplayName(mContext, resId)
+                            + " cannot be found from the current destination " + currentNode);
+                } else {
+                    throw new IllegalArgumentException("Navigation action/destination " + dest
+                            + " cannot be found from the current destination " + currentNode);
+                }
             }
         }
         navigate(node, combinedArgs, navOptions, navigatorExtras);
