@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.FoldableNavController
 import androidx.navigation.fragment.findFoldableNavController
 import com.microsoft.device.dualscreen.navigation.sample.R
 import com.microsoft.device.dualscreen.navigation.sample.databinding.FragmentTitleBinding
@@ -33,6 +34,7 @@ import com.microsoft.device.dualscreen.navigation.sample.databinding.FragmentTit
 class TitleFragment : Fragment() {
     private var _binding: FragmentTitleBinding? = null
     private val binding get() = _binding!!
+    private val navController: FoldableNavController by lazy { findFoldableNavController() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTitleBinding.inflate(inflater, container, false)
@@ -43,7 +45,7 @@ class TitleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.aboutBtn.setOnClickListener {
-            findFoldableNavController().navigate(R.id.action_title_to_about)
+            navController.navigate(R.id.action_title_to_about)
         }
     }
 

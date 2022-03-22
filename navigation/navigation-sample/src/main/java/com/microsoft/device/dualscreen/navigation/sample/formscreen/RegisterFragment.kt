@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.FoldableNavController
 import androidx.navigation.fragment.findFoldableNavController
 import com.microsoft.device.dualscreen.navigation.sample.R
 import com.microsoft.device.dualscreen.navigation.sample.databinding.FragmentRegisterBinding
@@ -33,6 +34,7 @@ import com.microsoft.device.dualscreen.navigation.sample.databinding.FragmentReg
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
+    private val navController: FoldableNavController by lazy { findFoldableNavController() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
@@ -43,8 +45,10 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.signupBtn.setOnClickListener {
-            findFoldableNavController().popBackStack(false)
-            findFoldableNavController().navigate(R.id.action_register_to_registered)
+            navController.run {
+                popBackStack(false)
+                navigate(R.id.action_register_to_registered)
+            }
         }
     }
 

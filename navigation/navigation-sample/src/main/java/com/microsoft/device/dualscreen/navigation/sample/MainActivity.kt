@@ -7,7 +7,7 @@ package com.microsoft.device.dualscreen.navigation.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findFoldableNavController
+import androidx.navigation.FoldableNavController
 import androidx.navigation.fragment.FoldableNavHostFragment
 import androidx.navigation.ui.FoldableAppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -19,6 +19,11 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private lateinit var appBarConfiguration: FoldableAppBarConfiguration
 
+    private val navController: FoldableNavController by lazy {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as FoldableNavHostFragment
+        navHostFragment.navController
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -28,20 +33,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation() {
         setSupportActionBar(binding.toolbar)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as FoldableNavHostFragment
-        val navController = navHostFragment.navController
         appBarConfiguration = FoldableAppBarConfiguration(navController.graph)
         setupActionBarWithFoldableNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findFoldableNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) ||
             super.onSupportNavigateUp()
     }
 
     override fun onBackPressed() {
-        if (!findFoldableNavController(R.id.nav_host_fragment).navigateUp()) {
+        if (!navController.navigateUp()) {
             finish()
         }
     }
