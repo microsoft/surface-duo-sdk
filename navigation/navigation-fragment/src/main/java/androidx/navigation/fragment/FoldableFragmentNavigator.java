@@ -217,7 +217,6 @@ public class FoldableFragmentNavigator extends FoldableNavigator<FoldableFragmen
         // The commit succeeded, update our view of the world
         if (isAdded) {
             mBackStack.add(destId);
-            Log.d("ANDREI", "BackStackSize = " + mBackStack.size());
             return destination;
         } else {
             return null;
