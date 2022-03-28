@@ -14,6 +14,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
+import androidx.annotation.VisibleForTesting
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
@@ -48,7 +49,8 @@ class SnackbarContainer @JvmOverloads constructor(
 ) : FrameLayout(context, attrs) {
 
     companion object {
-        private const val COORDINATOR_LAYOUT_MARGIN = 20
+        @VisibleForTesting
+        const val COORDINATOR_LAYOUT_MARGIN = 20
     }
 
     val coordinatorLayout: CoordinatorLayout by lazy { CoordinatorLayout(context) }

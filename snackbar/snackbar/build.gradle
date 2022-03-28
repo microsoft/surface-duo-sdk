@@ -50,4 +50,10 @@ dependencies {
 
     api project(':utils:wm-utils')
     api androidxDependencies.windowManager
+
+    androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation instrumentationTestDependencies.junitKtx
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
 }

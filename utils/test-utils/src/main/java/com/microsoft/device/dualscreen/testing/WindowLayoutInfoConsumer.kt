@@ -49,8 +49,9 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
     /**
      * Unregister the current instance from the WindowInfoTrackerCallbackAdapter.
      */
-    private fun unregister() {
+    fun unregister() {
         adapter?.removeWindowLayoutInfoListener(this)
+        reset()
     }
 
     /**
@@ -96,7 +97,6 @@ class WindowLayoutInfoConsumer : Consumer<WindowLayoutInfo> {
      * Resets current used instance to its original state.
      */
     fun reset() {
-        unregister()
         resetWindowInfoLayout()
         resetWindowInfoLayoutCounter()
     }
