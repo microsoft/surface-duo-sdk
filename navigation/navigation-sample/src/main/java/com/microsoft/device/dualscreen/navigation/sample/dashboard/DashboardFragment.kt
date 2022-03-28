@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.FoldableNavController
 import androidx.navigation.fragment.findFoldableNavController
 import com.microsoft.device.dualscreen.navigation.sample.R
 import com.microsoft.device.dualscreen.navigation.sample.databinding.FragmentDashboardBinding
@@ -17,6 +18,7 @@ import com.microsoft.device.dualscreen.navigation.sample.databinding.FragmentDas
 class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
+    private val navController: FoldableNavController by lazy { findFoldableNavController() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
@@ -27,15 +29,15 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnRegister.setOnClickListener {
-            findFoldableNavController().navigate(R.id.action_register)
+            navController.navigate(R.id.action_register)
         }
 
         binding.btnWelcome.setOnClickListener {
-            findFoldableNavController().navigate(R.id.action_welcome)
+            navController.navigate(R.id.action_welcome)
         }
 
         binding.btnPersons.setOnClickListener {
-            findFoldableNavController().navigate(R.id.action_persons)
+            navController.navigate(R.id.action_persons)
         }
     }
 
