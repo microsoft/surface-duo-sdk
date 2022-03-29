@@ -45,6 +45,7 @@ android {
 dependencies {
     api project(':utils:wm-utils')
     implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.lifecycleRuntimeKtx
     api materialDependencies.material
     api androidxDependencies.windowManager
 

@@ -6,7 +6,6 @@
 package com.microsoft.device.dualscreen.tabs
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Parcel
@@ -15,8 +14,12 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import androidx.activity.ComponentActivity
 import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.customview.view.AbsSavedState
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
@@ -33,8 +36,8 @@ import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -78,13 +81,17 @@ open class TabLayout : TabLayout {
     private var defaultChildWidth = -1
 
     private fun registerWindowInfoFlow() {
-        job = MainScope().launch {
-            WindowInfoTracker.getOrCreate(context)
-                .windowLayoutInfo(context as Activity)
-                .collect { info ->
-                    windowLayoutInfo = info
-                    onInfoLayoutChanged(info)
-                }
+        val activity = (context as? ComponentActivity)
+            ?: throw RuntimeException("Context must implement androidx.activity.ComponentActivity!")
+        job = activity.lifecycleScope.launch(Dispatchers.Main) {
+            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                WindowInfoTracker.getOrCreate(activity)
+                    .windowLayoutInfo(activity)
+                    .collect { info ->
+                        windowLayoutInfo = info
+                        onInfoLayoutChanged(info)
+                    }
+            }
         }
     }
 
