@@ -40,7 +40,7 @@ class SnackbarContainerPortraitTests : SnackbarContainerTests() {
         }
         testMargins(TestParams(R.string.snackbar_to_start, START, margin, 0, rightMargin, margin))
         val leftMargin = with(uiDevice.getDeviceModel()) {
-            paneWidth + +foldWidth + margin
+            paneWidth + foldWidth + margin
         }
         testMargins(TestParams(R.string.snackbar_to_end, END, leftMargin, 0, margin, margin))
         testMargins(TestParams(R.string.snackbar_to_both, BOTH, margin, 0, margin, margin))
