@@ -5,21 +5,24 @@
 
 package com.microsoft.device.dualscreen.layouts
 
-import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -58,15 +61,19 @@ open class FoldableFrameLayout @JvmOverloads constructor(
     }
 
     private fun registerWindowInfoFlow() {
-        job = MainScope().launch {
-            WindowInfoTracker.getOrCreate(context)
-                .windowLayoutInfo(context as Activity)
-                .collect { info ->
-                    foldingFeature = info.getFoldingFeature()
-                    foldingFeature?.let {
-                        setScreenParameters(it)
+        val activity = (context as? ComponentActivity)
+            ?: throw RuntimeException("Context must implement androidx.activity.ComponentActivity!")
+        job = activity.lifecycleScope.launch(Dispatchers.Main) {
+            activity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                WindowInfoTracker.getOrCreate(activity)
+                    .windowLayoutInfo(activity)
+                    .collect { info ->
+                        foldingFeature = info.getFoldingFeature()
+                        foldingFeature?.let {
+                            setScreenParameters(it)
+                        }
                     }
-                }
+            }
         }
     }
 
