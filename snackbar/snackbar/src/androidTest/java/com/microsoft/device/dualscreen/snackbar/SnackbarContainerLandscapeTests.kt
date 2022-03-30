@@ -15,18 +15,12 @@ import com.microsoft.device.dualscreen.testing.getDeviceModel
 import com.microsoft.device.dualscreen.testing.resetOrientation
 import com.microsoft.device.dualscreen.testing.spanFromStart
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class SnackbarContainerLandscapeTests : SnackbarContainerTests() {
-    @Before
-    fun setOrientation() {
-        uiDevice.setOrientationRight()
-    }
-
     @After
     fun resetOrientation() {
         uiDevice.resetOrientation()
@@ -34,6 +28,8 @@ class SnackbarContainerLandscapeTests : SnackbarContainerTests() {
 
     @Test
     fun testPositionOnSingleScreen() {
+        uiDevice.setOrientationRight()
+
         val margin = SnackbarContainer.COORDINATOR_LAYOUT_MARGIN
         testMargins(TestParams(R.string.snackbar_to_start, START, margin, 0, margin, margin))
         testMargins(TestParams(R.string.snackbar_to_end, END, margin, 0, margin, margin))
@@ -44,6 +40,7 @@ class SnackbarContainerLandscapeTests : SnackbarContainerTests() {
     fun testPositionOnDualScreen() {
         windowLayoutInfoConsumer.reset()
         uiDevice.spanFromStart()
+        uiDevice.setOrientationRight()
         windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
 
         val margin = SnackbarContainer.COORDINATOR_LAYOUT_MARGIN
