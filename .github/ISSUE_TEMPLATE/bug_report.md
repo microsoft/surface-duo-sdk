@@ -2,19 +2,21 @@
 name: Bug report
 about: Found a bug in one of our libraries and/or their samples? Please, let us know! Thanks! 🙏.
 Credits and kudos to: [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github) and the [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github) for their fantastic templates that have helped us as inspiration.
+
+Instructions: Please, fill the following sections with the information that is suggested in the comments. You can leave the comments or delete them, it won't be shown in the Bug report.
 -->
 
 ## 🐛 Describe the bug
 <!-- Clear and concise description of what the issue is. -->
 
 ## ⚠️ Current behavior
-<!-- Clear and concise description of what you expected to happen. -->
+<!-- Clear and concise description of what is currently happening. -->
 
 ## ✔️ Expected behavior
 <!-- Clear and concise description of what you expected to happen. -->
 
 ## 🪜 Steps to reproduce
-<!-- Please, show us how we can reproduce the issue. Steps following a numbered list would be fantastic! -->
+<!-- Please, show us how we can reproduce the issue. Steps using a numbered list would be fantastic! -->
 
 ## 📷 Screenshots
 <!-- If applicable, add screenshots to help explain your problem. 
@@ -23,5 +25,5 @@ They can be taken by pressing the Volume Down and Power Button at the same time 
 ## 📱 Tech info
  - Name of the library: <!-- e.g. bottomnavigation -->
  - Library/App version: <!-- e.g. 1.0.0-alpha3 -->
-- Device/emulator: <!-- e.g. Surface Duo v1, Surface Duo 2 emulator, Tablet XYZ, etc. -->
+- Device/emulator version/model: <!-- e.g. Surface Duo v1, Surface Duo 2 emulator, Tablet XYZ, etc. -->
 - OS: <!-- e.g. 11 -->

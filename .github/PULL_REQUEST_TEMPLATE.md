@@ -2,6 +2,8 @@
 name: Pull request
 about: Open a new Pull Request. Thanks in advance for your hard work 🙏
 Credits and kudos to: [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github) and the [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github) for their fantastic templates that have helped us as inspiration.
+
+Instructions: Please, fill the following sections with the information that is suggested in the comments. You can leave the comments or delete them, it won't be shown in the PR.
 -->
 
 ## 📃 Description
