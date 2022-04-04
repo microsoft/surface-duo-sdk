@@ -6,6 +6,7 @@
 package com.microsoft.device.dualscreen.navigation
 
 import androidx.navigation.foldableNavOptions
+import androidx.navigation.testutils.EmptyFragment
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -18,6 +19,8 @@ import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import com.microsoft.device.dualscreen.utils.wm.screenMode
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -46,7 +49,7 @@ class FragmentExtensionsTests {
     @After
     fun clear() {
         currentActivityDelegate.clear(activityScenarioRule)
-        windowLayoutInfoConsumer.reset()
+        windowLayoutInfoConsumer.unregister()
     }
 
     @Test
@@ -59,7 +62,9 @@ class FragmentExtensionsTests {
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
             fragmentBackStackListener.resetCounter(1)
-            val foldableFragmentManager = FoldableFragmentManagerWrapper(this)
+            val foldableFragmentManager = FoldableFragmentManagerWrapper(this).apply {
+                screenMode = windowLayoutInfoConsumer.windowLayoutInfo?.screenMode ?: ScreenMode.SINGLE_SCREEN
+            }
 
             val navOptions = foldableNavOptions {
                 launchScreen {
@@ -67,10 +72,13 @@ class FragmentExtensionsTests {
                 }
             }
 
-            val fragment = androidx.navigation.testutils.EmptyFragment()
-            foldableFragmentManager.beginTransaction(fragment, navOptions).commit()
+            val fragment = EmptyFragment()
+            val fragmentTransaction = foldableFragmentManager.beginTransaction(fragment, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragment, "backStack", navOptions)
+            fragmentTransaction.commit()
+
             fragmentBackStackListener.waitForChanges()
-            assertThat(fragment.isOnStartContainer()).isTrue()
+            assertThat(foldableFragmentManager.isOnStartContainer(fragment.TAG + "-" + 0)).isTrue()
         }
     }
 
@@ -84,7 +92,9 @@ class FragmentExtensionsTests {
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
             fragmentBackStackListener.resetCounter(1)
-            val foldableFragmentManager = FoldableFragmentManagerWrapper(this)
+            val foldableFragmentManager = FoldableFragmentManagerWrapper(this).apply {
+                screenMode = windowLayoutInfoConsumer.windowLayoutInfo?.screenMode ?: ScreenMode.SINGLE_SCREEN
+            }
 
             val navOptions = foldableNavOptions {
                 launchScreen {
@@ -92,14 +102,18 @@ class FragmentExtensionsTests {
                 }
             }
 
-            foldableFragmentManager.beginTransaction(
-                androidx.navigation.testutils.EmptyFragment(),
-                navOptions
-            ).commit()
-            val fragment = androidx.navigation.testutils.EmptyFragment()
-            foldableFragmentManager.beginTransaction(fragment, navOptions).commit()
+            val firstFragment = EmptyFragment()
+            var fragmentTransaction = foldableFragmentManager.beginTransaction(firstFragment, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, firstFragment, "backStack1", navOptions)
+            fragmentTransaction.commit()
+
+            val secondFragment = EmptyFragment()
+            fragmentTransaction = foldableFragmentManager.beginTransaction(secondFragment, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, secondFragment, "backStack2", navOptions)
+            fragmentTransaction.commit()
+
             fragmentBackStackListener.waitForChanges()
-            assertThat(fragment.isOnEndContainer()).isTrue()
+            assertThat(foldableFragmentManager.isOnEndContainer(secondFragment.TAG + "-" + 1)).isTrue()
         }
     }
 }

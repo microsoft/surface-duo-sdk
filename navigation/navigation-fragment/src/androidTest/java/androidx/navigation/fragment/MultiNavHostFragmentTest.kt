@@ -26,7 +26,6 @@ import androidx.navigation.testutils.withActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Test
@@ -44,16 +43,17 @@ class MultiNavHostFragmentTest {
             val navController = withActivity {
                 findFoldableNavController(R.id.nav_host_fragment)
             }
-
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            withActivity {
                 navController.setGraph(R.navigation.nav_nav_host)
                 navController.navigate(R.id.nav_host_1)
             }
-
             val rootNavController = withActivity {
-                val navHostFragment = supportFragmentManager
-                    .findFragmentById(R.id.nav_host_fragment)!!
-                navHostFragment.requireView().findFoldableNavController()
+                val rootNavHostFragment = (
+                    supportFragmentManager
+                        .findFragmentById(R.id.nav_host_fragment) as FoldableNavHostFragment
+                    )
+                    .childFragmentManager.primaryNavigationFragment!!
+                rootNavHostFragment.requireView().findFoldableNavController()
             }
             assertWithMessage("Child should have changed the NavController")
                 .that(rootNavController)
@@ -68,18 +68,22 @@ class MultiNavHostFragmentTest {
                 findFoldableNavController(R.id.nav_host_fragment)
             }
 
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            withActivity {
                 navController.setGraph(R.navigation.nav_nav_host)
                 navController.navigate(R.id.nav_host_1)
             }
 
             val childFragment = withActivity {
-                supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-                    ?.childFragmentManager?.findFragmentById(R.id.nav_host_fragment) as
-                    BasicNavHostFragment
+                (
+                    supportFragmentManager
+                        .findFragmentById(R.id.nav_host_fragment) as FoldableNavHostFragment
+                    )
+                    .childFragmentManager.fragments[0] as BasicNavHostFragment
             }
 
-            navController.popBackStack(true)
+            withActivity {
+                navController.popBackStack(true)
+            }
 
             val returnNavController = withActivity {
                 val navHostFragment =
@@ -103,26 +107,34 @@ class MultiNavHostFragmentTest {
                 findFoldableNavController(R.id.nav_host_fragment)
             }
 
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            withActivity {
                 navController.setGraph(R.navigation.nav_nav_host)
                 navController.navigate(R.id.nav_host_1)
             }
 
             val firstChildNavController = withActivity {
-                val navHostFragment =
-                    supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
-                navHostFragment.requireView().findFoldableNavController()
+                val rootNavHostFragment = (
+                    supportFragmentManager
+                        .findFragmentById(R.id.nav_host_fragment) as FoldableNavHostFragment
+                    )
+                    .childFragmentManager.primaryNavigationFragment!!
+                rootNavHostFragment.requireView().findFoldableNavController()
             }
             assertWithMessage("child should have changed the NavController")
                 .that(firstChildNavController)
                 .isNotEqualTo(navController)
 
-            navController.navigate(R.id.nav_host_2)
+            withActivity {
+                navController.navigate(R.id.nav_host_2)
+            }
 
             val secondChildNavController = withActivity {
-                val navHostFragment =
-                    supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
-                navHostFragment.requireView().findFoldableNavController()
+                val rootNavHostFragment = (
+                    supportFragmentManager
+                        .findFragmentById(R.id.nav_host_fragment) as FoldableNavHostFragment
+                    )
+                    .childFragmentManager.primaryNavigationFragment!!
+                rootNavHostFragment.requireView().findFoldableNavController()
             }
 
             assertWithMessage("Second child should have changed the NavController")

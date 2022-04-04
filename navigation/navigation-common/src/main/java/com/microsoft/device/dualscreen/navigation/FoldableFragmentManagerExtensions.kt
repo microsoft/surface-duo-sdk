@@ -10,24 +10,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 
 /**
- * Last added fragment from fragment manager.
- */
-val FragmentManager.topFragment: Fragment?
-    get() {
-        return if (fragments.isNotEmpty()) fragments.last() else null
-    }
-
-/**
- * Removes fragments from fragment manager until predicate condition will be true.
- * @param predicate the predicate condition.
- */
-fun FragmentManager.popBackStackUntil(predicate: (Fragment?) -> Boolean) {
-    while (!predicate(topFragment)) {
-        popBackStackImmediate()
-    }
-}
-
-/**
  * Fragment tag used by fragment manager when fragments are added to stack.
  */
 val Fragment.TAG: String
@@ -43,8 +25,3 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
     fragmentTransaction.func()
     fragmentTransaction.commit()
 }
-
-/**
- * @return [true] if the pop operation is possible on dual screen mode, [false] otherwise
- */
-internal fun FragmentManager.isPopOnDualScreenPossible(): Boolean = fragments.size >= 2

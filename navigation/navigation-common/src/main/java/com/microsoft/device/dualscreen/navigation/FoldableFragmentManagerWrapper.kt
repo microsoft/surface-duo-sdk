@@ -7,6 +7,7 @@ package com.microsoft.device.dualscreen.navigation
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.FoldableNavOptions
 import androidx.navigation.common.R
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import kotlinx.parcelize.Parcelize
 import java.util.Stack
 
 /**
@@ -25,7 +27,8 @@ class FoldableFragmentManagerWrapper(
     private val requestConfigListener: RequestConfigListener? = null
 ) {
     companion object {
-        private const val KEY_NAV_OPTIONS = "microsoft-foldable-nav-fragment:fragment-manager:nav-options"
+        private const val KEY_BACKSTACK = "microsoft-foldable-nav-fragment:fragment-manager:backstack"
+        private const val KEY_SCREEN_MODE = "microsoft-foldable-nav-fragment:fragment-manager:screen-mode"
     }
 
     /**
@@ -40,16 +43,47 @@ class FoldableFragmentManagerWrapper(
             }
         }
     private var _screenMode: ScreenMode? = null
-
-    /**
-     * Navigation options for the fragments added to stack.
-     */
-    private var navOptionsArgs = hashMapOf<String, FoldableNavOptions?>()
+    private var backStack = Stack<BackStackEntry>()
 
     /**
      * If it's [true], then end container must be empty
      */
-    private var endContainerIsEmpty = false
+    private val endContainerIsEmpty: Boolean
+        get() = backStack.firstOrNull { it.containerId == R.id.second_container_id } == null
+
+    /**
+     * Last added fragment from fragment manager.
+     */
+    @VisibleForTesting
+    val topFragment: Fragment?
+        get() {
+            if (topFragmentTag == null) {
+                return null
+            }
+
+            return fragmentManager.findFragmentByTag(topFragmentTag)
+        }
+
+    private val topFragmentTag: String?
+        get() {
+            if (backStack.isEmpty()) {
+                return null
+            }
+
+            return backStack.peek().fragmentTag
+        }
+
+    private val topBackStackEntry: BackStackEntry?
+        get() {
+            if (backStack.isEmpty()) {
+                return null
+            }
+
+            return backStack.peek()
+        }
+
+    private fun requireTopBackStackEntry(): BackStackEntry =
+        topBackStackEntry ?: throw RuntimeException("Visible fragment must have a tag!")
 
     private fun updateInternalState() {
         when (screenMode) {
@@ -70,7 +104,8 @@ class FoldableFragmentManagerWrapper(
      * Save all appropriate state.
      */
     fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(KEY_NAV_OPTIONS, navOptionsArgs)
+        outState.putSerializable(KEY_BACKSTACK, backStack)
+        outState.putSerializable(KEY_SCREEN_MODE, _screenMode)
     }
 
     /**
@@ -81,7 +116,8 @@ class FoldableFragmentManagerWrapper(
     @Suppress("UNCHECKED_CAST")
     fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
-            navOptionsArgs = it.getSerializable(KEY_NAV_OPTIONS) as? HashMap<String, FoldableNavOptions?> ?: hashMapOf()
+            backStack = it.getSerializable(KEY_BACKSTACK) as? Stack<BackStackEntry> ?: Stack()
+            _screenMode = it.getSerializable(KEY_SCREEN_MODE) as? ScreenMode ?: ScreenMode.SINGLE_SCREEN
         }
     }
 
@@ -96,18 +132,16 @@ class FoldableFragmentManagerWrapper(
         }
 
         while (fragmentsForEndContainer.isNotEmpty()) {
-            val fragment = fragmentsForEndContainer.pop()
+            val fragmentEntry = fragmentsForEndContainer.pop()
+            val navOptions = fragmentEntry.navOptions
+            requestChangeConfiguration(navOptions)
             fragmentManager.inTransaction {
-                val navOptions = navOptionsArgs[fragment.TAG]
-                requestChangeConfiguration(navOptions)
                 applyAnimations(navOptions)
 
-                add(getContainerId(screenMode, navOptions), fragment)
-                addToBackStack(fragment.TAG)
+                val containerId = getContainerId(screenMode, navOptions)
+                replaceFragment(fragmentEntry.fragment, fragmentEntry.backStackName, containerId, navOptions)
             }
         }
-
-        endContainerIsEmpty = false
     }
 
     /**
@@ -121,40 +155,37 @@ class FoldableFragmentManagerWrapper(
         }
 
         while (fragmentsForEndContainer.isNotEmpty()) {
-            val fragment = fragmentsForEndContainer.pop()
+            val fragmentEntry = fragmentsForEndContainer.pop()
+            val navOptions = fragmentEntry.navOptions
+            requestChangeConfiguration(navOptions)
             fragmentManager.inTransaction {
-                val navOptions = navOptionsArgs[fragment.TAG]
-                requestChangeConfiguration(navOptions)
                 applyAnimations(navOptions)
-
-                add(R.id.first_container_id, fragment)
-                addToBackStack(fragment.TAG)
+                replaceFragment(fragmentEntry.fragment, fragmentEntry.backStackName, R.id.first_container_id, navOptions)
             }
         }
-
-        endContainerIsEmpty = true
     }
 
     /**
      * @return the stack containing all fragments that belongs to the end container in reverse order that was added to the stack.
      */
-    private fun extractFragmentsForEndContainer(): Stack<Fragment> {
-        val initialTopFragment = fragmentManager.topFragment
+    private fun extractFragmentsForEndContainer(): Stack<FragmentEntry> {
+        val initialTopFragment = topFragment
         val isTopFragmentForEndContainer = {
-            fragmentManager.topFragment?.let {
-                val navOptions = navOptionsArgs[it.TAG]
+            topBackStackEntry?.let {
+                val navOptions = it.navOptions
                 navOptions?.launchScreen == LaunchScreen.END ||
                     navOptions?.launchScreen == LaunchScreen.BOTH ||
-                    (navOptions?.launchScreen == LaunchScreen.DEFAULT && it == initialTopFragment)
+                    (navOptions?.launchScreen == LaunchScreen.DEFAULT && topFragment == initialTopFragment)
             } ?: false
         }
 
-        val fragments = Stack<Fragment>()
+        val fragments = Stack<FragmentEntry>()
         while (isTopFragmentForEndContainer()) {
-            fragmentManager.topFragment?.let {
-                fragmentManager.inTransaction { remove(it) }
-                fragments.push(it)
-                fragmentManager.popBackStackImmediate()
+            topFragment?.let { fragment ->
+                val backStackName = topBackStackEntry?.backStackName
+                val navOptions = topBackStackEntry?.navOptions
+                popBackStackImmediate()
+                fragments.push(FragmentEntry(fragment, generateUniqueFragmentTag(fragment), backStackName, navOptions))
             }
         }
 
@@ -173,24 +204,35 @@ class FoldableFragmentManagerWrapper(
     fun beginTransaction(fragment: Fragment, navOptions: FoldableNavOptions?): FragmentTransaction {
         requestChangeConfiguration(navOptions)
 
-        val containerId = getContainerId(screenMode, navOptions)
-
-        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         if (endContainerIsEmpty.not() && screenMode == ScreenMode.DUAL_SCREEN) {
             moveTopFragmentToStartContainer()
         }
 
-        navOptionsArgs[fragment.TAG] = navOptions
-        fragmentTransaction.applyAnimations(navOptions)
-        fragmentTransaction.add(containerId, fragment)
-        fragmentTransaction.addToBackStack(fragment.TAG)
-        endContainerIsEmpty = if (endContainerIsEmpty) {
-            containerId == R.id.first_container_id
-        } else {
-            false
-        }
+        val fragmentTag = generateUniqueFragmentTag(fragment)
+        val containerId = getContainerId(screenMode, navOptions)
 
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.applyAnimations(navOptions)
+        fragmentTransaction.replace(containerId, fragment, fragmentTag)
         return fragmentTransaction
+    }
+
+    fun addToBackStack(
+        transaction: FragmentTransaction,
+        fragment: Fragment,
+        backStackName: String?,
+        navOptions: FoldableNavOptions?
+    ) {
+        transaction.addToBackStack(backStackName)
+        val containerId = getContainerId(screenMode, navOptions)
+        val fragmentTag = generateUniqueFragmentTag(fragment)
+        backStack.add(BackStackEntry(fragmentTag, backStackName, containerId, navOptions))
+    }
+
+    fun addToBackStack(fragment: Fragment, navOptions: FoldableNavOptions?) {
+        val containerId = getContainerId(screenMode, navOptions)
+        val fragmentTag = generateUniqueFragmentTag(fragment)
+        backStack.add(BackStackEntry(fragmentTag, null, containerId, navOptions))
     }
 
     /**
@@ -200,15 +242,16 @@ class FoldableFragmentManagerWrapper(
      */
     fun popBackStack(withTransition: Boolean, name: String?, flags: Int) {
         when (screenMode) {
-            ScreenMode.SINGLE_SCREEN -> fragmentManager.popBackStack()
+            ScreenMode.SINGLE_SCREEN -> popBackStack(name, flags)
             ScreenMode.DUAL_SCREEN -> {
-                if (fragmentManager.isPopOnDualScreenPossible()) {
+                if (isPopOnDualScreenPossible()) {
                     removeTopFragment(withTransition)
+                } else {
+                    popBackStack(name, flags)
                 }
 
-                fragmentManager.topFragment?.let {
-                    val navOptions = navOptionsArgs[it.TAG]
-                    requestChangeConfiguration(navOptions)
+                topBackStackEntry?.let {
+                    requestChangeConfiguration(it.navOptions)
                 }
             }
         }
@@ -254,20 +297,19 @@ class FoldableFragmentManagerWrapper(
      * Moves top fragment from end container to start container.
      */
     private fun moveTopFragmentToStartContainer() {
-        fragmentManager.topFragment?.let {
-            if (!canMoveFragmentToStartContainer(it)) {
+        topFragment?.let { fragment ->
+            val backStackEntry = requireTopBackStackEntry()
+            if (!canMoveFragmentToStartContainer(backStackEntry)) {
                 return@let
             }
 
-            fragmentManager.inTransaction { remove(it) }
-            fragmentManager.popBackStackImmediate()
+            val backStackName = backStackEntry.backStackName
+            val navOptions = backStackEntry.navOptions
+            popBackStackImmediate()
             fragmentManager.inTransaction {
-                val navOptions = navOptionsArgs[it.TAG]
                 applyAnimations(navOptions)
-                add(R.id.first_container_id, it)
-                addToBackStack(it.TAG)
+                replaceFragment(fragment, backStackName, R.id.first_container_id, navOptions)
             }
-            endContainerIsEmpty = false
         }
     }
 
@@ -276,10 +318,11 @@ class FoldableFragmentManagerWrapper(
      * [false] otherwise
      * @return [true] if the fragment can be moved to the start container, [false] otherwise.
      */
-    private fun canMoveFragmentToStartContainer(fragment: Fragment): Boolean {
-        val navOptions = navOptionsArgs[fragment.TAG]
+    private fun canMoveFragmentToStartContainer(backStackEntry: BackStackEntry): Boolean {
+        val navOptions = backStackEntry.navOptions
+        val fragmentTag = backStackEntry.fragmentTag
         return navOptions?.launchScreen == LaunchScreen.BOTH ||
-            (navOptions?.launchScreen != LaunchScreen.END && fragment.isOnEndContainer())
+            (navOptions?.launchScreen != LaunchScreen.END && isOnEndContainer(fragmentTag))
     }
 
     /**
@@ -287,9 +330,8 @@ class FoldableFragmentManagerWrapper(
      * @param withTransition If it's [true], then the fragment from start container will be moved to the end container.
      */
     private fun removeTopFragment(withTransition: Boolean) {
-        if (fragmentManager.isPopOnDualScreenPossible()) {
-            fragmentManager.popBackStackImmediate()
-            endContainerIsEmpty = true
+        if (isPopOnDualScreenPossible()) {
+            popBackStackImmediate()
             if (withTransition && isTransitionToDualScreenPossible()) {
                 moveTopFragmentToEndContainer()
             }
@@ -300,22 +342,20 @@ class FoldableFragmentManagerWrapper(
      * Removes the top fragment from start container and moves it to the end container
      */
     private fun moveTopFragmentToEndContainer() {
-        fragmentManager.topFragment?.let {
-            if (!canMoveFragmentToEndContainer(it)) {
+        topFragment?.let {
+            val backStackEntry = requireTopBackStackEntry()
+            if (!canMoveFragmentToEndContainer(backStackEntry)) {
                 return@let
             }
 
-            fragmentManager.inTransaction { remove(it) }
-            fragmentManager.popBackStackImmediate()
+            val backStackName = backStackEntry.backStackName
+            val navOptions = backStackEntry.navOptions
+            popBackStackImmediate()
             fragmentManager.inTransaction {
-                val navOptions = navOptionsArgs[it.TAG]
                 requestChangeConfiguration(navOptions)
                 applyAnimations(navOptions)
-                add(R.id.second_container_id, it)
-                addToBackStack(it.TAG)
+                replaceFragment(it, backStackName, R.id.second_container_id, navOptions)
             }
-
-            endContainerIsEmpty = false
         }
     }
 
@@ -324,11 +364,12 @@ class FoldableFragmentManagerWrapper(
      * [false] otherwise
      * @return [true] if the fragment can be moved to the end container, [false] otherwise.
      */
-    private fun canMoveFragmentToEndContainer(fragment: Fragment): Boolean {
-        val navOptions = navOptionsArgs[fragment.TAG]
+    private fun canMoveFragmentToEndContainer(backStackEntry: BackStackEntry): Boolean {
+        val navOptions = backStackEntry.navOptions
+        val fragmentTag = backStackEntry.fragmentTag
         return navOptions?.launchScreen != LaunchScreen.START &&
             navOptions?.launchScreen != LaunchScreen.BOTH &&
-            fragment.isOnStartContainer()
+            isOnStartContainer(fragmentTag)
     }
 
     /**
@@ -346,10 +387,10 @@ class FoldableFragmentManagerWrapper(
      */
     @VisibleForTesting
     fun isTransitionToDualScreenPossible(): Boolean {
-        val fragmentsCount = fragmentManager.fragments.size
-        return when {
-            fragmentsCount == 1 -> fragmentManager.topFragment?.let { topFragment ->
-                val navOptions = navOptionsArgs[topFragment.TAG]
+        val fragmentsCount = backStack.size
+        val value = when {
+            fragmentsCount == 1 -> topBackStackEntry?.let {
+                val navOptions = it.navOptions
                 navOptions?.launchScreen == LaunchScreen.BOTH ||
                     navOptions?.launchScreen == LaunchScreen.END
             } ?: false
@@ -358,6 +399,7 @@ class FoldableFragmentManagerWrapper(
 
             else -> false
         }
+        return value
     }
 
     /**
@@ -365,10 +407,10 @@ class FoldableFragmentManagerWrapper(
      */
     @VisibleForTesting
     fun isTransitionToSingleScreenPossible(): Boolean {
-        val fragmentsCount = fragmentManager.fragments.size
+        val fragmentsCount = backStack.size
         return when {
-            fragmentsCount == 1 -> fragmentManager.topFragment?.let { topFragment ->
-                val navOptions = navOptionsArgs[topFragment.TAG]
+            fragmentsCount == 1 -> topBackStackEntry?.let {
+                val navOptions = it.navOptions
                 navOptions?.launchScreen == LaunchScreen.BOTH ||
                     navOptions?.launchScreen == LaunchScreen.START
             } ?: false
@@ -378,4 +420,62 @@ class FoldableFragmentManagerWrapper(
             else -> false
         }
     }
+
+    private fun FragmentTransaction.replaceFragment(
+        fragment: Fragment,
+        backStackName: String?,
+        containerViewId: Int,
+        navOptions: FoldableNavOptions?
+    ) {
+        val fragmentTag = generateUniqueFragmentTag(fragment)
+        replace(containerViewId, fragment, fragmentTag)
+        addToBackStack(backStackName)
+        setReorderingAllowed(true)
+        backStack.add(BackStackEntry(fragmentTag, backStackName, containerViewId, navOptions))
+    }
+
+    private fun generateUniqueFragmentTag(fragment: Fragment): String {
+        return "${fragment.TAG}-${backStack.size}"
+    }
+
+    /**
+     * @return [true] if the pop operation is possible on dual screen mode, [false] otherwise
+     */
+    @VisibleForTesting
+    fun isPopOnDualScreenPossible(): Boolean = backStack.size >= 2
+
+    @VisibleForTesting
+    fun isOnStartContainer(fragmentTag: String): Boolean =
+        backStack.firstOrNull { it.fragmentTag == fragmentTag }?.containerId == R.id.first_container_id
+
+    @VisibleForTesting
+    fun isOnEndContainer(fragmentTag: String): Boolean {
+        return backStack.firstOrNull { it.fragmentTag == fragmentTag }?.containerId == R.id.second_container_id
+    }
+
+    private fun popBackStack(name: String?, flags: Int) {
+        backStack.pop()
+        fragmentManager.popBackStack(name, flags)
+    }
+
+    private fun popBackStackImmediate() {
+        topFragment?.let { fragmentManager.inTransaction { remove(it) } }
+        backStack.pop()
+        fragmentManager.popBackStackImmediate()
+    }
+
+    @Parcelize
+    private class BackStackEntry(
+        val fragmentTag: String,
+        val backStackName: String?,
+        val containerId: Int,
+        val navOptions: FoldableNavOptions?
+    ) : Parcelable
+
+    private class FragmentEntry(
+        val fragment: Fragment,
+        val fragmentTag: String,
+        val backStackName: String?,
+        val navOptions: FoldableNavOptions?
+    )
 }

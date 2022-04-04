@@ -6,7 +6,9 @@
 package com.microsoft.device.dualscreen.navigation
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.navigation.foldableNavOptions
+import androidx.navigation.testutils.EmptyFragment
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -19,6 +21,8 @@ import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.utils.wm.ScreenMode
+import com.microsoft.device.dualscreen.utils.wm.screenMode
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -47,7 +51,7 @@ class FragmentManagerExtensionsTests {
     @After
     fun clear() {
         currentActivityDelegate.clear(activityScenarioRule)
-        windowLayoutInfoConsumer.reset()
+        windowLayoutInfoConsumer.unregister()
     }
 
     @Test
@@ -55,7 +59,9 @@ class FragmentManagerExtensionsTests {
         fragmentBackStackListener.resetCounter(2)
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
-            val foldableFragmentManager = FoldableFragmentManagerWrapper(this)
+            val foldableFragmentManager = FoldableFragmentManagerWrapper(this).apply {
+                screenMode = windowLayoutInfoConsumer.windowLayoutInfo?.screenMode ?: ScreenMode.SINGLE_SCREEN
+            }
 
             val navOptions = foldableNavOptions {
                 launchScreen {
@@ -83,7 +89,9 @@ class FragmentManagerExtensionsTests {
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
-            val foldableFragmentManager = FoldableFragmentManagerWrapper(this)
+            val foldableFragmentManager = FoldableFragmentManagerWrapper(this).apply {
+                screenMode = windowLayoutInfoConsumer.windowLayoutInfo?.screenMode ?: ScreenMode.SINGLE_SCREEN
+            }
 
             val navOptions = foldableNavOptions {
                 launchScreen {
@@ -93,10 +101,16 @@ class FragmentManagerExtensionsTests {
 
             assertThat(foldableFragmentManager.isTransitionToSingleScreenPossible()).isFalse()
 
-            foldableFragmentManager.beginTransaction(Fragment(), navOptions).commit()
+            val fragmentOne = Fragment()
+            var fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentOne, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentOne, "backStack1", navOptions)
+            fragmentTransaction.commit()
             assertThat(foldableFragmentManager.isTransitionToSingleScreenPossible()).isFalse()
 
-            foldableFragmentManager.beginTransaction(Fragment(), navOptions).commit()
+            val fragmentTwo = Fragment()
+            fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentTwo, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack12", navOptions)
+            fragmentTransaction.commit()
             fragmentBackStackListener.waitForChanges()
             assertThat(foldableFragmentManager.isTransitionToSingleScreenPossible()).isTrue()
         }
@@ -111,7 +125,9 @@ class FragmentManagerExtensionsTests {
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
-            val foldableFragmentManager = FoldableFragmentManagerWrapper(this)
+            val foldableFragmentManager = FoldableFragmentManagerWrapper(this).apply {
+                screenMode = windowLayoutInfoConsumer.windowLayoutInfo?.screenMode ?: ScreenMode.SINGLE_SCREEN
+            }
 
             val navOptions = foldableNavOptions {
                 launchScreen {
@@ -119,14 +135,20 @@ class FragmentManagerExtensionsTests {
                 }
             }
 
-            assertThat(foldableFragmentManager.fragmentManager.isPopOnDualScreenPossible()).isFalse()
+            assertThat(foldableFragmentManager.isPopOnDualScreenPossible()).isFalse()
 
-            foldableFragmentManager.beginTransaction(Fragment(), navOptions).commit()
-            assertThat(foldableFragmentManager.fragmentManager.isPopOnDualScreenPossible()).isFalse()
+            val fragmentOne = Fragment()
+            var fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentOne, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentOne, "backStack1", navOptions)
+            fragmentTransaction.commit()
+            assertThat(foldableFragmentManager.isPopOnDualScreenPossible()).isFalse()
 
-            foldableFragmentManager.beginTransaction(Fragment(), navOptions).commit()
+            val fragmentTwo = Fragment()
+            fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentTwo, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack12", navOptions)
+            fragmentTransaction.commit()
             fragmentBackStackListener.waitForChanges()
-            assertThat(foldableFragmentManager.fragmentManager.isPopOnDualScreenPossible()).isTrue()
+            assertThat(foldableFragmentManager.isPopOnDualScreenPossible()).isTrue()
         }
     }
 
@@ -139,7 +161,9 @@ class FragmentManagerExtensionsTests {
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
-            val foldableFragmentManager = FoldableFragmentManagerWrapper(this)
+            val foldableFragmentManager = FoldableFragmentManagerWrapper(this).apply {
+                screenMode = windowLayoutInfoConsumer.windowLayoutInfo?.screenMode ?: ScreenMode.SINGLE_SCREEN
+            }
 
             val navOptions = foldableNavOptions {
                 launchScreen {
@@ -148,27 +172,38 @@ class FragmentManagerExtensionsTests {
             }
 
             fragmentBackStackListener.resetCounter(2)
-            val fragmentOne = androidx.navigation.testutils.EmptyFragment()
-            val fragmentTwo = androidx.navigation.testutils.EmptyFragment()
-            foldableFragmentManager.beginTransaction(fragmentOne, navOptions).commit()
-            foldableFragmentManager.beginTransaction(fragmentTwo, navOptions).commit()
+
+            val fragmentOne = EmptyFragment()
+            var fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentOne, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentOne, "backStack1", navOptions)
+            fragmentTransaction.commit()
+
+            val fragmentTwo = EmptyFragment()
+            fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentTwo, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack2", navOptions)
+            fragmentTransaction.commit()
+
             fragmentBackStackListener.waitForChanges()
-            assertThat(foldableFragmentManager.fragmentManager.topFragment).isSameInstanceAs(
+            assertThat(foldableFragmentManager.topFragment).isSameInstanceAs(
                 fragmentTwo
             )
 
             fragmentBackStackListener.resetCounter(1)
-            foldableFragmentManager.fragmentManager.popBackStack()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                foldableFragmentManager.popBackStack(false, "backStack2", POP_BACK_STACK_INCLUSIVE)
+            }
             fragmentBackStackListener.waitForChanges()
-            assertThat(foldableFragmentManager.fragmentManager.topFragment).isSameInstanceAs(
+            assertThat(foldableFragmentManager.topFragment).isSameInstanceAs(
                 fragmentOne
             )
 
             fragmentBackStackListener.resetCounter(1)
-            foldableFragmentManager.fragmentManager.popBackStack()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                foldableFragmentManager.popBackStack(false, "backStack1", POP_BACK_STACK_INCLUSIVE)
+            }
             fragmentBackStackListener.waitForChanges()
             fragmentBackStackListener.resetCounter(1)
-            assertThat(foldableFragmentManager.fragmentManager.topFragment).isNull()
+            assertThat(foldableFragmentManager.topFragment).isNull()
         }
     }
 }

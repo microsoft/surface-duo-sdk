@@ -186,6 +186,7 @@ public class FoldableFragmentNavigator extends FoldableNavigator<FoldableFragmen
         boolean isAdded;
         if (initialNavigation) {
             isAdded = true;
+            mFragmentManager.addToBackStack(frag, navOptions);
         } else if (isSingleTopReplacement) {
             // Single Top means we only want one instance on the back stack
             if (mBackStack.size() > 1) {
@@ -196,11 +197,13 @@ public class FoldableFragmentNavigator extends FoldableNavigator<FoldableFragmen
                 mFragmentManager.popBackStack(true,
                         generateBackStackName(mBackStack.size(), mBackStack.peekLast()),
                         FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                ft.addToBackStack(generateBackStackName(mBackStack.size(), destId));
+                mFragmentManager.addToBackStack(ft, frag, generateBackStackName(mBackStack.size(), destId), navOptions);
+            } else {
+                mFragmentManager.addToBackStack(frag, navOptions);
             }
             isAdded = false;
         } else {
-            ft.addToBackStack(generateBackStackName(mBackStack.size() + 1, destId));
+            mFragmentManager.addToBackStack(ft, frag, generateBackStackName(mBackStack.size() + 1, destId), navOptions);
             isAdded = true;
         }
         if (navigatorExtras instanceof Extras) {
