@@ -7,11 +7,7 @@ assignees: CesarValiente, ancirja-m
 
 ---
 
-<!---
-name: Bug report
-about: Found a bug in one of our libraries and/or their samples? Please, let us know! Thanks! 🙏.
-Credits and kudos to: [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github) and the [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github) for their fantastic templates that have helped us as inspiration.
-
+<!--
 Instructions: Please, fill the following sections with the information that is suggested in the comments. You can leave the comments or delete them, it won't be shown in the Bug report.
 -->
 
@@ -40,3 +36,11 @@ They can be taken by pressing the Volume Down and Power Button at the same time 
  - Library/App version: <!-- e.g. 1.0.0-alpha3 -->
 - Device/emulator version/model: <!-- e.g. Surface Duo v1, Surface Duo 2 emulator, Tablet XYZ, etc. -->
 - OS: <!-- e.g. 11 -->
+
+<!--
+Credits:
+- [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github)
+- [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github)
+
+for their fantastic templates that have helped us as inspiration.
+-->
