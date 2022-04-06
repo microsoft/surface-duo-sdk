@@ -13,7 +13,7 @@ ext {
     PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
     PUBLISH_ARTIFACT_ID = 'snackbar'
     LIBRARY_DESCRIPTION = 'Extension of the Snackbar that handles different foldable configurations easily'
-    LIBRARY_VERSION = rootProject.ext.tabsVersionName
+    LIBRARY_VERSION = rootProject.ext.snackbarVersionName
 }
 apply from: "${rootProject.projectDir}/publishing.gradle"
 
