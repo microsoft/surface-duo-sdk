@@ -86,10 +86,16 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
     implementation "com.microsoft.device.dualscreen:navigation-ui-ktx:$nav_version"
     ```
 
+    **SnackbarContainer**
+
+    ```gradle
+    implementation "com.microsoft.device.dualscreen:snackbar:1.0.0-alpha1"
+    ```
+
    **Testing**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha1"
+    implementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha2"
     ```
 
 ### Useful links
