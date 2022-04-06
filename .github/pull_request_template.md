@@ -1,8 +1,4 @@
 <!---
-name: Pull request
-about: Open a new Pull Request. Thanks in advance for your hard work 🙏
-Credits and kudos to: [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github) and the [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github) for their fantastic templates that have helped us as inspiration.
-
 Instructions: Please, fill the following sections with the information that is suggested in the comments. You can leave the comments or delete them, it won't be shown in the PR.
 -->
 
@@ -38,3 +34,11 @@ Instructions: Please, fill the following sections with the information that is s
 - [ ] This PR contains new tests that cover the new code.
 - [ ] This PR refactor previous tests to cover the new code.
 - [ ] This PR is part of a set of PRs that build a bigger feature. If so, please, add here links to previously merged or open PRs.
+
+<!--
+Credits:
+- [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github)
+- [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github)
+
+for their fantastic templates that have helped us as inspiration.
+-->

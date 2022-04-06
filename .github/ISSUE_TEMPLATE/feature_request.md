@@ -8,10 +8,6 @@ assignees: CesarValiente, CristianVerdes
 ---
 
 <!---
-name: Feature request
-about: There is something that we could build that will make your life easier? Please, let us know! 🙏
-Credits and kudos to: [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github) and the [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github) for their fantastic templates that have helped us as inspiration.
-
 Instructions: Please, fill the following sections with the information that is suggested in the comments. You can leave the comments or delete them, it won't be shown in the Feature request.
 -->
 
@@ -31,3 +27,11 @@ Please, think big so the feature can help other developers too. -->
 <!-- please add an `x` to where applies (e.g. [x]) -->
 - [ ] Yes
 - [ ] No
+
+<!--
+Credits:
+- [Cortinico](https://github.com/cortinico/kotlin-android-template/tree/main/.github)
+- [Fluent UI team](https://github.com/microsoft/fluentui-android/tree/master/.github)
+
+for their fantastic templates that have helped us as inspiration.
+-->
