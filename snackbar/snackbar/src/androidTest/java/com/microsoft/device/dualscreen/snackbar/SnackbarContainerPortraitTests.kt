@@ -11,8 +11,9 @@ import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.BOTH
 import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.END
 import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.START
 import com.microsoft.device.dualscreen.snackbar.test.R
+import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.getDeviceModel
-import com.microsoft.device.dualscreen.testing.spanFromStart
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith
 class SnackbarContainerPortraitTests : SnackbarContainerTests() {
 
     @Test
+    @SingleScreenTest
     fun testPositionOnSingleScreen() {
         val margin = SnackbarContainer.COORDINATOR_LAYOUT_MARGIN
         testMargins(TestParams(R.string.snackbar_to_start, START, margin, 0, margin, margin))
@@ -29,11 +31,8 @@ class SnackbarContainerPortraitTests : SnackbarContainerTests() {
     }
 
     @Test
+    @DualScreenTest
     fun testPositionOnDualScreen() {
-        windowLayoutInfoConsumer.reset()
-        uiDevice.spanFromStart()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
-
         val margin = SnackbarContainer.COORDINATOR_LAYOUT_MARGIN
         val rightMargin = with(uiDevice.getDeviceModel()) {
             paneWidth - margin

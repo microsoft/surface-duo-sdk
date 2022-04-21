@@ -38,8 +38,8 @@ import androidx.test.uiautomator.UiDevice
  * @param closeSteps: number of move steps to take when executing a close gesture, where one step takes ~ 5ms
  */
 enum class DeviceModel(
-    val paneWidth: Int,
-    val paneHeight: Int,
+    var paneWidth: Int,
+    var paneHeight: Int,
     val foldWidth: Int,
     val leftX: Int = paneWidth / 2,
     val rightX: Int = leftX + paneWidth + foldWidth,
@@ -109,5 +109,8 @@ private fun UiDevice.getModelFromPaneWidth(paneWidth: Int): DeviceModel {
         "DeviceModel",
         "Unknown dualscreen device dimensions $displayWidth $displayHeight"
     )
-    return DeviceModel.Other
+    return DeviceModel.Other.apply {
+        this.paneWidth = displayWidth / 2
+        this.paneHeight = displayHeight
+    }
 }

@@ -149,8 +149,8 @@ ext {
     //Android test dependencies version
     junitInstrumentationVersion = "1.1.3"
     espressoCoreVersion = "3.3.0"
-    testRunnerVersion = "1.3.0"
-    testRulesVersion = "1.3.0"
+    testRunnerVersion = "1.4.0"
+    testRulesVersion = "1.4.0"
     uiAutomatorVersion = "2.2.0"
     supportTestRulesVersion = "1.0.2"
     fragmentTestingVersion = "1.3.1"

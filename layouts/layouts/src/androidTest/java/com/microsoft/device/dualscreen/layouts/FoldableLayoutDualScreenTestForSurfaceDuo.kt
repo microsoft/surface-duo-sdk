@@ -5,39 +5,41 @@
 
 package com.microsoft.device.dualscreen.layouts
 
+import android.app.UiAutomation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
+import androidx.test.ext.junit.rules.activityScenarioRule
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutDualScreenActivity
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.testing.resetOrientation
-import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
+import com.microsoft.device.dualscreen.testing.filters.TargetDevice
+import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(FoldableJUnit4ClassRunner::class)
 class FoldableLayoutDualScreenTestForSurfaceDuo {
+    private val activityScenarioRule = activityScenarioRule<FoldableLayoutDualScreenActivity>()
+    private val dualScreenTestRule = DualScreenTestRule()
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @get:Rule
-    val activityScenarioRule = ActivityScenarioRule(FoldableLayoutDualScreenActivity::class.java)
-
-    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
+    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
 
     @Before
     fun before() {
-        uiDevice.resetOrientation()
-
         activityScenarioRule.scenario.onActivity {
             windowLayoutInfoConsumer.register(it)
         }
@@ -49,39 +51,31 @@ class FoldableLayoutDualScreenTestForSurfaceDuo {
     }
 
     @Test
+    @SingleScreenTest
     fun testLayoutSingleScreen() {
         onView(withId(R.id.textViewSingle)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewSingle)).check(matches(withText(R.string.single_screen_mode)))
     }
 
     @Test
+    @SingleScreenTest(orientation = UiAutomation.ROTATION_FREEZE_270)
     fun testLayoutSingleScreenLandscape() {
-        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        uiDevice.setOrientationRight()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
-
         onView(withId(R.id.textViewSingle)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewSingle)).check(matches(withText(R.string.single_screen_mode)))
     }
 
     @Test
+    @DualScreenTest
+    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testLayoutDualScreenLandscape() {
-        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        uiDevice.spanFromStart()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
-
         onView(withId(R.id.textViewDual)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDual)).check(matches(withText(R.string.dual_portrait)))
     }
 
     @Test
+    @DualScreenTest(orientation = UiAutomation.ROTATION_FREEZE_270)
+    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testLayoutDualScreenPortrait() {
-        uiDevice.spanFromStart()
-
-        windowLayoutInfoConsumer.resetWindowInfoLayoutCounter()
-        uiDevice.setOrientationRight()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
-
         onView(withId(R.id.textViewDual)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDual)).check(matches(withText(R.string.dual_landscape)))
     }
