@@ -27,7 +27,6 @@ import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.BOTH
 import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.END
 import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.START
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
-import com.microsoft.device.dualscreen.utils.wm.getWindowRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
 import kotlinx.coroutines.Dispatchers
@@ -144,8 +143,8 @@ class SnackbarContainer @JvmOverloads constructor(
         when {
             position == BOTH || !windowLayoutInfo.isInDualMode() -> updatePositionForSingleScreen()
             position == START || position == END -> when {
-                windowLayoutInfo.isFoldingFeatureVertical() -> updatePositionWhenHorizontalFoldingFeature(position)
-                else -> updatePositionWhenVerticalFoldingFeature(position)
+                windowLayoutInfo.isFoldingFeatureVertical() -> updatePositionWhenVerticalFoldingFeature(position)
+                else -> updatePositionWhenHorizontalFoldingFeature(position)
             }
         }
     }
@@ -160,8 +159,9 @@ class SnackbarContainer @JvmOverloads constructor(
      * Updates the position for the [CoordinatorLayout] child when the device is in single screen mode.
      */
     private fun updatePositionForSingleScreen() {
-        val screenWidth = requiredActivity.getWindowRect().width()
-        val widthValue = screenWidth - 2 * COORDINATOR_LAYOUT_MARGIN
+        val containerWidth = measuredWidth
+        val widthValue = containerWidth - 2 * COORDINATOR_LAYOUT_MARGIN
+
         coordinatorLayout.updateLayoutParams<LayoutParams> {
             gravity = Gravity.BOTTOM
             width = widthValue
@@ -172,14 +172,15 @@ class SnackbarContainer @JvmOverloads constructor(
     }
 
     /**
-     * Updates the position for the [CoordinatorLayout] child when the FoldingFeature is horizontal,
+     * Updates the position for the [CoordinatorLayout] child when the FoldingFeature is vertical,
      * depending on the [SnackbarPosition] param.
      *
      * @param position the given [SnackbarPosition]
      */
-    private fun updatePositionWhenHorizontalFoldingFeature(position: SnackbarPosition) {
+    private fun updatePositionWhenVerticalFoldingFeature(position: SnackbarPosition) {
+        val containerWidth = measuredWidth
         val foldingFeatureRect = windowLayoutInfo.extractFoldingFeatureRect()
-        val screenWidth = requiredActivity.getWindowRect().width()
+        val containerLeftPosition = locationOnScreen.x
 
         val rightMarginValue = when (position) {
             START -> foldingFeatureRect.left - COORDINATOR_LAYOUT_MARGIN
@@ -189,7 +190,7 @@ class SnackbarContainer @JvmOverloads constructor(
 
         val leftMarginValue = when (position) {
             START -> COORDINATOR_LAYOUT_MARGIN
-            END -> foldingFeatureRect.right + COORDINATOR_LAYOUT_MARGIN
+            END -> foldingFeatureRect.right - containerLeftPosition + COORDINATOR_LAYOUT_MARGIN
             else -> 0
         }
 
@@ -200,9 +201,9 @@ class SnackbarContainer @JvmOverloads constructor(
         } or Gravity.BOTTOM
 
         val widthValue = when (position) {
-            START -> foldingFeatureRect.left
-            END -> screenWidth - foldingFeatureRect.right
-            BOTH -> screenWidth
+            START -> foldingFeatureRect.left - containerLeftPosition
+            END -> containerWidth + containerLeftPosition - foldingFeatureRect.right
+            BOTH -> containerWidth
         } - 2 * COORDINATOR_LAYOUT_MARGIN
 
         coordinatorLayout.updateLayoutParams<LayoutParams> {
@@ -215,17 +216,17 @@ class SnackbarContainer @JvmOverloads constructor(
     }
 
     /**
-     * Updates the position for the [CoordinatorLayout] child when the FoldingFeature is vertical,
+     * Updates the position for the [CoordinatorLayout] child when the FoldingFeature is horizontal,
      * depending on the [SnackbarPosition] param.
      *
      * @param position the given [SnackbarPosition]
      */
-    private fun updatePositionWhenVerticalFoldingFeature(position: SnackbarPosition) {
+    private fun updatePositionWhenHorizontalFoldingFeature(position: SnackbarPosition) {
+        val containerBottomPosition = locationOnScreen.y + measuredHeight
         val foldingFeatureRect = windowLayoutInfo.extractFoldingFeatureRect()
-        val screenHeight = requiredActivity.getWindowRect().height()
 
         val bottomMarginValue = when (position) {
-            START -> screenHeight - foldingFeatureRect.top + COORDINATOR_LAYOUT_MARGIN
+            START -> containerBottomPosition - foldingFeatureRect.top + COORDINATOR_LAYOUT_MARGIN
             END, BOTH -> COORDINATOR_LAYOUT_MARGIN
         }
 
