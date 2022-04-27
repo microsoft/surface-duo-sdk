@@ -12,6 +12,17 @@
     android:layout_height="match_parent"
     tools:context=".SampleActivity">
 
+    <com.microsoft.device.dualscreen.layouts.FoldableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:dual_screen_end_layout_id="@layout/dual_screen_end"
+        app:dual_screen_start_layout_id="@layout/dual_screen_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:single_screen_layout_id="@layout/single_screen" />
+
     <Button
         android:id="@+id/show_snackbar_to_start"
         android:layout_width="wrap_content"

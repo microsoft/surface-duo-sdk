@@ -28,6 +28,7 @@ android {
 
 dependencies {
     implementation project(':snackbar:snackbar')
+    implementation project(':layouts:layouts')
 
     implementation kotlinDependencies.kotlinStdlib
     implementation androidxDependencies.constraintLayout
