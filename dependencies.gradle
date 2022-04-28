@@ -28,7 +28,7 @@ ext {
     wmUtilsVersionCode = 4
     navigationVersionCode = 2
     testingVersionCode = 2
-    snackbarVersionCode = 1
+    snackbarVersionCode = 2
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -45,7 +45,7 @@ ext {
     wmUtilsVersionName = "1.0.0-beta4"
     navigationVersionName = "1.0.0-alpha3"
     testingVersionName = "1.0.0-alpha2"
-    snackbarVersionName = "1.0.0-alpha1"
+    snackbarVersionName = "1.0.0-alpha2"
     // ----------------------------------
 
     // Config Android sdk, plugins and libraries version
