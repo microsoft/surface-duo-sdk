@@ -147,7 +147,6 @@ ext {
     ]
 
     //Android test dependencies version
-    javaJunitVersion = "4.13.2"
     junitInstrumentationVersion = "1.1.3"
     espressoCoreVersion = "3.3.0"
     testRunnerVersion = "1.4.0"
@@ -161,7 +160,6 @@ ext {
     espressoContribVersion = "3.3.0"
 
     instrumentationTestDependencies = [
-            javaJunit              : "junit:junit:$javaJunitVersion",
             junit                  : "androidx.test.ext:junit:$junitInstrumentationVersion",
             junitKtx               : "androidx.test.ext:junit-ktx:$junitInstrumentationVersion",
             espressoCore           : "androidx.test.espresso:espresso-core:$espressoCoreVersion",

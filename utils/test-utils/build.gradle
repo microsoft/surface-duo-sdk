@@ -49,7 +49,7 @@ android {
 
 dependencies {
     implementation project(':utils:wm-utils')
-    implementation instrumentationTestDependencies.javaJunit
+    implementation testDependencies.junit
     implementation androidxDependencies.coreKtx
     implementation androidxDependencies.appCompat
     implementation androidxDependencies.windowManager
