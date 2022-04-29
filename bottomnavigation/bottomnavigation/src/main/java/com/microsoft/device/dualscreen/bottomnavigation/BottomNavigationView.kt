@@ -7,6 +7,7 @@ package com.microsoft.device.dualscreen.bottomnavigation
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Parcel
@@ -25,7 +26,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
-import androidx.window.layout.FoldingFeature
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
@@ -35,10 +35,10 @@ import com.microsoft.device.dualscreen.utils.wm.OnSwipeListener
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.createHalfTransparentBackground
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
-import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
-import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import com.microsoft.device.dualscreen.utils.wm.getWindowVisibleDisplayFrame
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import com.microsoft.device.dualscreen.utils.wm.locationOnScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -85,6 +85,12 @@ open class BottomNavigationView : BottomNavigationView {
     private var endBtnCount: Int = -1
     private var defaultChildWidth = -1
 
+    private fun extractFoldingFeatureRect(): Rect {
+        return windowLayoutInfo.extractFoldingFeatureRect().apply {
+            offset(-locationOnScreen.x, 0)
+        }
+    }
+
     private fun registerWindowInfoFlow() {
         val activity = (context as? ComponentActivity)
             ?: throw RuntimeException("Context must implement androidx.activity.ComponentActivity!")
@@ -94,7 +100,7 @@ open class BottomNavigationView : BottomNavigationView {
                     .windowLayoutInfo(activity)
                     .collect { info ->
                         windowLayoutInfo = info
-                        onInfoLayoutChanged(info)
+                        onInfoLayoutChanged()
                     }
             }
         }
@@ -105,11 +111,8 @@ open class BottomNavigationView : BottomNavigationView {
         job?.cancel()
     }
 
-    private fun onInfoLayoutChanged(windowLayoutInfo: WindowLayoutInfo) {
-        windowLayoutInfo.getFoldingFeature()?.let {
-            setScreenParameters(it)
-        }
-
+    private fun onInfoLayoutChanged() {
+        setScreenParameters()
         tryUpdateBackground()
 
         val changeBounds: Transition = ChangeBounds()
@@ -218,12 +221,12 @@ open class BottomNavigationView : BottomNavigationView {
         }
     }
 
-    private fun setScreenParameters(foldingFeature: FoldingFeature) {
-        totalScreenWidth = context.getWindowRect().right
-        foldingFeature.bounds.let {
-            hingeWidth = it.right - it.left
+    private fun setScreenParameters() {
+        totalScreenWidth = context.getWindowVisibleDisplayFrame().width()
+        extractFoldingFeatureRect().let {
+            hingeWidth = it.width()
             startScreenWidth = it.left
-            endScreenWidth = totalScreenWidth - it.right
+            endScreenWidth = totalScreenWidth - startScreenWidth - hingeWidth
         }
     }
 
@@ -288,7 +291,7 @@ open class BottomNavigationView : BottomNavigationView {
         }
         val startPoint =
             if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
-                windowLayoutInfo.extractFoldingFeatureRect().right
+                extractFoldingFeatureRect().right
             } else {
                 0
             }
@@ -436,7 +439,7 @@ open class BottomNavigationView : BottomNavigationView {
                 createHalfTransparentBackground(
                     initialBackground,
                     displayPosition,
-                    windowLayoutInfo.extractFoldingFeatureRect(),
+                    extractFoldingFeatureRect(),
                     totalScreenWidth
                 )
             }

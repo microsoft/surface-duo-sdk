@@ -110,6 +110,11 @@ open class FoldableLayout @JvmOverloads constructor(
         }
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        layoutController.foldingFeature = viewModel.windowLayoutInfo.getFoldingFeature()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         job?.cancel()

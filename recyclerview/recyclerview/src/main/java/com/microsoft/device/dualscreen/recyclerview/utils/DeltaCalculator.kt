@@ -22,6 +22,8 @@ internal class DeltaCalculator {
                 when {
                     hasDifferentWidth && hasRightNavBar ->
                         2 * navBarHeight - getWindowRect().width() + parent.measuredWidth
+                    hasDifferentWidth && hasLeftNavBar ->
+                        -(2 * navBarHeight - getWindowRect().width() + parent.measuredWidth)
                     hasDifferentWidth && hasBottomNavBar ->
                         parent.measuredWidth - getWindowRect().width()
                     else -> 0

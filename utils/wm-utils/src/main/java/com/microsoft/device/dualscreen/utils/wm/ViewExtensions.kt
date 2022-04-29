@@ -1,4 +1,9 @@
-package com.microsoft.device.dualscreen.layouts
+/*
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License.
+ */
+
+package com.microsoft.device.dualscreen.utils.wm
 
 import android.view.View
 import android.view.ViewGroup
