@@ -28,6 +28,12 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
+/**
+ * Custom [TestRule] that can be used together with [SingleScreenTest] and [DualScreenTest]
+ * in order to run tests on the specified posture.
+ * Test methods annotated with [SingleScreenTest] will keep or unspan the app to first display area,
+ * and methods annotated with [DualScreenTest] will span the app to entire display area.
+ */
 @OptIn(ExperimentalWindowApi::class)
 class DualScreenTestRule : TestRule {
     private val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())

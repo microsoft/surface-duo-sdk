@@ -14,16 +14,20 @@ import com.microsoft.device.dualscreen.testing.filters.TargetDevice
 import com.microsoft.device.dualscreen.testing.isSurfaceDuo
 import org.junit.runners.model.FrameworkMethod
 
+/**
+ * A specialized [AndroidJUnit4ClassRunner] that can be used together with the [TargetDevice] annotation
+ * to filter the tests that will run on the specified devices.
+ * For example, if a test method is annotated with @TargetDevice(device = DeviceModel.SurfaceDuo),
+ * that test method will run only on SurfaceDuo device or emulator, otherwise will be skipped.
+ */
 class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
     constructor(klass: Class<*>?) : super(klass)
 
     constructor(klass: Class<*>?, runnerParams: AndroidRunnerParams) : super(klass, runnerParams)
 
     override fun computeTestMethods(): MutableList<FrameworkMethod> {
-        val testMethods: MutableList<FrameworkMethod> = super.computeTestMethods()
-        if (testMethods.size == 0) return testMethods
-
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val testMethods: MutableList<FrameworkMethod> = super.computeTestMethods()
         return testMethods.filter { method ->
             val targetDevice: TargetDevice? = method.getAnnotation(TargetDevice::class.java)
             (targetDevice == null) ||

@@ -24,8 +24,8 @@ import androidx.test.uiautomator.UiDevice
  * For Microsoft Surface Duo devices, the coordinates are all from the dual portrait point of view, and dimensions
  * were taken from here: https://docs.microsoft.com/dual-screen/android/surface-duo-dimensions
  *
- * @param paneWidth: width of device panes in pixels in dual portrait mode (assumed to have panes of equal size)
- * @param paneHeight: height of device panes in pixels in dual portrait mode (assumed to have panes of equal size)
+ * @param paneWidth_: width of device panes in pixels in dual portrait mode (assumed to have panes of equal size)
+ * @param paneHeight_: height of device panes in pixels in dual portrait mode (assumed to have panes of equal size)
  * @param foldWidth: width of device foldingFeature in pixels in dual portrait mode
  * @param leftX: x-coordinate of the center of the left pane in dual portrait mode
  * @param rightX: x-coordinate of the center of the right pane in dual portrait mode
@@ -38,23 +38,29 @@ import androidx.test.uiautomator.UiDevice
  * @param closeSteps: number of move steps to take when executing a close gesture, where one step takes ~ 5ms
  */
 enum class DeviceModel(
-    var paneWidth: Int,
-    var paneHeight: Int,
+    internal var paneWidth_: Int,
+    internal var paneHeight_: Int,
     val foldWidth: Int,
-    val leftX: Int = paneWidth / 2,
-    val rightX: Int = leftX + paneWidth + foldWidth,
-    val middleX: Int = paneWidth + foldWidth / 2,
-    val middleY: Int = paneHeight / 2,
+    val leftX: Int = paneWidth_ / 2,
+    val rightX: Int = leftX + paneWidth_ + foldWidth,
+    val middleX: Int = paneWidth_ + foldWidth / 2,
+    val middleY: Int = paneHeight_ / 2,
     val bottomY: Int,
     val spanSteps: Int = 400,
     val unspanSteps: Int = 200,
     val switchSteps: Int = 100,
     val closeSteps: Int = 50,
-    val totalDisplay: Int = paneWidth * 2 + foldWidth
+    val totalDisplay: Int = paneWidth_ * 2 + foldWidth
 ) {
-    SurfaceDuo(paneWidth = 1350, paneHeight = 1800, foldWidth = 84, bottomY = 1780),
-    SurfaceDuo2(paneWidth = 1344, paneHeight = 1892, foldWidth = 66, bottomY = 1870),
-    Other(paneWidth = 0, paneHeight = 0, foldWidth = 0, bottomY = 0);
+    SurfaceDuo(paneWidth_ = 1350, paneHeight_ = 1800, foldWidth = 84, bottomY = 1780),
+    SurfaceDuo2(paneWidth_ = 1344, paneHeight_ = 1892, foldWidth = 66, bottomY = 1870),
+    Other(paneWidth_ = 0, paneHeight_ = 0, foldWidth = 0, bottomY = 0);
+
+    val paneWidth: Int
+        get() = paneWidth_
+
+    val paneHeight: Int
+        get() = paneHeight_
 
     override fun toString(): String {
         return "$name [leftX: $leftX rightX: $rightX middleX: $middleX middleY: $middleY bottomY: $bottomY]"
@@ -110,7 +116,7 @@ private fun UiDevice.getModelFromPaneWidth(paneWidth: Int): DeviceModel {
         "Unknown dualscreen device dimensions $displayWidth $displayHeight"
     )
     return DeviceModel.Other.apply {
-        this.paneWidth = displayWidth / 2
-        this.paneHeight = displayHeight
+        this.paneWidth_ = displayWidth / 2
+        this.paneHeight_ = displayHeight
     }
 }
