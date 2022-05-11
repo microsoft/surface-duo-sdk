@@ -10,35 +10,38 @@ import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import androidx.navigation.foldableNavOptions
 import androidx.navigation.testutils.EmptyFragment
 import androidx.test.ext.junit.rules.activityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.navigation.utils.SimpleFragmentBackStackListener
 import com.microsoft.device.dualscreen.navigation.utils.SurfaceDuoSimpleActivity
 import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.testing.spanFromStart
+import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.screenMode
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
 @MediumTest
-@RunWith(AndroidJUnit4::class)
+@RunWith(FoldableJUnit4ClassRunner::class)
 class FragmentManagerExtensionsTests {
-    @get:Rule
-    val activityScenarioRule = activityScenarioRule<SurfaceDuoSimpleActivity>()
-    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-
+    private val activityScenarioRule = activityScenarioRule<SurfaceDuoSimpleActivity>()
+    private val dualScreenTestRule = DualScreenTestRule()
+    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
     private val fragmentBackStackListener = SimpleFragmentBackStackListener()
     private val currentActivityDelegate = CurrentActivityDelegate()
-    private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
+
+    @get:Rule
+    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
 
     @Before
     fun setup() {
@@ -71,21 +74,25 @@ class FragmentManagerExtensionsTests {
 
             assertThat(foldableFragmentManager.isTransitionToDualScreenPossible()).isFalse()
 
-            foldableFragmentManager.beginTransaction(Fragment(), navOptions).commit()
+            val fragmentOne = Fragment()
+            var fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentOne, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentOne, "backStack1", navOptions)
+            fragmentTransaction.commit()
             assertThat(foldableFragmentManager.isTransitionToDualScreenPossible()).isFalse()
 
-            foldableFragmentManager.beginTransaction(Fragment(), navOptions).commit()
+            val fragmentTwo = Fragment()
+            fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentTwo, navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack2", navOptions)
+            fragmentTransaction.commit()
+
             fragmentBackStackListener.waitForChanges()
             assertThat(foldableFragmentManager.isTransitionToDualScreenPossible()).isTrue()
         }
     }
 
     @Test
+    @DualScreenTest
     fun testIsTransitionToSingleScreenPossible() {
-        fragmentBackStackListener.resetCounter(2)
-        windowLayoutInfoConsumer.reset()
-        uiDevice.spanFromStart()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
@@ -111,17 +118,15 @@ class FragmentManagerExtensionsTests {
             fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentTwo, navOptions)
             foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack12", navOptions)
             fragmentTransaction.commit()
+
             fragmentBackStackListener.waitForChanges()
             assertThat(foldableFragmentManager.isTransitionToSingleScreenPossible()).isTrue()
         }
     }
 
     @Test
+    @DualScreenTest
     fun testIsPopOnDualScreenPossible() {
-        fragmentBackStackListener.resetCounter(2)
-        windowLayoutInfoConsumer.reset()
-        uiDevice.spanFromStart()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
@@ -145,19 +150,17 @@ class FragmentManagerExtensionsTests {
 
             val fragmentTwo = Fragment()
             fragmentTransaction = foldableFragmentManager.beginTransaction(fragmentTwo, navOptions)
-            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack12", navOptions)
+            foldableFragmentManager.addToBackStack(fragmentTransaction, fragmentTwo, "backStack2", navOptions)
             fragmentTransaction.commit()
+
             fragmentBackStackListener.waitForChanges()
             assertThat(foldableFragmentManager.isPopOnDualScreenPossible()).isTrue()
         }
     }
 
     @Test
+    @DualScreenTest
     fun testTopFragment() {
-        windowLayoutInfoConsumer.reset()
-        uiDevice.spanFromStart()
-        windowLayoutInfoConsumer.waitForWindowInfoLayoutChanges()
-
         assertThat(currentActivityDelegate.currentActivity).isNotNull()
 
         currentActivityDelegate.runWithBackStackListener(fragmentBackStackListener) {
