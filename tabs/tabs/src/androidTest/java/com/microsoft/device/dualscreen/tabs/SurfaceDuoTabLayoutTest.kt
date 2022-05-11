@@ -72,7 +72,6 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testButtonSplit0_5() {
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
@@ -91,7 +90,6 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testButtonSplit5_0() {
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
@@ -114,7 +112,6 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testSwipeRight() {
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(3, 2))
 
@@ -124,7 +121,6 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testMultipleSwipes() {
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(2, 3))
 
@@ -162,7 +158,6 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testTransparentBackground() {
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.tabs)).check(matches(not(hasHalfTransparentBackground())))

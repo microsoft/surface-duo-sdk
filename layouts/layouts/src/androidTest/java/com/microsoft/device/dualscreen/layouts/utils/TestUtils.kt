@@ -10,9 +10,11 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.layouts.FoldableFrameLayout
-import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.areCoordinatesOnTargetScreen
+import com.microsoft.device.dualscreen.testing.getDeviceModel
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -52,13 +54,17 @@ fun isFrameLayoutOnScreen(pos: DisplayPosition): Matcher<View> =
             val child = item.getChildAt(0) ?: return false
             val startArray = IntArray(2)
             child.getLocationInWindow(startArray)
-            return areCoordinatesOnTargetScreen(
-                targetScreenPosition = pos,
-                start = startArray[0],
-                end = startArray[0] + child.width,
-                firstDisplay = DeviceModel.SurfaceDuo.paneWidth,
-                totalDisplay = DeviceModel.SurfaceDuo.totalDisplay,
-                foldingFeature = DeviceModel.SurfaceDuo.foldWidth
-            )
+
+            val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            with(uiDevice.getDeviceModel()) {
+                return areCoordinatesOnTargetScreen(
+                    targetScreenPosition = pos,
+                    start = startArray[0],
+                    end = startArray[0] + child.width,
+                    firstDisplay = paneWidth,
+                    totalDisplay = totalDisplay,
+                    foldingFeature = foldWidth
+                )
+            }
         }
     }

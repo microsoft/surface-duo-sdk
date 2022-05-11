@@ -12,9 +12,11 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.microsoft.device.dualscreen.bottomnavigation.BottomNavigationView
-import com.microsoft.device.dualscreen.testing.DeviceModel
+import com.microsoft.device.dualscreen.testing.getDeviceModel
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -83,7 +85,8 @@ fun areTabsOnScreen(pos: DisplayPosition): Matcher<View> =
             val xStart = firstChild.translationX.toInt() + firstChild.left
             val xEnd = (lastChild.translationX + lastChild.left + lastChild.width).toInt()
 
-            with(DeviceModel.SurfaceDuo) {
+            val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            with(uiDevice.getDeviceModel()) {
                 return when (pos) {
                     DisplayPosition.DUAL ->
                         xStart in 0..paneWidth && xEnd in (paneWidth + foldWidth)..totalDisplay

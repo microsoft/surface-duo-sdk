@@ -7,6 +7,8 @@ package com.microsoft.device.dualscreen.testing
 
 import android.content.res.Configuration
 import android.view.View
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -66,6 +68,24 @@ fun isViewOnScreen(
             )
         }
     }
+
+/**
+ * Returns a Matcher that checks if a View is shown in the display area given its position
+ * and screen dimensions.
+ *
+ * @param position: target position.
+ * @param orientation: orientation of the display. See Configuration {@see Configuration}.
+ * @return
+ */
+fun isViewOnScreen(
+    position: DisplayPosition,
+    orientation: Int,
+): Matcher<View> {
+    val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    with(uiDevice.getDeviceModel()) {
+        return isViewOnScreen(position, orientation, paneWidth, totalDisplay, foldWidth)
+    }
+}
 
 /**
  * Checks whether a specific screen-position is the screen defined by {@param start}, {@param end},

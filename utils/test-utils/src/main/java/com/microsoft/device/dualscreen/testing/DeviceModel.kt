@@ -50,7 +50,7 @@ enum class DeviceModel(
     val unspanSteps: Int = 200,
     val switchSteps: Int = 100,
     val closeSteps: Int = 50,
-    val totalDisplay: Int = paneWidth_ * 2 + foldWidth
+    internal var totalDisplay_: Int = paneWidth_ * 2 + foldWidth
 ) {
     SurfaceDuo(paneWidth_ = 1350, paneHeight_ = 1800, foldWidth = 84, bottomY = 1780),
     SurfaceDuo2(paneWidth_ = 1344, paneHeight_ = 1892, foldWidth = 66, bottomY = 1870),
@@ -61,6 +61,9 @@ enum class DeviceModel(
 
     val paneHeight: Int
         get() = paneHeight_
+
+    val totalDisplay: Int
+        get() = totalDisplay_
 
     override fun toString(): String {
         return "$name [leftX: $leftX rightX: $rightX middleX: $middleX middleY: $middleY bottomY: $bottomY]"
@@ -118,5 +121,6 @@ private fun UiDevice.getModelFromPaneWidth(paneWidth: Int): DeviceModel {
     return DeviceModel.Other.apply {
         this.paneWidth_ = displayWidth / 2
         this.paneHeight_ = displayHeight
+        this.totalDisplay_ = paneWidth_ * 2 + foldWidth
     }
 }

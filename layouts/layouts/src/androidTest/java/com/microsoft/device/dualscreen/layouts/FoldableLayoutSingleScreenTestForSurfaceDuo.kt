@@ -80,10 +80,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
             matches(
                 isViewOnScreen(
                     position = DisplayPosition.START,
-                    orientation = ORIENTATION_LANDSCAPE,
-                    firstDisplay = DeviceModel.SurfaceDuo.paneWidth,
-                    totalDisplay = DeviceModel.SurfaceDuo.totalDisplay,
-                    foldingFeature = DeviceModel.SurfaceDuo.foldWidth
+                    orientation = ORIENTATION_LANDSCAPE
                 )
             )
         )
@@ -94,10 +91,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
             matches(
                 isViewOnScreen(
                     position = DisplayPosition.END,
-                    orientation = ORIENTATION_LANDSCAPE,
-                    firstDisplay = DeviceModel.SurfaceDuo.paneWidth,
-                    totalDisplay = DeviceModel.SurfaceDuo.totalDisplay,
-                    foldingFeature = DeviceModel.SurfaceDuo.foldWidth
+                    orientation = ORIENTATION_LANDSCAPE
                 )
             )
         )
@@ -115,10 +109,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
             matches(
                 isViewOnScreen(
                     position = DisplayPosition.START,
-                    orientation = ORIENTATION_PORTRAIT,
-                    firstDisplay = DeviceModel.SurfaceDuo.paneWidth,
-                    totalDisplay = DeviceModel.SurfaceDuo.totalDisplay,
-                    foldingFeature = DeviceModel.SurfaceDuo.foldWidth
+                    orientation = ORIENTATION_PORTRAIT
                 )
             )
         )
@@ -129,10 +120,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
             matches(
                 isViewOnScreen(
                     position = DisplayPosition.END,
-                    orientation = ORIENTATION_PORTRAIT,
-                    firstDisplay = DeviceModel.SurfaceDuo.paneWidth,
-                    totalDisplay = DeviceModel.SurfaceDuo.totalDisplay,
-                    foldingFeature = DeviceModel.SurfaceDuo.foldWidth
+                    orientation = ORIENTATION_PORTRAIT
                 )
             )
         )

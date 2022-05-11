@@ -21,9 +21,7 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
-import com.microsoft.device.dualscreen.testing.filters.TargetDevice
 import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
 import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
@@ -65,7 +63,6 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testDisplayPositionEnd() {
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
@@ -78,7 +75,6 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testButtonSplit0_5() {
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
@@ -97,7 +93,6 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testButtonSplit5_0() {
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
@@ -120,7 +115,6 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testSwipeRight() {
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -130,7 +124,6 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testMultipleSwipes() {
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
@@ -152,7 +145,6 @@ class SurfaceDuoBottomNavigationTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testTransparentBackground() {
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.nav_view)).check(matches(Matchers.not(hasHalfTransparentBackground())))
