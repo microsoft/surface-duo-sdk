@@ -85,7 +85,7 @@ open class BottomNavigationView : BottomNavigationView {
     private var endBtnCount: Int = -1
     private var defaultChildWidth = -1
 
-    private fun extractFoldingFeatureRect(): Rect {
+    private fun normalizeFoldingFeatureRectForView(): Rect {
         return windowLayoutInfo.extractFoldingFeatureRect().apply {
             offset(-locationOnScreen.x, 0)
         }
@@ -223,7 +223,7 @@ open class BottomNavigationView : BottomNavigationView {
 
     private fun setScreenParameters() {
         totalScreenWidth = context.getWindowVisibleDisplayFrame().width()
-        extractFoldingFeatureRect().let {
+        normalizeFoldingFeatureRectForView().let {
             hingeWidth = it.width()
             startScreenWidth = it.left
             endScreenWidth = totalScreenWidth - startScreenWidth - hingeWidth
@@ -291,7 +291,7 @@ open class BottomNavigationView : BottomNavigationView {
         }
         val startPoint =
             if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
-                extractFoldingFeatureRect().right
+                normalizeFoldingFeatureRectForView().right
             } else {
                 0
             }
@@ -439,7 +439,7 @@ open class BottomNavigationView : BottomNavigationView {
                 createHalfTransparentBackground(
                     initialBackground,
                     displayPosition,
-                    extractFoldingFeatureRect(),
+                    normalizeFoldingFeatureRectForView(),
                     totalScreenWidth
                 )
             }

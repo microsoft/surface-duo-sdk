@@ -80,7 +80,7 @@ open class TabLayout : TabLayout {
     private var endBtnCount: Int = -1
     private var defaultChildWidth = -1
 
-    private fun extractFoldingFeatureRect(): Rect {
+    private fun normalizeFoldingFeatureRectForView(): Rect {
         return windowLayoutInfo.extractFoldingFeatureRect().apply {
             offset(-locationOnScreen.x, 0)
         }
@@ -199,7 +199,7 @@ open class TabLayout : TabLayout {
 
     private fun setScreenParameters() {
         totalScreenWidth = context.getWindowVisibleDisplayFrame().width()
-        extractFoldingFeatureRect().let {
+        normalizeFoldingFeatureRectForView().let {
             hingeWidth = it.width()
             startScreenWidth = it.left
             endScreenWidth = totalScreenWidth - it.right
@@ -265,7 +265,7 @@ open class TabLayout : TabLayout {
 
         val startPoint =
             if (firstBtnIndex != 0 || displayPosition == DisplayPosition.END) {
-                extractFoldingFeatureRect().right
+                normalizeFoldingFeatureRectForView().right
             } else {
                 0
             }
@@ -388,7 +388,7 @@ open class TabLayout : TabLayout {
                 createHalfTransparentBackground(
                     initialBackground,
                     displayPosition,
-                    extractFoldingFeatureRect(),
+                    normalizeFoldingFeatureRectForView(),
                     totalScreenWidth
                 )
             }
