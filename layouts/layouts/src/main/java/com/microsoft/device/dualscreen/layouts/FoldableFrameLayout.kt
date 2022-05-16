@@ -20,7 +20,8 @@ import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.getFoldingFeature
-import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import com.microsoft.device.dualscreen.utils.wm.getWindowVisibleDisplayFrame
+import com.microsoft.device.dualscreen.utils.wm.locationOnScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -38,7 +39,8 @@ open class FoldableFrameLayout @JvmOverloads constructor(
 
     private var hingeWidth = -1
 
-    private var singleScreenWidth = -1
+    private var startScreenWidth = -1
+    private var endScreenWidth = -1
     private var totalScreenWidth = -1
 
     private var displayPosition = DisplayPosition.DUAL
@@ -104,10 +106,11 @@ open class FoldableFrameLayout @JvmOverloads constructor(
     }
 
     private fun setScreenParameters(foldingFeature: FoldingFeature) {
-        singleScreenWidth = foldingFeature.bounds.left
-        totalScreenWidth = context.getWindowRect().right
+        totalScreenWidth = context.getWindowVisibleDisplayFrame().width()
         foldingFeature.bounds.let {
-            hingeWidth = it.right - it.left
+            hingeWidth = it.width()
+            startScreenWidth = it.left - locationOnScreen.x
+            endScreenWidth = totalScreenWidth - startScreenWidth - hingeWidth
         }
     }
 
@@ -148,8 +151,8 @@ open class FoldableFrameLayout @JvmOverloads constructor(
 
     private fun calculateDesiredLength(): Int {
         return when (displayPosition) {
-            DisplayPosition.START -> singleScreenWidth
-            DisplayPosition.END -> singleScreenWidth
+            DisplayPosition.START -> startScreenWidth
+            DisplayPosition.END -> endScreenWidth
             else -> totalScreenWidth
         }
     }

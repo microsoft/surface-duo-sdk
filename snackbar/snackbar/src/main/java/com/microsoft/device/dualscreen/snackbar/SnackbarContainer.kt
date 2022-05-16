@@ -29,6 +29,7 @@ import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.START
 import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureVertical
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import com.microsoft.device.dualscreen.utils.wm.locationOnScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect

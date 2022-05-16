@@ -25,6 +25,8 @@ import androidx.window.layout.FoldingFeature
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.getScreenRectangles
 import com.microsoft.device.dualscreen.utils.wm.getWindowRect
+import com.microsoft.device.dualscreen.utils.wm.hasChild
+import com.microsoft.device.dualscreen.utils.wm.locationOnScreen
 import com.microsoft.device.dualscreen.utils.wm.normalizeWindowRect
 
 const val OCCLUSION_THRESHOLD = 1
@@ -280,10 +282,12 @@ internal class FoldableLayoutController constructor(
             resetContainersDimensions()
 
             rootView.doOnNextLayout {
-                updateDimensionsForDualLandscape()
+                updateDimensionsForDualLandscape(startScreenRect)
             }
         } else {
-            updateDimensionsForDualPortrait(startScreenRect)
+            rootView.doOnNextLayout {
+                updateDimensionsForDualPortrait(startScreenRect)
+            }
         }
     }
 
@@ -295,8 +299,9 @@ internal class FoldableLayoutController constructor(
     private fun updateDimensionsForDualPortrait(
         startScreenRect: Rect
     ) {
+        val leftPositionOnScreen = rootView.locationOnScreen.x
         firstContainer.updateLayoutParams<LinearLayout.LayoutParams> {
-            width = startScreenRect.width()
+            width = startScreenRect.width() - leftPositionOnScreen
             height = MATCH_PARENT
         }
         secondContainer.updateLayoutParams<LinearLayout.LayoutParams> {
@@ -309,13 +314,15 @@ internal class FoldableLayoutController constructor(
     /**
      * Updates the containers dimensions corresponding to the dual screen mode in landscape orientation
      */
-    private fun updateDimensionsForDualLandscape() {
+    private fun updateDimensionsForDualLandscape(
+        startScreenRect: Rect
+    ) {
         foldingFeature?.let { foldingFeature ->
-            val location = rootView.locationOnScreen
-            val dualScreenStartContainerHeight = foldingFeature.bounds.top - location.y
+            val (leftPositionOnScreen, topPositionOnScreen) = rootView.locationOnScreen
+            val dualScreenStartContainerHeight = foldingFeature.bounds.top - topPositionOnScreen
 
             firstContainer.updateLayoutParams<LinearLayout.LayoutParams> {
-                width = MATCH_PARENT
+                width = startScreenRect.width() - leftPositionOnScreen
                 height = dualScreenStartContainerHeight
             }
             secondContainer.updateLayoutParams<LinearLayout.LayoutParams> {

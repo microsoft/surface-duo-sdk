@@ -22,9 +22,6 @@ fun ViewGroup.createHalfTransparentBackground(
     totalScreenWidth: Int
 ): Drawable? {
     hinge?.let {
-
-        val hingeWidth = it.right - it.left
-
         val transparentDrawable =
             ContextCompat.getDrawable(context, R.drawable.background_transparent)
         val finalBackground = LayerDrawable(arrayOf(initialBackground, transparentDrawable))

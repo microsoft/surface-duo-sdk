@@ -46,5 +46,17 @@ internal val Context.hasRightNavBar: Boolean
     get() {
         val windowRect = getWindowRect()
         val windowVisibleDisplayFrame = getWindowVisibleDisplayFrame()
-        return windowRect.height() == windowVisibleDisplayFrame.bottom
+        return windowRect.height() == windowVisibleDisplayFrame.bottom &&
+            windowRect.width() - windowVisibleDisplayFrame.right == navBarHeight
+    }
+
+/**
+ * Returns [true] if the navigation bar is on the left side of the display area, [false] otherwise
+ */
+internal val Context.hasLeftNavBar: Boolean
+    get() {
+        val windowRect = getWindowRect()
+        val windowVisibleDisplayFrame = getWindowVisibleDisplayFrame()
+        return windowRect.height() == windowVisibleDisplayFrame.bottom &&
+            windowVisibleDisplayFrame.left == navBarHeight
     }
