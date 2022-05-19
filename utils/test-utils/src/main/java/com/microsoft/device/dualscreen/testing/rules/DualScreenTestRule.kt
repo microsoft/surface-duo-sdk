@@ -17,6 +17,7 @@ import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import androidx.window.testing.layout.FoldingFeature
 import androidx.window.testing.layout.TestWindowLayoutInfo
+import com.microsoft.device.dualscreen.testing.filters.DeviceOrientation
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.isSurfaceDuo
@@ -29,7 +30,7 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 /**
- * Custom [TestRule] that can be used together with [SingleScreenTest] and [DualScreenTest]
+ * Custom [TestRule] that can be used together with [SingleScreenTest], [DualScreenTest] and [DeviceOrientation]
  * in order to run tests on the specified posture.
  * Test methods annotated with [SingleScreenTest] will keep or unspan the app to first display area,
  * and methods annotated with [DualScreenTest] will span the app to entire display area.
@@ -57,12 +58,17 @@ class DualScreenTestRule : TestRule {
         }
     }
 
-    private fun before(description: Description?) {
-        val dualScreenTest = description?.getAnnotation(DualScreenTest::class.java)
-        val singleScreenTest = description?.getAnnotation(SingleScreenTest::class.java)
-        val requestedDeviceOrientation = dualScreenTest?.orientation ?: singleScreenTest?.orientation ?: ROTATION_FREEZE_0
+    private fun before(description: Description) {
+        val dualScreenTestAnnotation = getAnnotation(description, DualScreenTest::class.java)
+        val singleScreenTestAnnotation = getAnnotation(description, SingleScreenTest::class.java)
+        val deviceOrientationAnnotation = getAnnotation(description, DeviceOrientation::class.java)
+        val requestedDeviceOrientation = requestedDeviceOrientation(
+            dualScreenTestAnnotation,
+            singleScreenTestAnnotation,
+            deviceOrientationAnnotation
+        )
 
-        val runDualScreenTest = dualScreenTest != null
+        val runDualScreenTest = dualScreenTestAnnotation != null
         if (uiDevice.isSurfaceDuo()) {
             if (runDualScreenTest) {
                 uiDevice.spanFromStart()
@@ -73,6 +79,23 @@ class DualScreenTestRule : TestRule {
         }
 
         rotateDevice(requestedDeviceOrientation)
+    }
+
+    private fun requestedDeviceOrientation(
+        dualScreenTestAnnotation: DualScreenTest?,
+        singleScreenTestAnnotation: SingleScreenTest?,
+        deviceOrientationAnnotation: DeviceOrientation?
+    ): Int {
+        var requestedDeviceOrientation = dualScreenTestAnnotation?.orientation ?: singleScreenTestAnnotation?.orientation
+        if (requestedDeviceOrientation == null || requestedDeviceOrientation == Int.MIN_VALUE) {
+            requestedDeviceOrientation = deviceOrientationAnnotation?.orientation ?: ROTATION_FREEZE_0
+        }
+        return requestedDeviceOrientation
+    }
+
+    private fun <T : Annotation> getAnnotation(description: Description, annotationClass: Class<T>): T? {
+        return description.testClass.getAnnotation(annotationClass)
+            ?: description.getAnnotation(annotationClass)
     }
 
     private fun rotateDevice(requestedDeviceOrientation: Int) {
