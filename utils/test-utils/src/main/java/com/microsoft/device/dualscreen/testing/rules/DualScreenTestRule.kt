@@ -5,6 +5,7 @@
 
 package com.microsoft.device.dualscreen.testing.rules
 
+import android.annotation.SuppressLint
 import android.app.UiAutomation.ROTATION_FREEZE_0
 import android.app.UiAutomation.ROTATION_FREEZE_270
 import android.app.UiAutomation.ROTATION_FREEZE_90
@@ -36,6 +37,7 @@ import org.junit.runners.model.Statement
  * and methods annotated with [DualScreenTest] will span the app to entire display area.
  */
 @OptIn(ExperimentalWindowApi::class)
+@SuppressLint("RestrictedApi")
 class DualScreenTestRule : TestRule {
     private val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val flow = MutableSharedFlow<WindowLayoutInfo>(

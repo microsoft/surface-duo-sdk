@@ -16,11 +16,13 @@
 
 package com.microsoft.device.dualscreen.testing.rules
 
+import android.annotation.SuppressLint
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowInfoTrackerDecorator
 import androidx.window.layout.WindowLayoutInfo
 import kotlinx.coroutines.flow.Flow
 
+@SuppressLint("RestrictedApi")
 internal class PublishWindowInfoTrackerDecorator(
     private val flow: Flow<WindowLayoutInfo>
 ) : WindowInfoTrackerDecorator {
