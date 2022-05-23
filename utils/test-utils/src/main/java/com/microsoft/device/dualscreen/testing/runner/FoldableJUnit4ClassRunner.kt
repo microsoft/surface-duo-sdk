@@ -30,17 +30,6 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
 
     constructor(klass: Class<*>?, runnerParams: AndroidRunnerParams) : super(klass, runnerParams)
 
-//    override fun computeTestMethods(): MutableList<FrameworkMethod> {
-//        val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-//        val testMethods: MutableList<FrameworkMethod> = super.computeTestMethods()
-//        return testMethods.filter { method ->
-//            val targetDevice: TargetDevice? = method.getAnnotation(TargetDevice::class.java)
-//            (targetDevice == null) ||
-//                (!targetDevice.device.isSurfaceDuo && !uiDevice.isSurfaceDuo()) ||
-//                (targetDevice.device.isSurfaceDuo && uiDevice.isSurfaceDuo())
-//        }.toMutableList()
-//    }
-
     override fun runChild(method: FrameworkMethod?, notifier: RunNotifier?) {
         val description = describeChild(method)
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
