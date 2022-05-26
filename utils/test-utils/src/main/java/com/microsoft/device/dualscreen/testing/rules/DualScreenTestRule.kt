@@ -112,7 +112,7 @@ class DualScreenTestRule : TestRule {
         val displayFeatures = if (forDualScreenTest) {
             val foldingFeature = FoldingFeature(
                 windowBounds = Rect(0, 0, uiDevice.displayWidth, uiDevice.displayHeight),
-                state = FoldingFeature.State.FLAT,
+                state = FoldingFeature.State.HALF_OPENED,
                 size = 0,
                 orientation = getFoldingFeatureOrientation(deviceOrientation)
             )
