@@ -14,6 +14,7 @@ import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevice
 import com.microsoft.device.dualscreen.testing.isSurfaceDuo
+import org.junit.Test
 import org.junit.runner.Description
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.FrameworkMethod
@@ -41,6 +42,27 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
             runLeaf(methodBlock(method), description, notifier)
         } else {
             notifier?.fireTestIgnored(description)
+        }
+    }
+
+    override fun validateTestMethods(errors: MutableList<Throwable>?) {
+        super.validateTestMethods(errors)
+        val methods = testClass.getAnnotatedMethods(Test::class.java)
+        methods.forEach { method ->
+            method.validateFoldableTestAnnotations(errors)
+        }
+    }
+
+    private fun FrameworkMethod.validateFoldableTestAnnotations(errors: MutableList<Throwable>?) {
+        val singleScreenTestAnnotation = method.getAnnotation(SingleScreenTest::class.java)
+        val dualScreenTestAnnotation = method.getAnnotation(DualScreenTest::class.java)
+        if (singleScreenTestAnnotation != null && dualScreenTestAnnotation != null) {
+            errors?.add(
+                Exception(
+                    "Method " + method.name + " should be annotated with only " +
+                        "@${SingleScreenTest::class.java.simpleName} or @${DualScreenTest::class.java.simpleName}"
+                )
+            )
         }
     }
 
