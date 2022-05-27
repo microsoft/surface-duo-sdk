@@ -10,9 +10,8 @@ import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.action.ViewActions.swipeRight
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.filters.MediumTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.tabs.test.R
@@ -22,79 +21,89 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.testing.DeviceModel
+import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.TargetDevice
+import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
+import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.testing.spanFromStart
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 
 @MediumTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(FoldableJUnit4ClassRunner::class)
 class SurfaceDuoTabLayoutTest {
 
+    private val activityScenarioRule = activityScenarioRule<SimpleTabActivity>()
+
     @get:Rule
-    val activityTestRule = ActivityScenarioRule(SimpleTabActivity::class.java)
+    var ruleChain: RuleChain =
+        RuleChain.outerRule(activityScenarioRule).around(DualScreenTestRule())
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionFromLayout() {
-        uiDevice.spanFromStart()
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionStart() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.START)
     }
 
     @Test
+    @DualScreenTest
+    @TargetDevice(device = DeviceModel.SurfaceDuo)
     fun testDisplayPositionEnd() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionDual() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.DUAL)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit0_5() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit1_4() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(1, 4, DisplayPosition.DUAL)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit2_3() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(2, 3, DisplayPosition.DUAL)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit5_0() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit_invalid() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(5, 0, DisplayPosition.START)
         arrangeButtonsAndCheckPosition(5, 5, DisplayPosition.START)
     }
 
     @Test
+    @DualScreenTest
     fun testSwipeLeft() {
-        uiDevice.spanFromStart()
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.tabs)).perform(swipeLeft())
@@ -102,8 +111,8 @@ class SurfaceDuoTabLayoutTest {
     }
 
     @Test
+    @DualScreenTest
     fun testSwipeRight() {
-        uiDevice.spanFromStart()
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(3, 2))
 
         onView(withId(R.id.tabs)).perform(swipeRight())
@@ -111,8 +120,8 @@ class SurfaceDuoTabLayoutTest {
     }
 
     @Test
+    @DualScreenTest
     fun testMultipleSwipes() {
-        uiDevice.spanFromStart()
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.tabs)).perform(swipeLeft())
@@ -148,8 +157,8 @@ class SurfaceDuoTabLayoutTest {
     }
 
     @Test
+    @DualScreenTest
     fun testTransparentBackground() {
-        uiDevice.spanFromStart()
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.tabs)).check(matches(not(hasHalfTransparentBackground())))
 

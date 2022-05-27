@@ -9,10 +9,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.filters.MediumTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.bottomnavigation.test.R
 import com.microsoft.device.dualscreen.bottomnavigation.utils.SimpleBottomNavigationActivity
@@ -22,21 +21,28 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.testing.spanFromStart
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 
 @MediumTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(FoldableJUnit4ClassRunner::class)
 class SurfaceDuoBottomNavigationTest {
+    private val activityScenarioRule = activityScenarioRule<SimpleBottomNavigationActivity>()
+    private val dualScreenTestRule = DualScreenTestRule()
+    private val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @get:Rule
-    val activityTestRule = ActivityTestRule(SimpleBottomNavigationActivity::class.java)
-    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
 
     @Before
     fun before() {
@@ -44,64 +50,63 @@ class SurfaceDuoBottomNavigationTest {
     }
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionFromLayout() {
-        uiDevice.spanFromStart()
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionStart() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.START)
     }
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionEnd() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
 
     @Test
+    @DualScreenTest
     fun testDisplayPositionDual() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(DisplayPosition.DUAL)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit0_5() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit1_4() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(1, 4, DisplayPosition.DUAL)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit2_3() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(2, 3, DisplayPosition.DUAL)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit5_0() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
+    @DualScreenTest
     fun testButtonSplit_invalid() {
-        uiDevice.spanFromStart()
         arrangeButtonsAndCheckPosition(5, 0, DisplayPosition.START)
         arrangeButtonsAndCheckPosition(5, 5, DisplayPosition.START)
     }
 
     @Test
+    @DualScreenTest
     fun testSwipeLeft() {
-        uiDevice.spanFromStart()
-
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.nav_view)).perform(ViewActions.swipeLeft())
@@ -109,9 +114,8 @@ class SurfaceDuoBottomNavigationTest {
     }
 
     @Test
+    @DualScreenTest
     fun testSwipeRight() {
-        uiDevice.spanFromStart()
-
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.nav_view)).perform(ViewActions.swipeRight())
@@ -119,9 +123,8 @@ class SurfaceDuoBottomNavigationTest {
     }
 
     @Test
+    @DualScreenTest
     fun testMultipleSwipes() {
-        uiDevice.spanFromStart()
-
         onView(withId(R.id.nav_view)).perform(changeButtonArrangement(2, 3))
 
         onView(withId(R.id.nav_view)).perform(ViewActions.swipeLeft())
@@ -141,9 +144,8 @@ class SurfaceDuoBottomNavigationTest {
     }
 
     @Test
+    @DualScreenTest
     fun testTransparentBackground() {
-        uiDevice.spanFromStart()
-
         onView(withId(R.id.nav_view)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.nav_view)).check(matches(Matchers.not(hasHalfTransparentBackground())))
 

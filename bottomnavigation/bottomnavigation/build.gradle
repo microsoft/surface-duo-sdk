@@ -54,7 +54,7 @@ dependencies {
     androidTestImplementation project(':utils:test-utils')
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation commonDependencies.mockitoCore
-    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junitKtx
     androidTestImplementation instrumentationTestDependencies.testRules
     androidTestImplementation instrumentationTestDependencies.espressoCore
     androidTestImplementation instrumentationTestDependencies.uiAutomator

@@ -51,6 +51,7 @@ class CurrentActivityDelegate {
      */
     fun <T : Activity> setup(activityScenarioRule: ActivityScenarioRule<T>) {
         activityScenarioRule.scenario.onActivity {
+            _currentActivity = it
             it.application.registerActivityLifecycleCallbacks(activityLifecycleCallback)
         }
     }

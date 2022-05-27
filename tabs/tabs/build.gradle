@@ -53,7 +53,7 @@ dependencies {
     testImplementation testDependencies.junit
 
     androidTestImplementation project(':utils:test-utils')
-    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.junitKtx
     androidTestImplementation commonDependencies.mockitoCore
     androidTestImplementation commonDependencies.mockitoDexMaker
     androidTestImplementation instrumentationTestDependencies.uiAutomator
