@@ -18,12 +18,13 @@ import com.google.common.truth.Truth.assertThat
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutTestOnSecondActivity
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
-import com.microsoft.device.dualscreen.testing.DeviceModel
+import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
+import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.ForceClick
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
-import com.microsoft.device.dualscreen.testing.filters.TargetDevice
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
 import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
@@ -93,7 +94,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
+    @TargetDevices(devices = [SurfaceDuo, SurfaceDuo2])
     fun testLayoutDualScreenLandscape() {
         currentActivityDelegate.resetActivityCounter()
         onView(withId(R.id.start)).perform(click())
@@ -113,7 +114,7 @@ class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
 
     @Test
     @DualScreenTest(orientation = UiAutomation.ROTATION_FREEZE_270)
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
+    @TargetDevices(devices = [SurfaceDuo, SurfaceDuo2])
     fun testLayoutDualScreenPortrait() {
         currentActivityDelegate.resetActivityCounter()
         onView(withId(R.id.start)).perform(ForceClick())

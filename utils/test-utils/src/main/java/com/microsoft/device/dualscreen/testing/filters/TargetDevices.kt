@@ -17,9 +17,9 @@ import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class TargetDevice(
+annotation class TargetDevices(
     /**
      * The requested device.
      */
-    val device: DeviceModel
+    val devices: Array<DeviceModel> = []
 )

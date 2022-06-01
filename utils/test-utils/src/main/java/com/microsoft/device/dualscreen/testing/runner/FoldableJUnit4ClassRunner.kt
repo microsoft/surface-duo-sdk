@@ -9,11 +9,10 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.internal.util.AndroidRunnerParams
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
-import com.microsoft.device.dualscreen.testing.filters.TargetDevice
-import com.microsoft.device.dualscreen.testing.isSurfaceDuo
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
+import com.microsoft.device.dualscreen.testing.getDeviceModel
 import org.junit.Test
 import org.junit.runner.Description
 import org.junit.runner.notification.RunNotifier
@@ -21,7 +20,7 @@ import org.junit.runners.model.FrameworkMethod
 
 /**
  * A specialized [AndroidJUnit4ClassRunner] that can be used together with the
- * [SingleScreenTest], [DualScreenTest] and [TargetDevice] annotations
+ * [SingleScreenTest], [DualScreenTest] and [TargetDevices] annotations
  * to filter the tests that will run on the specified devices.
  * For example, if a test method is annotated with @TargetDevice(device = DeviceModel.SurfaceDuo),
  * that test method will run only on SurfaceDuo device or emulator, otherwise will be skipped.
@@ -34,11 +33,9 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
     override fun runChild(method: FrameworkMethod?, notifier: RunNotifier?) {
         val description = describeChild(method)
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val targetDevice: TargetDevice? = getAnnotation(description, TargetDevice::class.java)
-        if ((targetDevice == null) ||
-            (!targetDevice.device.isSurfaceDuo && !uiDevice.isSurfaceDuo()) ||
-            (targetDevice.device.isSurfaceDuo && uiDevice.isSurfaceDuo())
-        ) {
+        val currentDeviceModel = uiDevice.getDeviceModel()
+        val targetDevices: TargetDevices? = getAnnotation(description, TargetDevices::class.java)
+        if (targetDevices == null || targetDevices.devices.any { it == currentDeviceModel }) {
             runLeaf(methodBlock(method), description, notifier)
         } else {
             notifier?.fireTestIgnored(description)
@@ -70,7 +67,4 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         return description.testClass.getAnnotation(annotationClass)
             ?: description.getAnnotation(annotationClass)
     }
-
-    private val DeviceModel?.isSurfaceDuo: Boolean
-        get() = this == DeviceModel.SurfaceDuo || this == DeviceModel.SurfaceDuo2
 }

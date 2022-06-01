@@ -16,11 +16,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.activityScenarioRule
 import com.microsoft.device.dualscreen.layouts.test.R
 import com.microsoft.device.dualscreen.layouts.utils.FoldableLayoutSingleScreenActivity
-import com.microsoft.device.dualscreen.testing.DeviceModel
+import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
+import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
-import com.microsoft.device.dualscreen.testing.filters.TargetDevice
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.isViewOnScreen
 import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
 import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
@@ -70,7 +71,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
+    @TargetDevices(devices = [SurfaceDuo, SurfaceDuo2])
     fun testLayoutDualScreenLandscape() {
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualStart)).check(
@@ -99,7 +100,7 @@ class FoldableLayoutSingleScreenTestForSurfaceDuo {
 
     @Test
     @DualScreenTest(orientation = UiAutomation.ROTATION_FREEZE_270)
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
+    @TargetDevices(devices = [SurfaceDuo, SurfaceDuo2])
     fun testLayoutDualScreenPortrait() {
         onView(withId(R.id.textViewDualStart)).check(matches(isDisplayed()))
         onView(withId(R.id.textViewDualStart)).check(

@@ -21,9 +21,10 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.testing.DeviceModel
+import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
+import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
-import com.microsoft.device.dualscreen.testing.filters.TargetDevice
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.testing.spanFromStart
@@ -59,7 +60,7 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
-    @TargetDevice(device = DeviceModel.SurfaceDuo)
+    @TargetDevices(devices = [SurfaceDuo, SurfaceDuo2])
     fun testDisplayPositionEnd() {
         arrangeButtonsAndCheckPosition(DisplayPosition.END)
     }
