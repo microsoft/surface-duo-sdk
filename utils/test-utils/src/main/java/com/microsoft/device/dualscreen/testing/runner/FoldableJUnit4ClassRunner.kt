@@ -35,7 +35,10 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val currentDeviceModel = uiDevice.getDeviceModel()
         val targetDevices: TargetDevices? = getAnnotation(description, TargetDevices::class.java)
-        if (targetDevices == null || targetDevices.devices.any { it == currentDeviceModel }) {
+        if (targetDevices == null ||
+            targetDevices.devices.any { it == currentDeviceModel } ||
+            !targetDevices.ignoreDevices.any { it == currentDeviceModel }
+        ) {
             runLeaf(methodBlock(method), description, notifier)
         } else {
             notifier?.fireTestIgnored(description)
@@ -47,6 +50,7 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         val methods = testClass.getAnnotatedMethods(Test::class.java)
         methods.forEach { method ->
             method.validateFoldableTestAnnotations(errors)
+            method.validateTargetAnnotation(errors)
         }
     }
 
@@ -57,9 +61,21 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
             errors?.add(
                 Exception(
                     "Method " + method.name + " should be annotated with only " +
-                        "@${SingleScreenTest::class.java.simpleName} or @${DualScreenTest::class.java.simpleName}"
+                        "@${SingleScreenTest::class.java.simpleName} or @${DualScreenTest::class.java.simpleName}."
                 )
             )
+        }
+    }
+
+    private fun FrameworkMethod.validateTargetAnnotation(errors: MutableList<Throwable>?) {
+        method.getAnnotation(TargetDevices::class.java)?.let { targetDevicesAnnotation ->
+            if (targetDevicesAnnotation.devices.isNotEmpty() && targetDevicesAnnotation.ignoreDevices.isNotEmpty()) {
+                errors?.add(
+                    Exception(
+                        "Method " + method.name + ": You cannot have both @TargetDevices.devices and @TargetDevices.ignoreDevices non empty arrays."
+                    )
+                )
+            }
         }
     }
 
