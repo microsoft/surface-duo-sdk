@@ -18,9 +18,11 @@ import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
 import androidx.window.testing.layout.FoldingFeature
 import androidx.window.testing.layout.TestWindowLayoutInfo
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DeviceOrientation
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
+import com.microsoft.device.dualscreen.testing.getDeviceModel
 import com.microsoft.device.dualscreen.testing.isSurfaceDuo
 import com.microsoft.device.dualscreen.testing.resetOrientation
 import com.microsoft.device.dualscreen.testing.spanFromStart
@@ -125,10 +127,18 @@ class DualScreenTestRule : TestRule {
     }
 
     private fun getFoldingFeatureOrientation(deviceOrientation: Int): FoldingFeature.Orientation {
-        return when (deviceOrientation) {
-            ROTATION_FREEZE_270,
-            ROTATION_FREEZE_90 -> FoldingFeature.Orientation.HORIZONTAL
-            else -> FoldingFeature.Orientation.VERTICAL
+        return if (uiDevice.getDeviceModel() == DeviceModel.HorizontalFoldIn) {
+            when (deviceOrientation) {
+                ROTATION_FREEZE_270,
+                ROTATION_FREEZE_90 -> FoldingFeature.Orientation.VERTICAL
+                else -> FoldingFeature.Orientation.HORIZONTAL
+            }
+        } else {
+            when (deviceOrientation) {
+                ROTATION_FREEZE_270,
+                ROTATION_FREEZE_90 -> FoldingFeature.Orientation.HORIZONTAL
+                else -> FoldingFeature.Orientation.VERTICAL
+            }
         }
     }
 

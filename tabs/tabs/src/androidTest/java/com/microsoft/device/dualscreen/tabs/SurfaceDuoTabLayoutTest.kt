@@ -21,6 +21,7 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
 import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
@@ -37,6 +38,7 @@ import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(FoldableJUnit4ClassRunner::class)
+@TargetDevices(ignoreDevices = [DeviceModel.HorizontalFoldIn])
 class SurfaceDuoTabLayoutTest {
 
     private val activityScenarioRule = activityScenarioRule<SimpleTabActivity>()

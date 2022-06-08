@@ -36,8 +36,8 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         val currentDeviceModel = uiDevice.getDeviceModel()
         val targetDevices: TargetDevices? = getAnnotation(description, TargetDevices::class.java)
         if (targetDevices == null ||
-            targetDevices.devices.any { it == currentDeviceModel } ||
-            !targetDevices.ignoreDevices.any { it == currentDeviceModel }
+            (targetDevices.devices.isNotEmpty() && targetDevices.devices.any { it == currentDeviceModel }) ||
+            (targetDevices.ignoreDevices.isNotEmpty() && !targetDevices.ignoreDevices.any { it == currentDeviceModel })
         ) {
             runLeaf(methodBlock(method), description, notifier)
         } else {

@@ -11,7 +11,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
@@ -20,8 +19,11 @@ import androidx.window.layout.WindowInfoTracker
 import com.microsoft.device.dualscreen.recyclerview.activities.StaggeredRecyclerViewActivity
 import com.microsoft.device.dualscreen.recyclerview.test.R
 import com.microsoft.device.dualscreen.recyclerview.utils.areItemsDisplayed
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.resetOrientation
+import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -30,7 +32,8 @@ import org.junit.runner.RunWith
 import java.util.concurrent.Executor
 
 @MediumTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(FoldableJUnit4ClassRunner::class)
+@TargetDevices(ignoreDevices = [DeviceModel.HorizontalFoldIn])
 class FoldableStaggeredRecyclerViewTest {
 
     @get:Rule
