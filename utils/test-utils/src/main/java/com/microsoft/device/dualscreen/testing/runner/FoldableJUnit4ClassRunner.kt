@@ -9,6 +9,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.internal.util.AndroidRunnerParams
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
@@ -36,14 +37,20 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         val currentDeviceModel = uiDevice.getDeviceModel()
         val targetDevices: TargetDevices? = getAnnotation(description, TargetDevices::class.java)
         if (targetDevices == null ||
-            targetDevices.devices.any { it == currentDeviceModel } ||
-            !targetDevices.ignoreDevices.any { it == currentDeviceModel }
+            currentDeviceIsOnTargetDevices(currentDeviceModel, targetDevices.devices) ||
+            currentDeviceNotInIgnoredDevices(currentDeviceModel, targetDevices.ignoreDevices)
         ) {
             runLeaf(methodBlock(method), description, notifier)
         } else {
             notifier?.fireTestIgnored(description)
         }
     }
+
+    private fun currentDeviceIsOnTargetDevices(currentDevice: DeviceModel, targetDevices: Array<DeviceModel>): Boolean =
+        targetDevices.isNotEmpty() && targetDevices.any { it == currentDevice }
+
+    private fun currentDeviceNotInIgnoredDevices(currentDevice: DeviceModel, ignoreDevices: Array<DeviceModel>): Boolean =
+        ignoreDevices.isNotEmpty() && !ignoreDevices.any { it == currentDevice }
 
     override fun validateTestMethods(errors: MutableList<Throwable>?) {
         super.validateTestMethods(errors)

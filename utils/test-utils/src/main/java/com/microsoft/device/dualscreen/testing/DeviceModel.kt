@@ -52,8 +52,34 @@ enum class DeviceModel(
     val closeSteps: Int = 50,
     internal var totalDisplay_: Int = paneWidth_ * 2 + foldWidth
 ) {
+    /**
+     * Representation for SurfaceDuo1 device and emulator
+     */
     SurfaceDuo(paneWidth_ = 1350, paneHeight_ = 1800, foldWidth = 84, bottomY = 1780),
+
+    /**
+     * Representation for SurfaceDuo2 device and emulator
+     */
     SurfaceDuo2(paneWidth_ = 1344, paneHeight_ = 1892, foldWidth = 66, bottomY = 1870),
+
+    /**
+     * Representation for 6.7" horizontal Fold-In devices and emulators
+     */
+    HorizontalFoldIn(paneWidth_ = 1080, paneHeight_ = 1318, foldWidth = 0, bottomY = 0),
+
+    /**
+     * Representation for 7.6" Fold-In with outer display devices and emulators
+     */
+    FoldInOuterDisplay(paneWidth_ = 884, paneHeight_ = 2208, foldWidth = 0, bottomY = 0),
+
+    /**
+     * Representation for 8" FoldOut devices and emulators
+     */
+    FoldOut(paneWidth_ = 1100, paneHeight_ = 2480, foldWidth = 0, bottomY = 0),
+
+    /**
+     * Representation for Other foldable devices and emulators.
+     */
     Other(paneWidth_ = 0, paneHeight_ = 0, foldWidth = 0, bottomY = 0);
 
     val paneWidth: Int

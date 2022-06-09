@@ -21,7 +21,9 @@ import com.microsoft.device.dualscreen.bottomnavigation.utils.changeDisplayPosit
 import com.microsoft.device.dualscreen.bottomnavigation.utils.checkChildCount
 import com.microsoft.device.dualscreen.bottomnavigation.utils.disableAnimation
 import com.microsoft.device.dualscreen.bottomnavigation.utils.hasHalfTransparentBackground
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
 import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
@@ -36,6 +38,7 @@ import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(FoldableJUnit4ClassRunner::class)
+@TargetDevices(ignoreDevices = [DeviceModel.HorizontalFoldIn])
 class SurfaceDuoBottomNavigationTest {
     private val activityScenarioRule = activityScenarioRule<SimpleBottomNavigationActivity>()
     private val dualScreenTestRule = DualScreenTestRule()

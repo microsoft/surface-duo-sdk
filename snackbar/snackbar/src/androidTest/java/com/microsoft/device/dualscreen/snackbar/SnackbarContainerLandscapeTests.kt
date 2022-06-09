@@ -11,8 +11,10 @@ import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.BOTH
 import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.END
 import com.microsoft.device.dualscreen.snackbar.SnackbarPosition.START
 import com.microsoft.device.dualscreen.snackbar.test.R
+import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
+import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.getDeviceModel
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import org.junit.Test
@@ -20,6 +22,7 @@ import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(FoldableJUnit4ClassRunner::class)
+@TargetDevices(ignoreDevices = [DeviceModel.HorizontalFoldIn])
 class SnackbarContainerLandscapeTests : SnackbarContainerTests() {
     @Test
     @SingleScreenTest(orientation = UiAutomation.ROTATION_FREEZE_270)
