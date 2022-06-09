@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.MockFoldingFeature
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.getDeviceModel
@@ -58,6 +59,7 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         methods.forEach { method ->
             method.validateFoldableTestAnnotations(errors)
             method.validateTargetAnnotation(errors)
+            method.validateMockFoldingFeatureAnnotation(errors)
         }
     }
 
@@ -80,6 +82,19 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
                 errors?.add(
                     Exception(
                         "Method " + method.name + ": You cannot have both @TargetDevices.devices and @TargetDevices.ignoreDevices non empty arrays."
+                    )
+                )
+            }
+        }
+    }
+
+    private fun FrameworkMethod.validateMockFoldingFeatureAnnotation(errors: MutableList<Throwable>?) {
+        method.getAnnotation(MockFoldingFeature::class.java)?.let {
+            if (it.windowBounds.size != 4) {
+                errors?.add(
+                    Exception(
+                        "Method " + method.name + ": @MockFoldingFeature.windowBounds should be an array with four coordinates " +
+                            "in he following order: [left, top, right, bottom]"
                     )
                 )
             }

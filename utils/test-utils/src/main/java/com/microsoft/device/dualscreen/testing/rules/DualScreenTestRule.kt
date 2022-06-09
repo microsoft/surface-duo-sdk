@@ -21,7 +21,11 @@ import androidx.window.testing.layout.TestWindowLayoutInfo
 import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DeviceOrientation
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.MockFoldingFeature
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
+import com.microsoft.device.dualscreen.testing.filters.foldingFeatureOrientation
+import com.microsoft.device.dualscreen.testing.filters.foldingFeatureState
+import com.microsoft.device.dualscreen.testing.filters.windowBoundsRect
 import com.microsoft.device.dualscreen.testing.getDeviceModel
 import com.microsoft.device.dualscreen.testing.isSurfaceDuo
 import com.microsoft.device.dualscreen.testing.resetOrientation
@@ -66,6 +70,7 @@ class DualScreenTestRule : TestRule {
         val dualScreenTestAnnotation = getAnnotation(description, DualScreenTest::class.java)
         val singleScreenTestAnnotation = getAnnotation(description, SingleScreenTest::class.java)
         val deviceOrientationAnnotation = getAnnotation(description, DeviceOrientation::class.java)
+        val mockFoldingFeatureAnnotation = getAnnotation(description, MockFoldingFeature::class.java)
         val requestedDeviceOrientation = requestedDeviceOrientation(
             dualScreenTestAnnotation,
             singleScreenTestAnnotation,
@@ -73,15 +78,23 @@ class DualScreenTestRule : TestRule {
         )
 
         val runDualScreenTest = dualScreenTestAnnotation != null
-        if (uiDevice.isSurfaceDuo()) {
-            if (runDualScreenTest) {
-                uiDevice.spanFromStart()
+        when {
+            mockFoldingFeatureAnnotation != null -> {
+                WindowInfoTracker.overrideDecorator(overrideServices)
+                mockFoldingFeature(mockFoldingFeatureAnnotation)
             }
-        } else {
-            WindowInfoTracker.overrideDecorator(overrideServices)
-            mockFoldingFeature(requestedDeviceOrientation, runDualScreenTest)
-        }
 
+            uiDevice.isSurfaceDuo() -> {
+                if (runDualScreenTest) {
+                    uiDevice.spanFromStart()
+                }
+            }
+
+            else -> {
+                WindowInfoTracker.overrideDecorator(overrideServices)
+                mockFoldingFeature(requestedDeviceOrientation, runDualScreenTest)
+            }
+        }
         rotateDevice(requestedDeviceOrientation)
     }
 
@@ -123,6 +136,17 @@ class DualScreenTestRule : TestRule {
             emptyList()
         }
         val windowLayoutInfo = TestWindowLayoutInfo(displayFeatures)
+        overrideWindowLayoutInfo(windowLayoutInfo)
+    }
+
+    private fun mockFoldingFeature(mockFoldingFeatureAnnotation: MockFoldingFeature) {
+        val foldingFeature = FoldingFeature(
+            windowBounds = mockFoldingFeatureAnnotation.windowBoundsRect,
+            state = mockFoldingFeatureAnnotation.foldingFeatureState,
+            size = mockFoldingFeatureAnnotation.size,
+            orientation = mockFoldingFeatureAnnotation.foldingFeatureOrientation
+        )
+        val windowLayoutInfo = TestWindowLayoutInfo(listOf(foldingFeature))
         overrideWindowLayoutInfo(windowLayoutInfo)
     }
 
