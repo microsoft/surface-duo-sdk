@@ -26,7 +26,7 @@ import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
 import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
-import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
+import com.microsoft.device.dualscreen.testing.rules.FoldableTestRule
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.testing.spanFromStart
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
@@ -44,7 +44,7 @@ class SurfaceDuoTabLayoutTest {
 
     @get:Rule
     var ruleChain: RuleChain =
-        RuleChain.outerRule(activityScenarioRule).around(DualScreenTestRule())
+        RuleChain.outerRule(activityScenarioRule).around(FoldableTestRule())
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Test

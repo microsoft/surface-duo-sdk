@@ -13,17 +13,17 @@ import com.microsoft.device.dualscreen.testing.isSurfaceDuo
 import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
 
-fun <A : Activity> foldableTestRule(
+fun <A : Activity> foldableRuleChain(
     activityScenarioRule: ActivityScenarioRule<A>,
-    dualScreenTestRule: DualScreenTestRule,
+    foldableTestRule: FoldableTestRule,
     vararg aroundRules: TestRule
-): TestRule {
+): RuleChain {
     val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     var ruleChain = if (uiDevice.isSurfaceDuo()) {
-        RuleChain.outerRule(activityScenarioRule).around(dualScreenTestRule)
+        RuleChain.outerRule(activityScenarioRule).around(foldableTestRule)
     } else {
-        RuleChain.outerRule(dualScreenTestRule).around(activityScenarioRule)
+        RuleChain.outerRule(foldableTestRule).around(activityScenarioRule)
     }
 
     aroundRules.forEach {

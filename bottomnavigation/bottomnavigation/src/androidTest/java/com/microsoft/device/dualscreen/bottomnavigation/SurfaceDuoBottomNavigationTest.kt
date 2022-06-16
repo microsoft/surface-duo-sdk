@@ -26,8 +26,8 @@ import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
 import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
-import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
-import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.FoldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableRuleChain
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.testing.spanFromStart
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
@@ -42,11 +42,11 @@ import org.junit.runner.RunWith
 @RunWith(FoldableJUnit4ClassRunner::class)
 class SurfaceDuoBottomNavigationTest {
     private val activityScenarioRule = activityScenarioRule<SimpleBottomNavigationActivity>()
-    private val dualScreenTestRule = DualScreenTestRule()
+    private val foldableTestRule = FoldableTestRule()
     private val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @get:Rule
-    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
 
     @Before
     fun before() {

@@ -25,8 +25,8 @@ import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
-import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
-import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.FoldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableRuleChain
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import org.junit.After
 import org.junit.Before
@@ -39,12 +39,12 @@ import org.junit.runner.RunWith
 @RunWith(FoldableJUnit4ClassRunner::class)
 class FoldableLayoutTestOnSecondActivityForSurfaceDuo {
     private val activityScenarioRule = activityScenarioRule<FoldableLayoutTestOnSecondActivity>()
-    private val dualScreenTestRule = DualScreenTestRule()
+    private val foldableTestRule = FoldableTestRule()
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
     private val currentActivityDelegate = CurrentActivityDelegate()
 
     @get:Rule
-    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
 
     @Before
     fun before() {

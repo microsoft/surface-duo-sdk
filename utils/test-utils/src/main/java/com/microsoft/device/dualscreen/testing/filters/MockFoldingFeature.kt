@@ -2,7 +2,7 @@ package com.microsoft.device.dualscreen.testing.filters
 
 import android.graphics.Rect
 import androidx.window.layout.FoldingFeature
-import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
+import com.microsoft.device.dualscreen.testing.rules.FoldableTestRule
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 
 /**
@@ -19,7 +19,7 @@ import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
  *
  * The folding features always cover the window in one dimension and that determines the other coordinates.
  *
- * Must be used together with [DualScreenTestRule] and [FoldableJUnit4ClassRunner]
+ * Must be used together with [FoldableTestRule] and [FoldableJUnit4ClassRunner]
  *
  * @param windowBounds array of coordinates that represents some display area that will contain the [FoldingFeature]. ex: [left, top, right, bottom]
  * @param center the center of the fold complementary to the orientation.
