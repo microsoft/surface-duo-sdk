@@ -39,20 +39,19 @@ annotation class MockFoldingFeature(
 ) {
     /**
      * Represents the State of the [FoldingFeature].
+     *
+     * See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures)
+     * section in the official documentation for visual samples and references.
      */
     enum class FoldingFeatureState {
         /**
          * The foldable device is completely open, the screen space that is presented to the user is flat.
-         * See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures)
-         * section in the official documentation for visual samples and references.
          */
         FLAT,
 
         /**
          * The foldable device's hinge is in an intermediate position between opened and closed state,
          * there is a non-flat angle between parts of the flexible screen or between physical screen panels.
-         * See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures)
-         * section in the official documentation for visual samples and references.
          */
         HALF_OPENED
     }
