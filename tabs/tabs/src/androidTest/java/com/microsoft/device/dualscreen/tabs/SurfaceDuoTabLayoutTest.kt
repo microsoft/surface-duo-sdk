@@ -21,7 +21,7 @@ import com.microsoft.device.dualscreen.tabs.utils.changeButtonArrangement
 import com.microsoft.device.dualscreen.tabs.utils.changeDisplayPosition
 import com.microsoft.device.dualscreen.tabs.utils.checkChildCount
 import com.microsoft.device.dualscreen.tabs.utils.hasHalfTransparentBackground
-import com.microsoft.device.dualscreen.testing.DeviceModel
+import com.microsoft.device.dualscreen.testing.DeviceModel.HorizontalFoldIn
 import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo
 import com.microsoft.device.dualscreen.testing.DeviceModel.SurfaceDuo2
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
@@ -38,7 +38,6 @@ import org.junit.runner.RunWith
 
 @MediumTest
 @RunWith(FoldableJUnit4ClassRunner::class)
-@TargetDevices(ignoreDevices = [DeviceModel.HorizontalFoldIn])
 class SurfaceDuoTabLayoutTest {
 
     private val activityScenarioRule = activityScenarioRule<SimpleTabActivity>()
@@ -50,12 +49,14 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testDisplayPositionFromLayout() {
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
     }
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testDisplayPositionStart() {
         arrangeButtonsAndCheckPosition(DisplayPosition.START)
     }
@@ -69,36 +70,42 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testDisplayPositionDual() {
         arrangeButtonsAndCheckPosition(DisplayPosition.DUAL)
     }
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testButtonSplit0_5() {
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testButtonSplit1_4() {
         arrangeButtonsAndCheckPosition(1, 4, DisplayPosition.DUAL)
     }
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testButtonSplit2_3() {
         arrangeButtonsAndCheckPosition(2, 3, DisplayPosition.DUAL)
     }
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testButtonSplit5_0() {
         arrangeButtonsAndCheckPosition(0, 5, DisplayPosition.END)
     }
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testButtonSplit_invalid() {
         arrangeButtonsAndCheckPosition(5, 0, DisplayPosition.START)
         arrangeButtonsAndCheckPosition(5, 5, DisplayPosition.START)
@@ -106,6 +113,7 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testSwipeLeft() {
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(2, 3))
 
@@ -115,6 +123,7 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testSwipeRight() {
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(3, 2))
 
@@ -124,6 +133,7 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testMultipleSwipes() {
         onView(withId(R.id.tabs)).perform(changeButtonArrangement(2, 3))
 
@@ -144,6 +154,7 @@ class SurfaceDuoTabLayoutTest {
     }
 
     @Test
+    @TargetDevices(devices = [SurfaceDuo, SurfaceDuo2])
     fun testOrientationChanges() {
         onView(withId(R.id.tabs)).check(matches(checkChildCount(5)))
 
@@ -161,6 +172,7 @@ class SurfaceDuoTabLayoutTest {
 
     @Test
     @DualScreenTest
+    @TargetDevices(ignoreDevices = [HorizontalFoldIn])
     fun testTransparentBackground() {
         onView(withId(R.id.tabs)).check(matches(areTabsOnScreen(DisplayPosition.DUAL)))
         onView(withId(R.id.tabs)).check(matches(not(hasHalfTransparentBackground())))

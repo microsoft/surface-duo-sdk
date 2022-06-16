@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.microsoft.device.dualscreen.testing.DeviceModel
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
+import com.microsoft.device.dualscreen.testing.filters.MockFoldingFeature
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
 import com.microsoft.device.dualscreen.testing.getDeviceModel
@@ -18,11 +19,14 @@ import org.junit.Test
 import org.junit.runner.Description
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.model.FrameworkMethod
+import org.junit.runners.model.TestClass
+import java.lang.reflect.Method
 
 /**
  * A specialized [AndroidJUnit4ClassRunner] that can be used together with the
- * [SingleScreenTest], [DualScreenTest] and [TargetDevices] annotations
- * to filter the tests that will run on the specified devices.
+ * [SingleScreenTest], [DualScreenTest], [TargetDevices] and [MockFoldingFeature] annotations.
+ *
+ * This runner validates the annotations and filters the tests that will run on the specified devices.
  * For example, if a test method is annotated with @TargetDevice(device = DeviceModel.SurfaceDuo),
  * that test method will run only on SurfaceDuo device or emulator, otherwise will be skipped.
  */
@@ -58,17 +62,40 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         methods.forEach { method ->
             method.validateFoldableTestAnnotations(errors)
             method.validateTargetAnnotation(errors)
+            method.validateMockFoldingFeatureAnnotation(errors)
         }
     }
 
     private fun FrameworkMethod.validateFoldableTestAnnotations(errors: MutableList<Throwable>?) {
-        val singleScreenTestAnnotation = method.getAnnotation(SingleScreenTest::class.java)
-        val dualScreenTestAnnotation = method.getAnnotation(DualScreenTest::class.java)
-        if (singleScreenTestAnnotation != null && dualScreenTestAnnotation != null) {
+        validateTestAnnotation(SingleScreenTest::class.java, errors)
+        validateTestAnnotation(DualScreenTest::class.java, errors)
+        validateTestAnnotation(MockFoldingFeature::class.java, errors)
+        validateTestAnnotation(TargetDevices::class.java, errors)
+
+        val hasMultipleAnnotations = listOf(
+            method.hasAnnotation(SingleScreenTest::class.java),
+            method.hasAnnotation(DualScreenTest::class.java),
+            method.hasAnnotation(MockFoldingFeature::class.java)
+        ).filter { it }.size > 1
+        if (hasMultipleAnnotations) {
             errors?.add(
                 Exception(
                     "Method " + method.name + " should be annotated with only " +
-                        "@${SingleScreenTest::class.java.simpleName} or @${DualScreenTest::class.java.simpleName}."
+                        "@${SingleScreenTest::class.java.simpleName}, @${DualScreenTest::class.java.simpleName} " +
+                        "or @${MockFoldingFeature::class.java.simpleName}."
+                )
+            )
+        }
+    }
+
+    private fun <T : Annotation> FrameworkMethod.validateTestAnnotation(annotationClass: Class<T>, errors: MutableList<Throwable>?) {
+        if (
+            method.hasAnnotation(annotationClass) &&
+            testClass.hasAnnotation(annotationClass)
+        ) {
+            errors?.add(
+                Exception(
+                    "You cannot have both ${testClass.javaClass.name} and ${method.name} annotated with \"@${annotationClass.name}"
                 )
             )
         }
@@ -86,8 +113,25 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
         }
     }
 
+    private fun FrameworkMethod.validateMockFoldingFeatureAnnotation(errors: MutableList<Throwable>?) {
+        method.getAnnotation(MockFoldingFeature::class.java)?.let {
+            if (it.windowBounds.size != 4) {
+                errors?.add(
+                    Exception(
+                        "Method " + method.name + ": @MockFoldingFeature.windowBounds should be an array with four coordinates " +
+                            "in he following order: [left, top, right, bottom]"
+                    )
+                )
+            }
+        }
+    }
+
     private fun <T : Annotation> getAnnotation(description: Description, annotationClass: Class<T>): T? {
         return description.testClass.getAnnotation(annotationClass)
             ?: description.getAnnotation(annotationClass)
     }
+
+    private fun <T : Annotation> Method.hasAnnotation(annotationClass: Class<T>): Boolean = getAnnotation(annotationClass) != null
+
+    private fun <T : Annotation> TestClass.hasAnnotation(annotationClass: Class<T>): Boolean = getAnnotation(annotationClass) != null
 }
