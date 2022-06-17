@@ -16,8 +16,8 @@ import com.microsoft.device.dualscreen.navigation.utils.runWithBackStackListener
 import com.microsoft.device.dualscreen.testing.CurrentActivityDelegate
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
 import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
-import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
-import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.FoldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableRuleChain
 import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 import com.microsoft.device.dualscreen.utils.wm.ScreenMode
 import com.microsoft.device.dualscreen.utils.wm.screenMode
@@ -32,13 +32,13 @@ import org.junit.runner.RunWith
 @RunWith(FoldableJUnit4ClassRunner::class)
 class FragmentExtensionsTests {
     private val activityScenarioRule = activityScenarioRule<SurfaceDuoSimpleActivity>()
-    private val dualScreenTestRule = DualScreenTestRule()
+    private val foldableTestRule = FoldableTestRule()
     private val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
     private val fragmentBackStackListener = SimpleFragmentBackStackListener()
     private val currentActivityDelegate = CurrentActivityDelegate()
 
     @get:Rule
-    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
 
     @Before
     fun setup() {

@@ -16,8 +16,8 @@ import com.microsoft.device.dualscreen.snackbar.test.R
 import com.microsoft.device.dualscreen.snackbar.utils.SampleActivity
 import com.microsoft.device.dualscreen.snackbar.utils.hasMargins
 import com.microsoft.device.dualscreen.testing.WindowLayoutInfoConsumer
-import com.microsoft.device.dualscreen.testing.rules.DualScreenTestRule
-import com.microsoft.device.dualscreen.testing.rules.foldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.FoldableTestRule
+import com.microsoft.device.dualscreen.testing.rules.foldableRuleChain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,12 +25,12 @@ import org.junit.rules.TestRule
 
 open class SnackbarContainerTests {
     private val activityScenarioRule = activityScenarioRule<SampleActivity>()
-    private val dualScreenTestRule = DualScreenTestRule()
+    private val foldableTestRule = FoldableTestRule()
     protected val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     protected val windowLayoutInfoConsumer = WindowLayoutInfoConsumer()
 
     @get:Rule
-    val testRule: TestRule = foldableTestRule(activityScenarioRule, dualScreenTestRule)
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
 
     @Before
     fun setup() {

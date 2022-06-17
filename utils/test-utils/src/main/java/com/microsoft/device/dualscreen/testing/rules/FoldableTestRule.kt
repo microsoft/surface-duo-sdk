@@ -44,7 +44,7 @@ import org.junit.runners.model.Statement
  */
 @OptIn(ExperimentalWindowApi::class)
 @SuppressLint("RestrictedApi")
-class DualScreenTestRule : TestRule {
+class FoldableTestRule : TestRule {
     private val uiDevice: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val flow = MutableSharedFlow<WindowLayoutInfo>(
         replay = 1,
