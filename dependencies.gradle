@@ -27,7 +27,7 @@ ext {
     inkSDKVersionCode = 6
     wmUtilsVersionCode = 4
     navigationVersionCode = 2
-    testingVersionCode = 2
+    testingVersionCode = 3
     snackbarVersionCode = 2
 
     // SurfaceDuo SDK libraries version name:
@@ -44,7 +44,7 @@ ext {
     inkSDKVersionName = "1.0.0-alpha4"
     wmUtilsVersionName = "1.0.0-beta4"
     navigationVersionName = "1.0.0-alpha3"
-    testingVersionName = "1.0.0-alpha2"
+    testingVersionName = "1.0.0-alpha3"
     snackbarVersionName = "1.0.0-alpha2"
     // ----------------------------------
 
