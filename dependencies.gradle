@@ -60,7 +60,7 @@ ext {
     config = [
             gradlePlugin             : "com.android.tools.build:gradle:$gradlePluginVersion",
             kotlinGradlePlugin       : "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion",
-            testInstrumentationRunner: "com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner"
+            testInstrumentationRunner: "androidx.test.runner.AndroidJUnitRunner"
     ]
 
     kotlinDependencies = [
