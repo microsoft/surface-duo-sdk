@@ -127,8 +127,8 @@ class FoldableTestRule : TestRule {
         val displayFeatures = if (forDualScreenTest) {
             val foldingFeature = FoldingFeature(
                 windowBounds = Rect(0, 0, uiDevice.displayWidth, uiDevice.displayHeight),
-                state = FoldingFeature.State.HALF_OPENED,
                 size = 0,
+                state = FoldingFeature.State.HALF_OPENED,
                 orientation = getFoldingFeatureOrientation(deviceOrientation)
             )
             listOf(foldingFeature)
@@ -142,8 +142,9 @@ class FoldableTestRule : TestRule {
     private fun mockFoldingFeature(mockFoldingFeatureAnnotation: MockFoldingFeature) {
         val foldingFeature = FoldingFeature(
             windowBounds = mockFoldingFeatureAnnotation.windowBoundsRect,
-            state = mockFoldingFeatureAnnotation.foldingFeatureState,
+            center = mockFoldingFeatureAnnotation.center,
             size = mockFoldingFeatureAnnotation.size,
+            state = mockFoldingFeatureAnnotation.foldingFeatureState,
             orientation = mockFoldingFeatureAnnotation.foldingFeatureOrientation
         )
         val windowLayoutInfo = TestWindowLayoutInfo(listOf(foldingFeature))
