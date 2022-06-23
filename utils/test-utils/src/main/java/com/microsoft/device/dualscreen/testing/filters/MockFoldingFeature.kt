@@ -31,7 +31,7 @@ import com.microsoft.device.dualscreen.testing.runner.FoldableJUnit4ClassRunner
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class MockFoldingFeature(
-    val windowBounds: IntArray,
+    val windowBounds: IntArray = [],
     val center: Int = -1,
     val size: Int = 0,
     val state: FoldingFeatureState = FoldingFeatureState.HALF_OPENED,
@@ -75,13 +75,17 @@ annotation class MockFoldingFeature(
 /**
  * Translates the coordinates from [IntArray] to [Rect]
  */
-internal val MockFoldingFeature.windowBoundsRect: Rect
-    get() = Rect(
-        windowBounds[0],
-        windowBounds[1],
-        windowBounds[2],
-        windowBounds[3]
-    )
+internal val MockFoldingFeature.windowBoundsRect: Rect?
+    get() = if (windowBounds.isEmpty()) {
+        null
+    } else {
+        Rect(
+            windowBounds[0],
+            windowBounds[1],
+            windowBounds[2],
+            windowBounds[3]
+        )
+    }
 
 /**
  * Translates from [MockFoldingFeature.FoldingFeatureState] to [FoldingFeature.State]
