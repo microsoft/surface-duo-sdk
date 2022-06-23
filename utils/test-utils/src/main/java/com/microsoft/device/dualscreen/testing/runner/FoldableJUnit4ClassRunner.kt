@@ -14,6 +14,7 @@ import com.microsoft.device.dualscreen.testing.filters.DualScreenTest
 import com.microsoft.device.dualscreen.testing.filters.MockFoldingFeature
 import com.microsoft.device.dualscreen.testing.filters.SingleScreenTest
 import com.microsoft.device.dualscreen.testing.filters.TargetDevices
+import com.microsoft.device.dualscreen.testing.filters.windowBoundsRect
 import com.microsoft.device.dualscreen.testing.getDeviceModel
 import org.junit.Test
 import org.junit.runner.Description
@@ -120,6 +121,22 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
                     Exception(
                         "Method " + method.name + ": @MockFoldingFeature.windowBounds should be an array with four coordinates " +
                             "in he following order: [left, top, right, bottom]"
+                    )
+                )
+            }
+
+            if (it.windowBoundsRect.width() <= 0) {
+                errors?.add(
+                    Exception(
+                        "Method " + method.name + ": @MockFoldingFeature.windowBounds.width should be greater than 0"
+                    )
+                )
+            }
+
+            if (it.windowBoundsRect.height() <= 0) {
+                errors?.add(
+                    Exception(
+                        "Method " + method.name + ": @MockFoldingFeature.windowBounds.height should be greater than 0"
                     )
                 )
             }
