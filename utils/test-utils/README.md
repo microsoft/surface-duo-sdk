@@ -21,7 +21,7 @@ Since we think that there is value on these utilities to be shared with the deve
 2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here):
 
     ```gradle
-    androidTestImplementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha2"
+    androidTestImplementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha3"
     ```
 
 3. Optional. If you need to use other testing dependencies such as [Espresso](https://developer.android.com/training/testing/espresso) or [UiAutomator](https://developer.android.com/training/testing/other-components/ui-automator), you will have to add them to your **build.gradle** file as well. This library uses these dependencies but are not exposed.
@@ -160,9 +160,12 @@ The DeviceModel class and related helper functions can be used in dual-screen UI
 enum class DeviceModel
 ```
 Enum class that can be used to represent various device models and extract coordinates that can be used for simulating gestures in UI tests.
-It can take three values:
+It can take the following values:
 - SurfaceDuo
 - SurfaceDuo2
+- HorizontalFoldIn
+- FoldInOuterDisplay
+- FoldOut
 - Other
 
 For Microsoft Surface Duo devices, the coordinates are all from the dual portrait point of view, and dimensions were taken from [here](https://docs.microsoft.com/dual-screen/android/surface-duo-dimensions).
