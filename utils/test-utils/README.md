@@ -21,7 +21,7 @@ Since we think that there is value on these utilities to be shared with the deve
 2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here):
 
     ```gradle
-    androidTestImplementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha2"
+    androidTestImplementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha3"
     ```
 
 3. Optional. If you need to use other testing dependencies such as [Espresso](https://developer.android.com/training/testing/espresso) or [UiAutomator](https://developer.android.com/training/testing/other-components/ui-automator), you will have to add them to your **build.gradle** file as well. This library uses these dependencies but are not exposed.
@@ -160,9 +160,12 @@ The DeviceModel class and related helper functions can be used in dual-screen UI
 enum class DeviceModel
 ```
 Enum class that can be used to represent various device models and extract coordinates that can be used for simulating gestures in UI tests.
-It can take three values:
+It can take the following values:
 - SurfaceDuo
 - SurfaceDuo2
+- HorizontalFoldIn
+- FoldInOuterDisplay
+- FoldOut
 - Other
 
 For Microsoft Surface Duo devices, the coordinates are all from the dual portrait point of view, and dimensions were taken from [here](https://docs.microsoft.com/dual-screen/android/surface-duo-dimensions).
@@ -182,7 +185,66 @@ fun UiDevice.getDeviceModel(): DeviceModel
 ```
 Returns the model of a device based on display width and height (in pixels).
 
+## Annotations
 
+### SingleScreenTest/DualScreenTest
+
+Add this annotation for the test method or test class if you want to run the test on single-screen/dual-screen mode. 
+Also, using the `orientation` parameter, you can run the test on the specified device orientation. 
+The `orientation` parameter can have the following values: 
+`UiAutomation.ROTATION_FREEZE_0`, `UiAutomation.ROTATION_FREEZE_90`, `UiAutomation.ROTATION_FREEZE_180`, `UiAutomation.ROTATION_FREEZE_270`
+
+### MockFoldingFeature
+
+Use this annotation for the test method or test class if you want to mock the folding feature with the desired data.
+
+- `windowBounds` parameter is an array of coordinates that represents some display area that will contain the [FoldingFeature], 
+- for example [left, top, right, bottom]. `windowBounds` width and height must be greater than 0.
+
+- The `center` parameter is the center of the fold complementary to the orientation. 
+- For a `HORIZONTAL` fold, this is the y-axis and for a `VERTICAL` fold this is the x-axis. Default value is -1. 
+- If this parameter is not provided, then will be calculated based on `windowBounds` parameter as windowBounds.centerY()
+  or windowBounds.centerX(), depending on the given `orientation`.
+
+- The `size` parameter is the smaller dimension of the fold. The larger dimension always covers the entire window. Default value is 0.
+
+- Parameter `state` represents the state of the fold. 
+- Possible values are: `FoldingFeatureState.HALF_OPENED` and `FoldingFeatureState.FLAT`.
+- The default value is `FoldingFeatureState.HALF_OPENED`. 
+- See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures) section in the official documentation for visual samples and references.
+
+- Parameter `orientation` is the orientation of the fold. 
+- Possible values are: `FoldingFeatureOrientation.HORIZONTAL` and `FoldingFeatureOrientation.VERTICAL`. 
+- The default value is `FoldingFeatureOrientation.HORIZONTAL`.
+
+### TargetDevices
+
+Use this annotations for the test method or test class if you want to run the test only on the specified devices or 
+if you want to ignore some devices.
+
+- The `devices` parameter is an array of wanted devices and the `ignoreDevices` is an array with the devices to be ignored.
+  Example of usage: @TargetDevices(devices = [DeviceModel.SurfaceDuo, DeviceModel.SurfaceDuo2]), 
+  @TargetDevices(ignoreDevices = [DeviceModel.SurfaceDuo])
+  You cannot use both parameters at the same time.
+
+### DeviceOrientation
+
+Use this annotation for the test method or test class if you want to run the test on the specified device orientation.
+
+- The `orientation` parameter represents the device orientation and can have the following values:
+`UiAutomation.ROTATION_FREEZE_0`, `UiAutomation.ROTATION_FREEZE_90`, `UiAutomation.ROTATION_FREEZE_180`, `UiAutomation.ROTATION_FREEZE_270`
+
+## FoldableTestRule
+
+`FoldableTestRule` is a custom `TestRule` that must be used together with `@SingleScreenTest`, `@DualScreenTest`, `@MockFoldingFeature` and `@DeviceOrientation` annotations. 
+Without using this test rule, the annotations will not work. 
+This `TestRule` is using reflection to retrieve these annotations and parameters in order to run the tests on the wanted posture and device orientation.
+
+## FoldableJUnit4ClassRunner
+
+`FoldableJUnit4ClassRunner` is a custom `AndroidJUnit4ClassRunner` that must be used together with `@SingleScreenTest`, `@DualScreenTest`, `@MockFoldingFeature`, `@DeviceOrientation` and `@TargetDevices` annotations. 
+This runner will validate the parameters for the annotations or will ignore tests when the current device is not on the wanted devices or in the ignored devices list.  
+Without using this `Runner`, the annotations will not be validated and the `@TargetDevices` annotation will not have any effect.
 
 ## WindowLayoutInfoConsumer
 
