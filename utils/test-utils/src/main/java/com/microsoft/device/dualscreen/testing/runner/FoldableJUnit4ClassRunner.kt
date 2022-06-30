@@ -116,6 +116,11 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
 
     private fun FrameworkMethod.validateMockFoldingFeatureAnnotation(errors: MutableList<Throwable>?) {
         method.getAnnotation(MockFoldingFeature::class.java)?.let {
+            if (it.windowBounds.isEmpty()) {
+                // Skip validation because will be replaced by the actual window bounds
+                return
+            }
+
             if (it.windowBounds.size != 4) {
                 errors?.add(
                     Exception(
@@ -125,20 +130,22 @@ class FoldableJUnit4ClassRunner : AndroidJUnit4ClassRunner {
                 )
             }
 
-            if (it.windowBoundsRect.width() <= 0) {
-                errors?.add(
-                    Exception(
-                        "Method " + method.name + ": @MockFoldingFeature.windowBounds.width should be greater than 0"
+            it.windowBoundsRect?.let { windowBounds ->
+                if (windowBounds.width() <= 0) {
+                    errors?.add(
+                        Exception(
+                            "Method " + method.name + ": @MockFoldingFeature.windowBounds.width should be greater than 0"
+                        )
                     )
-                )
-            }
+                }
 
-            if (it.windowBoundsRect.height() <= 0) {
-                errors?.add(
-                    Exception(
-                        "Method " + method.name + ": @MockFoldingFeature.windowBounds.height should be greater than 0"
+                if (windowBounds.height() <= 0) {
+                    errors?.add(
+                        Exception(
+                            "Method " + method.name + ": @MockFoldingFeature.windowBounds.height should be greater than 0"
+                        )
                     )
-                )
+                }
             }
         }
     }

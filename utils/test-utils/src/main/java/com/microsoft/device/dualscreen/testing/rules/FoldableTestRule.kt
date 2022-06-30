@@ -81,7 +81,7 @@ class FoldableTestRule : TestRule {
         when {
             mockFoldingFeatureAnnotation != null -> {
                 WindowInfoTracker.overrideDecorator(overrideServices)
-                mockFoldingFeature(mockFoldingFeatureAnnotation)
+                mockFoldingFeature(requestedDeviceOrientation, mockFoldingFeatureAnnotation)
             }
 
             uiDevice.isSurfaceDuo() -> {
@@ -126,7 +126,7 @@ class FoldableTestRule : TestRule {
     private fun mockFoldingFeature(deviceOrientation: Int, forDualScreenTest: Boolean) {
         val displayFeatures = if (forDualScreenTest) {
             val foldingFeature = FoldingFeature(
-                windowBounds = Rect(0, 0, uiDevice.displayWidth, uiDevice.displayHeight),
+                windowBounds = getWindowBounds(deviceOrientation),
                 size = 0,
                 state = FoldingFeature.State.HALF_OPENED,
                 orientation = getFoldingFeatureOrientation(deviceOrientation)
@@ -139,9 +139,17 @@ class FoldableTestRule : TestRule {
         overrideWindowLayoutInfo(windowLayoutInfo)
     }
 
-    private fun mockFoldingFeature(mockFoldingFeatureAnnotation: MockFoldingFeature) {
+    private fun getWindowBounds(deviceOrientation: Int): Rect {
+        return when (deviceOrientation) {
+            ROTATION_FREEZE_270,
+            ROTATION_FREEZE_90 -> Rect(0, 0, uiDevice.displayHeight, uiDevice.displayWidth)
+            else -> Rect(0, 0, uiDevice.displayWidth, uiDevice.displayHeight)
+        }
+    }
+
+    private fun mockFoldingFeature(deviceOrientation: Int, mockFoldingFeatureAnnotation: MockFoldingFeature) {
         val foldingFeature = FoldingFeature(
-            windowBounds = mockFoldingFeatureAnnotation.windowBoundsRect,
+            windowBounds = mockFoldingFeatureAnnotation.windowBoundsRect ?: getWindowBounds(deviceOrientation),
             center = mockFoldingFeatureAnnotation.center,
             size = mockFoldingFeatureAnnotation.size,
             state = mockFoldingFeatureAnnotation.foldingFeatureState,
