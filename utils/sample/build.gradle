@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.microsoft.device.dualscreen.testing.sample"
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner config.testInstrumentationRunner
+    }
+
+}
+
+dependencies {
+    implementation project(':layouts:layouts')
+
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.constraintLayout
+    implementation androidxDependencies.coreKtx
+    implementation androidxDependencies.lifecycleViewmodel
+
+    testImplementation testDependencies.junit
+    androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation instrumentationTestDependencies.junitKtx
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.testRunner
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+}
