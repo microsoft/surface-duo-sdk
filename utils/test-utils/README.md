@@ -21,7 +21,7 @@ Since we think that there is value on these utilities to be shared with the deve
 2. Add dependencies to the module-level **build.gradle** file (current version may be different from what's shown here):
 
     ```gradle
-    androidTestImplementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha3"
+    androidTestImplementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha4"
     ```
 
 3. Optional. If you need to use other testing dependencies such as [Espresso](https://developer.android.com/training/testing/espresso) or [UiAutomator](https://developer.android.com/training/testing/other-components/ui-automator), you will have to add them to your **build.gradle** file as well. This library uses these dependencies but are not exposed.
