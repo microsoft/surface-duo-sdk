@@ -187,36 +187,127 @@ Returns the model of a device based on display width and height (in pixels).
 
 ## Annotations
 
+**Important:** Please see [FoldableTestRule](#foldabletestrule) and [FoldableJUnit4ClassRunner](#foldablejunit4classrunner) sections before start using the following annotations.
+
 ### SingleScreenTest/DualScreenTest
 
-Add this annotation for the test method or test class if you want to run the test on single-screen/dual-screen mode. 
-Also, using the `orientation` parameter, you can run the test on the specified device orientation. 
-The `orientation` parameter can have the following values: 
-`UiAutomation.ROTATION_FREEZE_0`, `UiAutomation.ROTATION_FREEZE_90`, `UiAutomation.ROTATION_FREEZE_180`, `UiAutomation.ROTATION_FREEZE_270`
+Add this annotation for the test method or test class if you want to run the test on single-screen/dual-screen mode.
+Also, using the `orientation` parameter, you can run the test on the specified device orientation.
+
+The `orientation` parameter can have the following values:
+- `UiAutomation.ROTATION_FREEZE_0`.
+- `UiAutomation.ROTATION_FREEZE_90`.
+- `UiAutomation.ROTATION_FREEZE_180`.
+- `UiAutomation.ROTATION_FREEZE_270`.
+
+Here you can see how you can use the `@SingleScreenTest` annotation as a test-class level:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+@SingleScreenTest(orientation = UiAutomation.ROTATION_FREEZE_180)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    @Test
+    fun sampleTestMethod() {
+    }
+}
+```
+
+Here you can see how you can use the `@DualScreenTest` at a test-function level:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    
+    @Test
+    @DualScreenTest(orientation = UiAutomation.ROTATION_FREEZE_90)
+    fun sampleTestMethod() {
+    }
+}
+```
 
 ### MockFoldingFeature
 
 Use this annotation for the test method or test class if you want to mock the folding feature with the desired data.
 
-- `windowBounds` parameter is an array of coordinates that represents some display area that will contain the [FoldingFeature], 
-for example [left, top, right, bottom]. `windowBounds` width and height must be greater than 0.
-The default value is an empty array. If this parameter is not provided then it will be replaced by [0, 0, uiDevice.displayWidth, uiDevice.displayHeight]
+- `windowBounds` parameter is an array of coordinates that represents some display area that will contain the [FoldingFeature](https://developer.android.com/reference/androidx/window/layout/FoldingFeature), 
+for example [left, top, right, bottom]. `windowBounds` **width and height must be greater than** `0`.
 
-- The `center` parameter is the center of the fold complementary to the orientation. 
-For a `HORIZONTAL` fold, this is the y-axis and for a `VERTICAL` fold this is the x-axis. Default value is -1. 
-If this parameter is not provided, then will be calculated based on `windowBounds` parameter as windowBounds.centerY()
-or windowBounds.centerX(), depending on the given `orientation`.
+    **By default**, if you don't define your own `windowBounds` values, **it will use the whole display area**, more specifically `[0, 0, uiDevice.displayWidth, uiDevice.displayHeight]`.
 
-- The `size` parameter is the smaller dimension of the fold. The larger dimension always covers the entire window. Default value is 0.
+- The `center` parameter is the center of the fold complementary to the orientation.
+For a `HORIZONTAL` fold, this is the y-axis and for a `VERTICAL` fold this is the x-axis. **Default value** is `-1`.
 
-- Parameter `state` represents the state of the fold. 
-Possible values are: `FoldingFeatureState.HALF_OPENED` and `FoldingFeatureState.FLAT`.
-The default value is `FoldingFeatureState.HALF_OPENED`. 
-See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures) section in the official documentation for visual samples and references.
+    If this parameter is not provided, then will be calculated based on `windowBounds` parameter as windowBounds.centerY() or windowBounds.centerX(), depending on the given `orientation`.
 
-- Parameter `orientation` is the orientation of the fold. 
-Possible values are: `FoldingFeatureOrientation.HORIZONTAL` and `FoldingFeatureOrientation.VERTICAL`. 
-The default value is `FoldingFeatureOrientation.HORIZONTAL`.
+- The `size` parameter is the smaller dimension of the fold. The larger dimension always covers the entire window. **Default value** is `0`.
+
+- Parameter `state` represents the state of the fold.
+Allowed values are:
+  - `FoldingFeatureState.HALF_OPENED`.
+  - `FoldingFeatureState.FLAT`.
+  
+  The **default value** is `FoldingFeatureState.HALF_OPENED`.
+  
+  See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures) section in the official documentation for visual samples and references.
+
+- Parameter `orientation` is the orientation of the fold.
+Allowed values are:
+  - `FoldingFeatureOrientation.HORIZONTAL`.
+  - `FoldingFeatureOrientation.VERTICAL`.
+  
+  The **default value** is `FoldingFeatureOrientation.HORIZONTAL`.
+
+Here is an example of how we can use the `@MockingFoldingFeature` as a test-class level setting also a specific `windowBounds`:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+@MockFoldingFeature(
+    windowBounds = [0, 0, 1768, 2208], 
+    center = 0, 
+    size = 2, 
+    state = FoldingFeatureState.FLAT, 
+    orientation = FoldingFeatureOrientation.HORIZONTAL
+)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    @Test
+    fun sampleTestMethod() {
+    }
+}
+```
+
+Below you can see how we can use the `@MockingFoldingFeature` at a test-function level without defining a specific `windowBounds`:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    
+    @Test
+    @MockFoldingFeature(
+        center = 0, 
+        size = 2, 
+        orientation = FoldingFeatureOrientation.HORIZONTAL
+    )
+    fun sampleTestMethod() {
+    }
+}
+```
 
 ### TargetDevices
 
@@ -224,28 +315,115 @@ Use this annotations for the test method or test class if you want to run the te
 if you want to ignore some devices.
 
 - The `devices` parameter is an array of wanted devices and the `ignoreDevices` is an array with the devices to be ignored.
-  Example of usage: @TargetDevices(devices = [DeviceModel.SurfaceDuo, DeviceModel.SurfaceDuo2]), 
-  @TargetDevices(ignoreDevices = [DeviceModel.SurfaceDuo])
-  You cannot use both parameters at the same time.
+  
+  Example of usage: 
+  - `@TargetDevices`(devices = [DeviceModel.SurfaceDuo, DeviceModel.SurfaceDuo2]).
+  - `@TargetDevices`(ignoreDevices = [DeviceModel.SurfaceDuo]).
+  
+  **You cannot use both parameters at the same time.**
+
+Allowed values for device model:
+
+- `DeviceModel.SurfaceDuo` - representation for `SurfaceDuo1` device or emulator
+
+- `DeviceModel.SurfaceDuo2` - representation for `SurfaceDuo2` device and emulator
+
+- `DeviceModel.HorizontalFoldIn` - representation for `6.7" horizontal Fold-In` devices and emulators
+
+- `DeviceModel.FoldInOuterDisplay` - representation for `7.6" Fold-In` with outer display devices and emulators
+
+- `DeviceModel.FoldOut` - representation for `8" FoldOut` devices and emulators
+
+- `DeviceModel.Other` - representation for other foldable devices and emulators
+
+Below you can see how you can use the `@TargetDevices` annotation at a test-class level setting up target `devices`:
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+@TargetDevices(devices = [DeviceModel.SurfaceDuo, DeviceModel.SurfaceDuo2])
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    @Test
+    fun sampleTestMethod() {
+    }
+}
+```
+
+Below you can see how you can use the `@TargetDevices` annotation at a test-function level setting up `ignoreDevices`:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    
+    @Test
+    @TargetDevices(ignoreDevices = [DeviceModel.SurfaceDuo])
+    fun sampleTestMethod() {
+    }
+}
+```
 
 ### DeviceOrientation
 
 Use this annotation for the test method or test class if you want to run the test on the specified device orientation.
 
 - The `orientation` parameter represents the device orientation and can have the following values:
-`UiAutomation.ROTATION_FREEZE_0`, `UiAutomation.ROTATION_FREEZE_90`, `UiAutomation.ROTATION_FREEZE_180`, `UiAutomation.ROTATION_FREEZE_270`
+  - `UiAutomation.ROTATION_FREEZE_0`.
+  - `UiAutomation.ROTATION_FREEZE_90`.
+  - `UiAutomation.ROTATION_FREEZE_180`.
+  - `UiAutomation.ROTATION_FREEZE_270`.
+
+Below you can see how you can use `@DeviceOrientation` annotation at a test-class level:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+@DeviceOrientation(orientation = UiAutomation.ROTATION_FREEZE_180)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    @Test
+    fun sampleTestMethod() {
+    }
+}
+```
+
+Below you can see how you can use `@DeviceOrientation` annotation at a test-function level:
+
+```kotlin
+@RunWith(FoldableJUnit4ClassRunner::class)
+class TestSample {
+    private val activityScenarioRule = activityScenarioRule<MainActivity>()
+    private val foldableTestRule = FoldableTestRule()
+    @get:Rule
+    val testRule: TestRule = foldableRuleChain(activityScenarioRule, foldableTestRule)
+    
+    @Test
+    @TargetDevices(orientation = UiAutomation.ROTATION_FREEZE_90)
+    fun sampleTestMethod() {
+    }
+}
+```
 
 ## FoldableTestRule
 
-`FoldableTestRule` is a custom `TestRule` that must be used together with `@SingleScreenTest`, `@DualScreenTest`, `@MockFoldingFeature` and `@DeviceOrientation` annotations. 
-Without using this test rule, the annotations will not work. 
+`FoldableTestRule` is a custom `TestRule` that must be used together with `@SingleScreenTest`, `@DualScreenTest`, `@MockFoldingFeature` and `@DeviceOrientation` annotations.
+
+**Without using this test rule, the annotations will not work.**
 This `TestRule` is using reflection to retrieve these annotations and parameters in order to run the tests on the wanted posture and device orientation.
 
 ## FoldableJUnit4ClassRunner
 
-`FoldableJUnit4ClassRunner` is a custom `AndroidJUnit4ClassRunner` that must be used together with `@SingleScreenTest`, `@DualScreenTest`, `@MockFoldingFeature`, `@DeviceOrientation` and `@TargetDevices` annotations. 
+`FoldableJUnit4ClassRunner` is a custom `AndroidJUnit4ClassRunner` that must be used together with `@SingleScreenTest`, `@DualScreenTest`, `@MockFoldingFeature`, `@DeviceOrientation` and `@TargetDevices` annotations.
+
 This runner will validate the parameters for the annotations or will ignore tests when the current device is not on the wanted devices or in the ignored devices list.  
-Without using this `Runner`, the annotations will not be validated and the `@TargetDevices` annotation will not have any effect.
+**Without using this** `Runner`, **the annotations will not be validated and the** `@TargetDevices` **annotation will not have any effect.**
 
 ## WindowLayoutInfoConsumer
 
