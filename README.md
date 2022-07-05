@@ -95,7 +95,7 @@ When importing the code into Android Studio, use the **surface-duo-sdk** folder 
    **Testing**
 
     ```gradle
-    implementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha3"
+    implementation "com.microsoft.device.dualscreen.testing:testing-kotlin:1.0.0-alpha4"
     ```
 
 ### Useful links
