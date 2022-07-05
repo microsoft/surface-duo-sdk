@@ -199,23 +199,24 @@ The `orientation` parameter can have the following values:
 Use this annotation for the test method or test class if you want to mock the folding feature with the desired data.
 
 - `windowBounds` parameter is an array of coordinates that represents some display area that will contain the [FoldingFeature], 
-- for example [left, top, right, bottom]. `windowBounds` width and height must be greater than 0.
+for example [left, top, right, bottom]. `windowBounds` width and height must be greater than 0.
+The default value is an empty array. If this parameter is not provided then it will be replaced by [0, 0, uiDevice.displayWidth, uiDevice.displayHeight]
 
 - The `center` parameter is the center of the fold complementary to the orientation. 
-- For a `HORIZONTAL` fold, this is the y-axis and for a `VERTICAL` fold this is the x-axis. Default value is -1. 
-- If this parameter is not provided, then will be calculated based on `windowBounds` parameter as windowBounds.centerY()
-  or windowBounds.centerX(), depending on the given `orientation`.
+For a `HORIZONTAL` fold, this is the y-axis and for a `VERTICAL` fold this is the x-axis. Default value is -1. 
+If this parameter is not provided, then will be calculated based on `windowBounds` parameter as windowBounds.centerY()
+or windowBounds.centerX(), depending on the given `orientation`.
 
 - The `size` parameter is the smaller dimension of the fold. The larger dimension always covers the entire window. Default value is 0.
 
 - Parameter `state` represents the state of the fold. 
-- Possible values are: `FoldingFeatureState.HALF_OPENED` and `FoldingFeatureState.FLAT`.
-- The default value is `FoldingFeatureState.HALF_OPENED`. 
-- See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures) section in the official documentation for visual samples and references.
+Possible values are: `FoldingFeatureState.HALF_OPENED` and `FoldingFeatureState.FLAT`.
+The default value is `FoldingFeatureState.HALF_OPENED`. 
+See the [Posture](https://developer.android.com/guide/topics/large-screens/learn-about-foldables#postures) section in the official documentation for visual samples and references.
 
 - Parameter `orientation` is the orientation of the fold. 
-- Possible values are: `FoldingFeatureOrientation.HORIZONTAL` and `FoldingFeatureOrientation.VERTICAL`. 
-- The default value is `FoldingFeatureOrientation.HORIZONTAL`.
+Possible values are: `FoldingFeatureOrientation.HORIZONTAL` and `FoldingFeatureOrientation.VERTICAL`. 
+The default value is `FoldingFeatureOrientation.HORIZONTAL`.
 
 ### TargetDevices
 
