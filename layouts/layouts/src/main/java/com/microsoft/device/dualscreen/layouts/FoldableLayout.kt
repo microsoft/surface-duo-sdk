@@ -203,7 +203,7 @@ open class FoldableLayout @JvmOverloads constructor(
         if (layoutController.isChangingContent) {
             addContentChangedListener(
                 object : ContentChangedListener {
-                    override fun contentChanged() {
+                    override fun contentChanged(screenMode: ScreenMode?) {
                         runnable.run()
                         removeContentChangedListener(this)
                     }
@@ -531,6 +531,6 @@ open class FoldableLayout @JvmOverloads constructor(
 
     @FunctionalInterface
     interface ContentChangedListener {
-        fun contentChanged()
+        fun contentChanged(screenMode: ScreenMode?)
     }
 }

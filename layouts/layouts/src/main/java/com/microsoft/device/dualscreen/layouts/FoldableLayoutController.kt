@@ -73,7 +73,7 @@ internal class FoldableLayoutController constructor(
     }
 
     private fun contentChanged() {
-        contentChangedListeners.forEach { it?.contentChanged() }
+        contentChangedListeners.forEach { it?.contentChanged(screenMode = foldingFeature.screenMode) }
         _isChangingContent = false
     }
 
