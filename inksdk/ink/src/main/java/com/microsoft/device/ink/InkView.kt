@@ -18,6 +18,9 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Surface
 import android.view.TextureView
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 // constants
 const val minPointsForValidStroke = 2
@@ -109,6 +112,17 @@ class InkView constructor(
         fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint
     }
 
+    @kotlinx.serialization.Serializable
+    data class Brush (
+        val color: Int,
+        val strokeWidth: Float,
+        val strokeWidthMax: Float,
+        val paintHandler: DynamicPaintHandler?,
+        val stroke: InputManager.ExtendedStroke
+    )
+
+    val brushList: MutableList<Brush> = mutableListOf()
+
     init {
         // handle attributes
         context.theme.obtainStyledAttributes(attributeSet, R.styleable.InkView, 0, 0)
@@ -161,6 +175,10 @@ class InkView constructor(
                 ) {
                     redrawTexture()
                     strokeList += stroke
+                    brushList.add(
+                        // TODO: work on serializing paint handlers
+                        Brush(color, strokeWidth, strokeWidthMax, null, stroke)
+                    )
                 }
             },
             object : InputManager.PenHoverHandler {
@@ -234,6 +252,8 @@ class InkView constructor(
     fun clearInk() {
         drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
+        brushList.clear()
+        
         inputManager.currentStroke.reset()
         redrawTexture()
     }
@@ -244,6 +264,34 @@ class InkView constructor(
         drawStroke()
         saveCanvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
         return bitmap
+    }
+
+    fun saveInk(): String {
+        return Json.encodeToString(brushList)
+    }
+
+    fun loadInk(serializedBrushes: String) {
+        drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        strokeList.clear()
+        inputManager.currentStroke.reset()
+        brushList.clear()
+
+        val brushes: List<Brush> = Json.decodeFromString(serializedBrushes)
+
+        for (brush in brushes) {
+            brush.stroke.lastPointReferenced = 0
+            strokeList.add(brush.stroke)
+            brushList.add(brush)
+
+            color = brush.color
+            strokeWidth = brush.strokeWidth
+            strokeWidthMax = brush.strokeWidthMax
+            dynamicPaintHandler = brush.paintHandler
+            inputManager.currentStroke = brush.stroke
+
+            drawStroke()
+        }
+        redrawTexture()
     }
 
     private fun updateStrokeWidth(pressure: Float) {
@@ -381,8 +429,8 @@ class InkView constructor(
      * @param width The width of the surface
      * @param height The height of the surface
      */
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
-        if (surface != null) {
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        if (width > 0 && height > 0) {
             this.surface = Surface(surface)
         } else {
             this.surface?.release()
@@ -398,7 +446,7 @@ class InkView constructor(
      * @param width The new width of the surface
      * @param height The new height of the surface
      */
-    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
     }
 
     /**
@@ -409,7 +457,7 @@ class InkView constructor(
      *
      * @param surface The surface about to be destroyed
      */
-    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         this.surface?.release()
         return true
     }
@@ -420,6 +468,6 @@ class InkView constructor(
      *
      * @param surface The surface just updated
      */
-    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
     }
 }

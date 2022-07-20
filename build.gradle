@@ -19,6 +19,7 @@ buildscript {
         classpath config.gradlePlugin
         classpath config.kotlinGradlePlugin
         classpath dokkaDependencies.dokkaGradlePlugin
+        classpath "org.jetbrains.kotlin:kotlin-serialization:1.6.10"
     }
 }
 
