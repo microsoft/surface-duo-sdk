@@ -253,7 +253,7 @@ class InkView constructor(
         drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
         brushList.clear()
-        
+
         inputManager.currentStroke.reset()
         redrawTexture()
     }

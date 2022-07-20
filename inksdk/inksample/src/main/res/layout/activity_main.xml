@@ -48,13 +48,22 @@
         app:layout_constraintStart_toStartOf="@+id/redColorPick" />
 
     <Button
+        android:id="@+id/btnSave"
+        android:layout_width="wrap_content"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:text="Save"
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/redColorPick"
+        app:layout_constraintStart_toEndOf="@+id/btnClear" />
+
+    <Button
         android:id="@+id/btnLoad"
         android:layout_width="wrap_content"
         android:layout_height="@android:dimen/app_icon_size"
         android:text="Load"
         android:layout_marginStart="5dp"
         app:layout_constraintBottom_toTopOf="@+id/redColorPick"
-        app:layout_constraintStart_toEndOf="@+id/btnClear" />
+        app:layout_constraintStart_toEndOf="@+id/btnSave" />
 
     <ImageView
         android:id="@+id/redColorPick"

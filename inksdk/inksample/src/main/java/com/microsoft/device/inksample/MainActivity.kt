@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         findViewById<Button>(R.id.btnClear)?.setOnClickListener(::clickClear)
+        findViewById<Button>(R.id.btnSave)?.setOnClickListener(::saveInk)
         findViewById<Button>(R.id.btnLoad)?.setOnClickListener(::loadInk)
         findViewById<ImageView>(R.id.redColorPick)?.setOnClickListener(::setRed)
         findViewById<ImageView>(R.id.greenColorPick)?.setOnClickListener(::setGreen)
@@ -152,8 +153,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun copyImage(view: View) {
         val image = view as ImageView
-        savedInk = inkView.saveInk()
         image.setImageBitmap(inkView.saveBitmap())
+    }
+
+    private fun saveInk(view: View) {
+        savedInk = inkView.saveInk()
     }
 
     private fun loadInk(view: View) {
