@@ -38,13 +38,11 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler, pri
         UNKNOWN
     }
 
-    @kotlinx.serialization.Serializable
     class Point(
         val x: Float,
         val y: Float,
     )
 
-    @kotlinx.serialization.Serializable
     data class PenInfo(
         val pointerType: PointerType,
         val x: Float,
@@ -104,7 +102,6 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler, pri
         }
     }
 
-    @kotlinx.serialization.Serializable
     class ExtendedStroke {
         private var builder = mutableListOf<Point>()
         private var penInfos = HashMap<Int, PenInfo>()

@@ -68,10 +68,6 @@ ext {
             kotlinStdlib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     ]
 
-    kotlinxDependencies = [
-            kotlinxSerialization: "org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion"
-    ]
-
     dokkaDependencies = [
             dokkaGradlePlugin: "org.jetbrains.dokka:dokka-gradle-plugin:$dokkaVersion"
     ]

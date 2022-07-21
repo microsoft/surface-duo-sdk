@@ -18,9 +18,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Surface
 import android.view.TextureView
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 // constants
 const val minPointsForValidStroke = 2
@@ -112,8 +109,7 @@ class InkView constructor(
         fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint
     }
 
-    @kotlinx.serialization.Serializable
-    data class Brush (
+    data class Brush(
         val color: Int,
         val strokeWidth: Float,
         val strokeWidthMax: Float,
@@ -176,8 +172,7 @@ class InkView constructor(
                     redrawTexture()
                     strokeList += stroke
                     brushList.add(
-                        // TODO: work on serializing paint handlers
-                        Brush(color, strokeWidth, strokeWidthMax, null, stroke)
+                        Brush(color, strokeWidth, strokeWidthMax, dynamicPaintHandler, stroke)
                     )
                 }
             },
@@ -266,18 +261,21 @@ class InkView constructor(
         return bitmap
     }
 
-    fun saveInk(): String {
-        return Json.encodeToString(brushList)
+    fun saveInk(): List<Brush> {
+        return brushList
     }
 
-    fun loadInk(serializedBrushes: String) {
+    fun loadInk(ink: List<Brush>) {
+        // create a copy of the list to avoid references in both brush list and load ink list
+        val brushes = ink.map { it.copy() }
+
+        // reset canvas
         drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
-        inputManager.currentStroke.reset()
+        inputManager.currentStroke = InputManager.ExtendedStroke()
         brushList.clear()
 
-        val brushes: List<Brush> = Json.decodeFromString(serializedBrushes)
-
+        // draw each of the brush strokes
         for (brush in brushes) {
             brush.stroke.lastPointReferenced = 0
             strokeList.add(brush.stroke)
