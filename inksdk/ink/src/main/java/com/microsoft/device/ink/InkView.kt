@@ -249,7 +249,7 @@ class InkView constructor(
         strokeList.clear()
         brushList.clear()
 
-        inputManager.currentStroke.reset()
+        inputManager.currentStroke = InputManager.ExtendedStroke()
         redrawTexture()
     }
 
@@ -262,13 +262,11 @@ class InkView constructor(
     }
 
     fun saveInk(): List<Brush> {
-        return brushList
+        // create a copy of the list to avoid references in both brush list and load ink list
+        return brushList.map { it.copy() }
     }
 
-    fun loadInk(ink: List<Brush>) {
-        // create a copy of the list to avoid references in both brush list and load ink list
-        val brushes = ink.map { it.copy() }
-
+    fun loadInk(brushes: List<Brush>) {
         // reset canvas
         drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
