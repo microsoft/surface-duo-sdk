@@ -11,7 +11,7 @@ import android.view.View
 
 class InputManager(view: View, private val penInputHandler: PenInputHandler, private val penHoverHandler: PenHoverHandler? = null) {
 
-    val currentStroke = ExtendedStroke()
+    var currentStroke = ExtendedStroke()
 
     init {
         setupInputEvents(view)
@@ -116,7 +116,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler, pri
         fun addPoint(penInfo: PenInfo) {
             val point = Point(penInfo.x, penInfo.y)
             builder.add(point)
-            penInfos[point.hashCode()] = penInfo
+            penInfos[builder.lastIndex] = penInfo // hash codes don't serialize well, so use index
         }
 
         fun getPoints(): List<Point> {
@@ -124,7 +124,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler, pri
         }
 
         fun getPenInfo(point: Point): PenInfo? {
-            return penInfos[point.hashCode()]
+            return penInfos[builder.indexOf(point)]
         }
 
         fun reset() {
@@ -168,7 +168,7 @@ class InputManager(view: View, private val penInputHandler: PenInputHandler, pri
 
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
-                    currentStroke.reset()
+                    currentStroke = ExtendedStroke()
                     currentStroke.addPoint(penInfo)
                     penInputHandler.strokeStarted(penInfo, currentStroke)
                 }

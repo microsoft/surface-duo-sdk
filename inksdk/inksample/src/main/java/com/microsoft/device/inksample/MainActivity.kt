@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBar: SeekBar
     private lateinit var circleView: ImageView
 
+    private var savedInk: List<InkView.Brush> = listOf()
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +91,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         findViewById<Button>(R.id.btnClear)?.setOnClickListener(::clickClear)
+        findViewById<Button>(R.id.btnSave)?.setOnClickListener(::saveInk)
+        findViewById<Button>(R.id.btnLoad)?.setOnClickListener(::loadInk)
         findViewById<ImageView>(R.id.redColorPick)?.setOnClickListener(::setRed)
         findViewById<ImageView>(R.id.greenColorPick)?.setOnClickListener(::setGreen)
         findViewById<ImageView>(R.id.blueColorPick)?.setOnClickListener(::setBlue)
@@ -150,6 +154,14 @@ class MainActivity : AppCompatActivity() {
     private fun copyImage(view: View) {
         val image = view as ImageView
         image.setImageBitmap(inkView.saveBitmap())
+    }
+
+    private fun saveInk(view: View) {
+        savedInk = inkView.saveInk()
+    }
+
+    private fun loadInk(view: View) {
+        inkView.loadInk(savedInk)
     }
 
     private fun fancySwitchChanged(view: View) {

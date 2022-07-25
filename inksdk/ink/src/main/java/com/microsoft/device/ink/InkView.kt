@@ -109,6 +109,16 @@ class InkView constructor(
         fun generatePaintFromPenInfo(penInfo: InputManager.PenInfo): Paint
     }
 
+    data class Brush(
+        val color: Int,
+        val strokeWidth: Float,
+        val strokeWidthMax: Float,
+        val paintHandler: DynamicPaintHandler?,
+        val stroke: InputManager.ExtendedStroke
+    )
+
+    val brushList: MutableList<Brush> = mutableListOf()
+
     init {
         // handle attributes
         context.theme.obtainStyledAttributes(attributeSet, R.styleable.InkView, 0, 0)
@@ -161,6 +171,9 @@ class InkView constructor(
                 ) {
                     redrawTexture()
                     strokeList += stroke
+                    brushList.add(
+                        Brush(color, strokeWidth, strokeWidthMax, dynamicPaintHandler, stroke)
+                    )
                 }
             },
             object : InputManager.PenHoverHandler {
@@ -234,7 +247,9 @@ class InkView constructor(
     fun clearInk() {
         drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         strokeList.clear()
-        inputManager.currentStroke.reset()
+        brushList.clear()
+
+        inputManager.currentStroke = InputManager.ExtendedStroke()
         redrawTexture()
     }
 
@@ -244,6 +259,35 @@ class InkView constructor(
         drawStroke()
         saveCanvas.drawBitmap(canvasBitmap, 0f, 0f, overridePaint)
         return bitmap
+    }
+
+    fun saveInk(): List<Brush> {
+        // create a copy of the list to avoid references in both brush list and load ink list
+        return brushList.map { it.copy() }
+    }
+
+    fun loadInk(brushes: List<Brush>) {
+        // reset canvas
+        drawCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        strokeList.clear()
+        inputManager.currentStroke = InputManager.ExtendedStroke()
+        brushList.clear()
+
+        // draw each of the brush strokes
+        for (brush in brushes) {
+            brush.stroke.lastPointReferenced = 0
+            strokeList.add(brush.stroke)
+            brushList.add(brush)
+
+            color = brush.color
+            strokeWidth = brush.strokeWidth
+            strokeWidthMax = brush.strokeWidthMax
+            dynamicPaintHandler = brush.paintHandler
+            inputManager.currentStroke = brush.stroke
+
+            drawStroke()
+        }
+        redrawTexture()
     }
 
     private fun updateStrokeWidth(pressure: Float) {
@@ -381,8 +425,8 @@ class InkView constructor(
      * @param width The width of the surface
      * @param height The height of the surface
      */
-    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
-        if (surface != null) {
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+        if (width > 0 && height > 0) {
             this.surface = Surface(surface)
         } else {
             this.surface?.release()
@@ -398,7 +442,7 @@ class InkView constructor(
      * @param width The new width of the surface
      * @param height The new height of the surface
      */
-    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
     }
 
     /**
@@ -409,7 +453,7 @@ class InkView constructor(
      *
      * @param surface The surface about to be destroyed
      */
-    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
         this.surface?.release()
         return true
     }
@@ -420,6 +464,6 @@ class InkView constructor(
      *
      * @param surface The surface just updated
      */
-    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
     }
 }
