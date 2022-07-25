@@ -24,6 +24,7 @@ include ':fragmentshandler:sample'
 include ':layouts:layouts'
 include ':layouts:foldablelayout-sample'
 include ':layouts:foldableframelayout-sample'
+include ':layouts:view-binding-sample'
 
 include ':tabs:tabs'
 include ':tabs:sample'
