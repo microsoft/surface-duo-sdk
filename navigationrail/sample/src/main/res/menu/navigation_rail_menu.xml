@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_item_plats"
+        android:enabled="true"
+        android:icon="@drawable/plant_icon"
+        android:title="@string/menu_item_plants" />
+    <item
+        android:id="@+id/menu_item_birds"
+        android:enabled="true"
+        android:icon="@drawable/bird_icon"
+        android:title="@string/menu_item_birds" />
+    <item
+        android:id="@+id/menu_item_animals"
+        android:enabled="true"
+        android:icon="@drawable/animal_icon"
+        android:title="@string/menu_item_animals" />
+    <item
+        android:id="@+id/menu_item_lakes"
+        android:enabled="true"
+        android:icon="@drawable/lake_icon"
+        android:title="@string/menu_item_lakes" />
+    <item
+        android:id="@+id/menu_item_rocks"
+        android:enabled="true"
+        android:icon="@drawable/rock_icon"
+        android:title="@string/menu_item_rocks" />
+    <item
+        android:id="@+id/menu_item_trees"
+        android:enabled="true"
+        android:icon="@drawable/plant_icon"
+        android:title="@string/menu_item_trees" />
+    <item
+        android:id="@+id/menu_item_mountains"
+        android:enabled="true"
+        android:icon="@drawable/rock_icon"
+        android:title="@string/menu_item_mountains" />
+</menu>

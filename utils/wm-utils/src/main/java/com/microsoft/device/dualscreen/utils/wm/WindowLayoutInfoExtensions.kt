@@ -25,6 +25,14 @@ fun WindowLayoutInfo?.isFoldingFeatureVertical(): Boolean =
         (displayFeatures.firstOrNull() as? FoldingFeature)?.orientation == FoldingFeature.Orientation.VERTICAL
 
 /**
+ * Checks whether the orientation of the folding feature is horizontal
+ * @return true if the folding feature exists and is horizontal oriented, false otherwise
+ */
+fun WindowLayoutInfo?.isFoldingFeatureHorizontal(): Boolean =
+    this != null &&
+        (displayFeatures.firstOrNull() as? FoldingFeature)?.orientation == FoldingFeature.Orientation.HORIZONTAL
+
+/**
  * Returns the first [FoldingFeature] from the [WindowLayoutInfo] or null if no [FoldingFeature] exists.
  * @return The first [FoldingFeature] if it exists
  */

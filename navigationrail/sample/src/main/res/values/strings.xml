@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <string name="app_name">NavigationRailView Sample</string>
+
+    <string name="move_view_to_start">Move to top</string>
+    <string name="span_buttons">Span 4-3</string>
+    <string name="move_view_to_end">Move to bottom</string>
+
+    <string name="menu_item_plants">Plants</string>
+    <string name="menu_item_birds">Birds</string>
+    <string name="menu_item_animals">Animals</string>
+    <string name="menu_item_lakes">Lakes</string>
+    <string name="menu_item_rocks">Rocks</string>
+    <string name="menu_item_trees">Trees</string>
+    <string name="menu_item_mountains">Mountains</string>
+
+</resources>
