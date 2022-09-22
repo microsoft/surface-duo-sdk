@@ -8,10 +8,8 @@ package com.microsoft.device.dualscreen.navigationrail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
@@ -29,6 +27,7 @@ import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import androidx.window.layout.WindowInfoTracker
 import androidx.window.layout.WindowLayoutInfo
+import androidx.window.layout.WindowMetricsCalculator
 import com.google.android.material.navigationrail.NavigationRailMenuView
 import com.google.android.material.navigationrail.NavigationRailView
 import com.microsoft.device.dualscreen.utils.wm.DisplayPosition
@@ -38,13 +37,14 @@ import com.microsoft.device.dualscreen.utils.wm.extractFoldingFeatureRect
 import com.microsoft.device.dualscreen.utils.wm.getWindowVisibleDisplayFrame
 import com.microsoft.device.dualscreen.utils.wm.isFoldingFeatureHorizontal
 import com.microsoft.device.dualscreen.utils.wm.isInDualMode
+import com.microsoft.device.dualscreen.utils.wm.isSeparating
 import com.microsoft.device.dualscreen.utils.wm.locationOnScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-const val MARGIN_LOWERING_FACTOR = 0.95
+private const val MARGIN_LOWERING_FACTOR = 0.95
 
 /**
  * A sub class of the [NavigationRailView] that can position its children in different ways when the application is spanned on both screens.
@@ -68,7 +68,6 @@ class NavigationRailView : NavigationRailView {
     ) {
         this.registerWindowInfoFlow()
         extractAttributes(context, attrs)
-        menuGravity = Gravity.TOP
     }
 
     private var screenMode = ScreenMode.DUAL_SCREEN
@@ -199,10 +198,12 @@ class NavigationRailView : NavigationRailView {
 
             normalizeFoldingFeatureRectForView().let { hingeRect ->
                 hingePosition = hingeRect
-                (context as Activity).windowManager.defaultDisplay.getSize(screenSize)
+
+                val windowBounds = WindowMetricsCalculator.getOrCreate()
+                    .computeCurrentWindowMetrics(context as Activity).bounds
+                screenSize = Point(windowBounds.width(), windowBounds.height())
 
                 statusBarHeight = screenSize.y - appWindowFrameHeight
-
                 hingeHeight = hingeRect.height()
                 topScreenHeight = hingeRect.top - windowRect.top
                 bottomScreenHeight = windowRect.bottom - hingeRect.bottom
@@ -224,8 +225,8 @@ class NavigationRailView : NavigationRailView {
     private fun shouldSplitButtons(): Boolean {
         return windowLayoutInfo.isInDualMode() &&
             windowLayoutInfo.isFoldingFeatureHorizontal() &&
-            isIntersectingHorizontalHinge() &&
-            hingeHeight > 1
+            windowLayoutInfo.isSeparating() &&
+            isIntersectingHorizontalHinge()
     }
 
     /**
@@ -438,9 +439,9 @@ class NavigationRailView : NavigationRailView {
      * This is useful when the [NavigationRailView] contains a header view.
      */
     private fun calculateMenuTopMargin(): Int {
-        val topMargin =
-            resources.getDimensionPixelSize(com.google.android.material.R.dimen.mtrl_navigation_rail_margin)
         return headerView?.let {
+            val topMargin =
+                resources.getDimensionPixelSize(com.google.android.material.R.dimen.mtrl_navigation_rail_margin)
             it.bottom + topMargin
         } ?: kotlin.run { 0 }
     }
@@ -513,10 +514,4 @@ fun View.absY(): Int {
     val location = IntArray(2)
     this.getLocationOnScreen(location)
     return location[1]
-}
-
-private fun NavigationRailMenuView.colorButtons() {
-    for (i in 0 until childCount) {
-        getChildAt(i).background = ColorDrawable(Color.CYAN)
-    }
 }

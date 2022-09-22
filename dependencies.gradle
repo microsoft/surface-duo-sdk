@@ -47,7 +47,7 @@ ext {
     navigationVersionName = "1.0.0-alpha3"
     testingVersionName = "1.0.0-alpha4"
     snackbarVersionName = "1.0.0-alpha2"
-    navigationRailVersionName = '1.0.0-beta1'
+    navigationRailVersionName = '1.0.0-alpha2'
     // ----------------------------------
 
     // Config Android sdk, plugins and libraries version

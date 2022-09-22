@@ -29,7 +29,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.navRailView.menuGravity = Gravity.CENTER
-        binding.navRailView.arrangeButtons(5, 2)
+        binding.navRailView.arrangeButtons(4, 3)
+        binding.navRailView.useAnimation = true
+        binding.navRailView.allowFlingGesture = true
 
         setListeners()
         registerWindowInfoFlow()
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setButtonsVisibility(windowLayoutInfo: WindowLayoutInfo) {
         windowLayoutInfo.isFoldingFeatureHorizontal().let { isVisible ->
-            binding.apply {
+            binding.content.apply {
                 moveToStart.isVisible = isVisible
                 moveToEnd.isVisible = isVisible
                 spanButtons.isVisible = isVisible
@@ -58,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        binding.apply {
+        binding.content.apply {
             moveToStart.setOnClickListener {
                 binding.navRailView.menuGravity = Gravity.TOP
             }
