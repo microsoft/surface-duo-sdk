@@ -11,6 +11,8 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -19,6 +21,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.BaseInterpolator
 import androidx.activity.ComponentActivity
 import androidx.core.view.animation.PathInterpolatorCompat
+import androidx.customview.view.AbsSavedState
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -234,6 +237,8 @@ class NavigationRailView : NavigationRailView {
      */
     override fun setMenuGravity(gravity: Int) {
         super.setMenuGravity(gravity)
+        topBtnCount = -1
+        bottomBtnCount = -1
         shouldRedrawMenu = true
         requestLayout()
     }
@@ -282,7 +287,7 @@ class NavigationRailView : NavigationRailView {
     private fun NavigationRailMenuView.positionButtonsByGravity() {
         when (getGravity()) {
             Gravity.CENTER_VERTICAL -> {
-                positionButtonsInCenter(topBtnCount, bottomBtnCount)
+                positionButtonsInCenter()
             }
             Gravity.BOTTOM -> {
                 positionButtonsOnBottom()
@@ -301,8 +306,8 @@ class NavigationRailView : NavigationRailView {
 
         // If the gravity is [Gravity.TOP] check if the buttons can fit
         // in a single screen by reducing the margins between them.
-        if (defaultChildHeight * childCount * MARGIN_LOWERING_FACTOR
-            < availableHeightOnTopScreen
+        if (defaultChildHeight * childCount * MARGIN_LOWERING_FACTOR <= availableHeightOnTopScreen &&
+            defaultChildHeight * childCount > availableHeightOnTopScreen
         ) {
             for (i in 0 until childCount) {
                 val newChildHeight = availableHeightOnTopScreen / childCount
@@ -313,13 +318,11 @@ class NavigationRailView : NavigationRailView {
         } else {
             // If the buttons can't fit on the top screen, move some on the bottom screen.
             var topStartingPosition = getChildAt(0).top
-            val childrenAboveHinge = availableHeightOnTopScreen / defaultChildHeight
-
-            val btnMargin =
-                (availableHeightOnTopScreen - defaultChildHeight * childrenAboveHinge) / (childrenAboveHinge + 1)
+            val childrenAboveHinge =
+                (availableHeightOnTopScreen / defaultChildHeight).coerceAtMost(childCount)
 
             for (i in 0 until childrenAboveHinge) {
-                val childTop = (i + 1) * btnMargin + i * defaultChildHeight + topStartingPosition
+                val childTop = i * defaultChildHeight + topStartingPosition
 
                 val child = getChildAt(i)
                 child.layout(child.left, 0, child.right, defaultChildHeight)
@@ -327,11 +330,11 @@ class NavigationRailView : NavigationRailView {
             }
 
             if (childrenAboveHinge < childCount) {
-                topStartingPosition = availableHeightOnTopScreen + hingeHeight + btnMargin
+                topStartingPosition = availableHeightOnTopScreen + hingeHeight
 
                 for (i in 0 until childCount - childrenAboveHinge) {
                     val childTop =
-                        i * btnMargin + i * defaultChildHeight + topStartingPosition
+                        +i * defaultChildHeight + topStartingPosition
                     val child = getChildAt(i + childrenAboveHinge)
                     child.layout(child.left, 0, child.right, 0 + defaultChildHeight)
 
@@ -347,7 +350,8 @@ class NavigationRailView : NavigationRailView {
         val skipAnimation = shouldSkipAnimation(this)
 
         val startingPosition = this.height - availableHeightOnBottomScreen
-        val newChildHeight = availableHeightOnBottomScreen / childCount
+        val newChildHeight =
+            (availableHeightOnBottomScreen / childCount).coerceAtMost(defaultChildHeight)
         for (i in 0 until childCount) {
             val childTop = i * newChildHeight + startingPosition
 
@@ -358,10 +362,12 @@ class NavigationRailView : NavigationRailView {
         return
     }
 
-    private fun NavigationRailMenuView.positionButtonsInCenter(
-        topBtnCount: Int,
-        bottomBtnCount: Int
-    ) {
+    private fun NavigationRailMenuView.positionButtonsInCenter() {
+        if (topBtnCount == -1 || bottomBtnCount == -1) {
+            topBtnCount = childCount / 2 + childCount % 2
+            bottomBtnCount = childCount / 2
+        }
+
         val buttonsCount = topBtnCount + bottomBtnCount
         if (buttonsCount == 0) {
             return
@@ -443,7 +449,7 @@ class NavigationRailView : NavigationRailView {
             val topMargin =
                 resources.getDimensionPixelSize(com.google.android.material.R.dimen.mtrl_navigation_rail_margin)
             it.bottom + topMargin
-        } ?: kotlin.run { 0 }
+        } ?: 0
     }
 
     private fun getGravity() = menuGravity and Gravity.VERTICAL_GRAVITY_MASK
@@ -507,6 +513,78 @@ class NavigationRailView : NavigationRailView {
             return super.onTouchEvent(ev)
         }
         return onSwipeListener.onTouchEvent(ev)
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        val superState: Parcelable = super.onSaveInstanceState()
+        val state = SavedState(superState)
+        state.useAnimation = this.useAnimation
+        state.allowFlingGesture = this.allowFlingGesture
+        state.menuGravity = getGravity()
+        state.topBtnCount = this.topBtnCount
+        state.bottomBtnCount = this.bottomBtnCount
+        return state
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        when (state) {
+            is SavedState -> {
+                super.onRestoreInstanceState(state.superState)
+                this.useAnimation = state.useAnimation
+                this.allowFlingGesture = state.allowFlingGesture
+                menuGravity = state.menuGravity
+                this.topBtnCount = state.topBtnCount
+                this.bottomBtnCount = state.bottomBtnCount
+            }
+            else -> {
+                super.onRestoreInstanceState(state)
+            }
+        }
+    }
+
+    internal class SavedState : AbsSavedState {
+        var useAnimation: Boolean = true
+        var allowFlingGesture: Boolean = true
+        var menuGravity: Int = Gravity.TOP
+        var topBtnCount: Int = -1
+        var bottomBtnCount: Int = -1
+
+        constructor(superState: Parcelable) : super(superState)
+
+        constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
+            useAnimation = source.readInt() == 1
+            allowFlingGesture = source.readInt() == 1
+            menuGravity = source.readInt()
+            topBtnCount = source.readInt()
+            bottomBtnCount = source.readInt()
+        }
+
+        override fun writeToParcel(out: Parcel, flags: Int) {
+            super.writeToParcel(out, flags)
+            out.writeInt(if (useAnimation) 1 else 0)
+            out.writeInt(if (allowFlingGesture) 1 else 0)
+            out.writeInt(menuGravity)
+            out.writeInt(topBtnCount)
+            out.writeInt(bottomBtnCount)
+        }
+
+        companion object {
+            @JvmField
+            val CREATOR: Parcelable.ClassLoaderCreator<SavedState> =
+                object : Parcelable.ClassLoaderCreator<SavedState> {
+                    override fun createFromParcel(source: Parcel, loader: ClassLoader): SavedState {
+                        return SavedState(source, loader)
+                    }
+
+                    override fun createFromParcel(source: Parcel): SavedState {
+                        return SavedState(source, null)
+                    }
+
+                    override fun newArray(size: Int): Array<SavedState> {
+                        return newArray(size)
+                    }
+                }
+        }
     }
 }
 
