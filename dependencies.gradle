@@ -25,7 +25,7 @@ ext {
     tabsVersionCode = 4
     recyclerviewVersionCode = 6
     inkSDKVersionCode = 7
-    wmUtilsVersionCode = 4
+    wmUtilsVersionCode = 5
     navigationVersionCode = 2
     testingVersionCode = 4
     snackbarVersionCode = 2
@@ -43,7 +43,7 @@ ext {
     tabsVersionName = '1.0.0-beta5'
     recyclerviewVersionName = '1.0.0-beta6'
     inkSDKVersionName = "1.0.0-alpha5"
-    wmUtilsVersionName = "1.0.0-beta4"
+    wmUtilsVersionName = "1.0.0-beta5"
     navigationVersionName = "1.0.0-alpha3"
     testingVersionName = "1.0.0-alpha4"
     snackbarVersionName = "1.0.0-alpha2"
