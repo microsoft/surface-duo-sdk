@@ -1,24 +1,25 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: publish-bottomnavigation-ado
-# This workflow builds and publishes in ADO the BottomNavigation artifact.
+name: publish-navigationrail-mavencentral
+# This workflow builds and publishes in Maven Central the NavigationRail artifact.
+# Although the final publishing step has to be done manually in Sonatype site.
 
 on:
   push:
     tags:
-      - 'bottomnavigation*'
+      - 'navigationrail*'
 
   workflow_dispatch:
     inputs:
       name:
-        description: 'Triggers publication to ADO - BottomNavigation'
+        description: 'Triggers publication to MavenCentral - NavigationRail'
       home:
         description: 'location'
         required: false
 
 jobs:
-  publish-BottomNavigation-ADO:
+  publish-NavigationRail-MavenCentral:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,27 +48,27 @@ jobs:
         run: chmod +x gradlew
 
       - name: clean
-        run: ./gradlew :bottomnavigation:bottomnavigation:clean
+        run: ./gradlew :navigationrail:navigationrail:clean
 
         # Builds the release artifacts of the library
       - name: Release build
-        run: ./gradlew :bottomnavigation:bottomnavigation:assembleRelease
+        run: ./gradlew :navigationrail:navigationrail:assembleRelease
 
         # Generates other artifacts
       - name: Source jar
-        run: ./gradlew :bottomnavigation:bottomnavigation:androidSourcesJar
+        run: ./gradlew :navigationrail:navigationrail:androidSourcesJar
 
       # Generates docs artifact
       - name: Docs jar
-        run: ./gradlew :bottomnavigation:bottomnavigation:dokkaHtmlJar
+        run: ./gradlew :navigationrail:navigationrail:dokkaHtmlJar
 
-        # Runs upload to ADO
-      - name: Publish to ADO
-        run: ./gradlew  :bottomnavigation:bottomnavigation:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
+        # Runs upload to MavenCentral (final release step will be manually done in Sonatype site)
+      - name: Publish to MavenCentral
+        run: ./gradlew  :navigationrail:navigationrail:publishSurfaceDuoSDKPublicationToMavencentralRepository --max-workers 1
         env:
-          ADO_URL: ${{ secrets.ADO_URL }}
-          ADO_USER: ${{ secrets.ADO_USER }}
-          ADO_PASSWD: ${{ secrets.ADO_PASSWD }}
+          MAVEN_USER: ${{ secrets.MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
           SIGNING_SECRET_FILE: ${{ secrets.SIGNING_SECRET_FILE }}
+
