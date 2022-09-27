@@ -8,7 +8,7 @@ name: publish-navigation-component-mavencentral
 on:
   push:
     tags:
-      - 'navigation*'
+      - 'navigation_component*'
 
   workflow_dispatch:
     inputs:

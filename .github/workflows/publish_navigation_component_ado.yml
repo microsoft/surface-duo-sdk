@@ -7,7 +7,7 @@ name: publish-navigation-component-ado
 on:
   push:
     tags:
-      - 'navigation*'
+      - 'navigation_component*'
 
   workflow_dispatch:
     inputs:
