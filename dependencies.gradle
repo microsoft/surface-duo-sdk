@@ -25,10 +25,11 @@ ext {
     tabsVersionCode = 4
     recyclerviewVersionCode = 6
     inkSDKVersionCode = 7
-    wmUtilsVersionCode = 4
+    wmUtilsVersionCode = 5
     navigationVersionCode = 2
     testingVersionCode = 4
     snackbarVersionCode = 2
+    navigationRailVersionCode = 1
 
     // SurfaceDuo SDK libraries version name:
     // If you want to publish a new version, bump the specific line(s)
@@ -42,10 +43,11 @@ ext {
     tabsVersionName = '1.0.0-beta5'
     recyclerviewVersionName = '1.0.0-beta6'
     inkSDKVersionName = "1.0.0-alpha5"
-    wmUtilsVersionName = "1.0.0-beta4"
+    wmUtilsVersionName = "1.0.0-beta5"
     navigationVersionName = "1.0.0-alpha3"
     testingVersionName = "1.0.0-alpha4"
     snackbarVersionName = "1.0.0-alpha2"
+    navigationRailVersionName = '1.0.0-alpha1'
     // ----------------------------------
 
     // Config Android sdk, plugins and libraries version
@@ -108,8 +110,11 @@ ext {
 
     //Material Design
     materialVersion = "1.3.0"
+    // Can not migrate all libraries to 1.6.0 yet. This version will be used only by the NavigationRailView
+    materialVersion160 = "1.6.0"
     materialDependencies = [
-            material: "com.google.android.material:material:$materialVersion"
+            material   : "com.google.android.material:material:$materialVersion",
+            material160: "com.google.android.material:material:$materialVersion160"
     ]
 
     googleTruthVersion = "1.1.2"

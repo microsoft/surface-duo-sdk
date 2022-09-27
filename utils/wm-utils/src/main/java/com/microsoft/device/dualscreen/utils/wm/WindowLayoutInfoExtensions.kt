@@ -25,6 +25,23 @@ fun WindowLayoutInfo?.isFoldingFeatureVertical(): Boolean =
         (displayFeatures.firstOrNull() as? FoldingFeature)?.orientation == FoldingFeature.Orientation.VERTICAL
 
 /**
+ * Checks whether the orientation of the folding feature is horizontal
+ * @return true if the folding feature exists and is horizontal oriented, false otherwise
+ */
+fun WindowLayoutInfo?.isFoldingFeatureHorizontal(): Boolean =
+    this != null &&
+        (displayFeatures.firstOrNull() as? FoldingFeature)?.orientation == FoldingFeature.Orientation.HORIZONTAL
+
+/**
+ * Checks whether the folding feature is causing the window to be split into multiple physical areas.
+ * If tru the UI  may be split to avoid overlapping the folding feature.
+ * @return true if the folding feature isSeparating
+ */
+fun WindowLayoutInfo?.isSeparating(): Boolean =
+    this != null &&
+        (displayFeatures.firstOrNull() as? FoldingFeature)?.isSeparating == true
+
+/**
  * Returns the first [FoldingFeature] from the [WindowLayoutInfo] or null if no [FoldingFeature] exists.
  * @return The first [FoldingFeature] if it exists
  */

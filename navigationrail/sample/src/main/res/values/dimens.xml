@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~  Copyright (c) Microsoft Corporation. All rights reserved.
+  ~  Licensed under the MIT License.
+  ~
+  -->
+
+<resources>
+    <dimen name="normal_margin">16dp</dimen>
+
+    <dimen name="fragment_text_size">25sp</dimen>
+    <dimen name="app_icon_padding">10dp</dimen>
+</resources>

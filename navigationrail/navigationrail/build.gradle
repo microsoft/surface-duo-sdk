@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'com.microsoft.device.dualscreen'
+    PUBLISH_ARTIFACT_ID = 'navigationrail'
+    LIBRARY_DESCRIPTION = 'Library that implements the NavigationRail specifications and adapts automatically to the different foldable configurations'
+    LIBRARY_VERSION = rootProject.ext.navigationRailVersionName
+}
+apply from: "${rootProject.projectDir}/publishing.gradle"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode rootProject.ext.navigationRailVersionCode
+        versionName rootProject.ext.navigationRailVersionName
+
+        testInstrumentationRunner rootProject.ext.config.testInstrumentationRunner
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api project(':utils:wm-utils')
+
+    implementation kotlinDependencies.kotlinStdlib
+    implementation androidxDependencies.lifecycleRuntimeKtx
+    api materialDependencies.material
+    api androidxDependencies.windowManager
+
+    api  materialDependencies.material160
+
+    testImplementation testDependencies.junit
+
+    androidTestImplementation project(':utils:test-utils')
+    androidTestImplementation commonDependencies.mockitoDexMaker
+    androidTestImplementation commonDependencies.mockitoCore
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.uiAutomator
+}

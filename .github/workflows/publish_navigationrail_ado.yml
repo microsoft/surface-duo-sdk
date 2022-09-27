@@ -1,24 +1,24 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: publish-bottomnavigation-ado
-# This workflow builds and publishes in ADO the BottomNavigation artifact.
+name: publish-navigationrail-ado
+# This workflow builds and publishes in ADO the NavigationRail artifact.
 
 on:
   push:
     tags:
-      - 'bottomnavigation*'
+      - 'navigationrail*'
 
   workflow_dispatch:
     inputs:
       name:
-        description: 'Triggers publication to ADO - BottomNavigation'
+        description: 'Triggers publication to ADO - NavigationRail'
       home:
         description: 'location'
         required: false
 
 jobs:
-  publish-BottomNavigation-ADO:
+  publish-NavigationRail-ADO:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,23 +47,23 @@ jobs:
         run: chmod +x gradlew
 
       - name: clean
-        run: ./gradlew :bottomnavigation:bottomnavigation:clean
+        run: ./gradlew :navigationrail:navigationrail:clean
 
         # Builds the release artifacts of the library
       - name: Release build
-        run: ./gradlew :bottomnavigation:bottomnavigation:assembleRelease
+        run: ./gradlew :navigationrail:navigationrail:assembleRelease
 
         # Generates other artifacts
       - name: Source jar
-        run: ./gradlew :bottomnavigation:bottomnavigation:androidSourcesJar
+        run: ./gradlew :navigationrail:navigationrail:androidSourcesJar
 
       # Generates docs artifact
       - name: Docs jar
-        run: ./gradlew :bottomnavigation:bottomnavigation:dokkaHtmlJar
+        run: ./gradlew :navigationrail:navigationrail:dokkaHtmlJar
 
         # Runs upload to ADO
       - name: Publish to ADO
-        run: ./gradlew  :bottomnavigation:bottomnavigation:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
+        run: ./gradlew  :navigationrail:navigationrail:publishSurfaceDuoSDKPublicationToADORepository --max-workers 1
         env:
           ADO_URL: ${{ secrets.ADO_URL }}
           ADO_USER: ${{ secrets.ADO_USER }}
